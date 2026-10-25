@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sarthi — AI-Assisted Investment Decision Support System</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+  <!-- Application Header -->
+  <header class="app-header">
+    <div class="brand-wrapper">
+      <div class="brand-logo">
+        <span>सारथी</span>
+        <span style="font-size: 1.25rem; font-weight: 700; color: #fff;">Sarthi</span>
+      </div>
+      <span class="brand-subtitle">AI-Assisted Investment Decision Support System</span>
+    </div>
+
+    <div class="header-status-group">
+      <div class="privacy-badge" id="badge-edge-privacy" title="Your stock holdings are stored and processed only in your browser">
+        <span>🔒 Zero-Knowledge Edge Matching</span>
+      </div>
+      <a href="/onboarding" class="btn-secondary" id="btn-nav-onboarding">
+        <span>🎯 Calibrate Risk Profile</span>
+      </a>
+      <a href="#portfolio" class="btn-primary" id="btn-nav-portfolio" onclick="document.querySelector('[data-tab=portfolio]').click()">
+        <span>💼 Manage Holdings</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="app-container">
+
+    <!-- Live Telemetry Banner -->
+    <section class="glass-panel telemetry-strip" id="telemetry-banner">
+      <div class="telemetry-title">
+        <span class="pulse-dot"></span>
+        <strong>7-Step Verification Pipeline Active</strong>
+        <span style="color: var(--text-dim);">|</span>
+        <span style="color: var(--text-dim);">SEBI-Compliant Decision Support</span>
+      </div>
+      <div class="telemetry-stats">
+        <div class="stat-item">Scanned: <strong id="stat-scanned">0</strong></div>
+        <div class="stat-item">Confirmed: <strong id="stat-confirmed" style="color: #34d399;">0</strong></div>
+        <div class="stat-item">Rumors Dropped: <strong id="stat-dropped" style="color: #fb7185;">0</strong></div>
+        <div class="stat-item">Rigour Gate Passed: <strong id="stat-passed" style="color: #38bdf8;">0</strong></div>
+      </div>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="tabs-navigation" aria-label="Dashboard views">
+      <button class="tab-btn active" data-tab="brief" id="tab-morning-brief">
+        🌅 Morning Brief (Top 5 Personalised)
+      </button>
+      <button class="tab-btn" data-tab="explore" id="tab-explore-feed">
+        🌐 Explore / Global Feed
+      </button>
+      <button class="tab-btn" data-tab="precedents" id="tab-precedents">
+        📚 Curated Landmark Precedents (20)
+      </button>
+      <button class="tab-btn" data-tab="portfolio" id="tab-portfolio">
+        💼 My Edge Portfolio (Local Level 3)
+      </button>
+      <button class="tab-btn" data-tab="audit" id="tab-audit">
+        🛡️ Noise-Cancellation Audit Log
+      </button>
+    </nav>
+
+    <!-- Cards Grid (Morning Brief & Explore) -->
+    <section class="cards-grid" id="cards-container">
+      <div class="glass-panel" style="padding: 2rem; text-align: center; grid-column: 1 / -1;">
+        <p style="color: var(--text-muted);">Executing 7-step credibility pipeline...</p>
+      </div>
+    </section>
+
+    <!-- Curated Landmark Precedents Section -->
+    <section id="precedents-section" style="display: none;">
+      <div style="margin-bottom: 1.5rem;">
+        <h2 style="font-family: var(--font-heading); font-size: 1.5rem; margin-bottom: 0.5rem;">
+          Verified Indian Economic & Policy Precedents
+        </h2>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">
+          Sarthi's anti-hallucination ground truth. Rather than letting LLMs fabricate numeric statistics,
+          all qualitative analogies are anchored to these 20 landmark events with mandatory counter-analogy constraints.
+        </p>
+      </div>
+      <div class="precedents-grid" id="precedents-grid"></div>
+    </section>
+
+    <!-- Edge Portfolio Manager Section -->
+    <section id="portfolio-section" style="display: none;">
+      <div class="glass-panel" style="padding: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
+          <div>
+            <h2 style="font-family: var(--font-heading); font-size: 1.5rem; margin-bottom: 0.5rem;">
+              Local Level 3 Holdings Vault
+            </h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">
+              🔒 <strong>Zero-Knowledge Edge Architecture</strong>: Your assets below are stored purely in your browser's local memory.
+              They are matched against the broadcasted daily market impact vectors client-side and never saved on our server.
+            </p>
+          </div>
+        </div>
+
+        <!-- Add Holding Form -->
+        <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+          <input type="text" id="input-ticker" placeholder="NSE/BSE Ticker (e.g. INFY)" class="chat-input" style="max-width: 220px;" />
+          <select id="input-sector" class="chat-input" style="max-width: 200px;">
+            <option value="FMCG">FMCG</option>
+            <option value="Banking">Banking</option>
+            <option value="IT Services">IT Services</option>
+            <option value="Automotive">Automotive</option>
+            <option value="NBFCs">NBFCs</option>
+            <option value="Real Estate">Real Estate</option>
+            <option value="Metals & Mining">Metals & Mining</option>
+            <option value="Pharma">Pharma</option>
+            <option value="Logistics">Logistics</option>
+          </select>
+          <input type="number" id="input-weight" placeholder="Weight %" class="chat-input" style="max-width: 120px;" value="15" min="1" max="100" />
+          <button class="btn-primary" id="btn-add-holding">+ Add Ticker</button>
+        </div>
+
+        <table class="portfolio-table">
+          <thead>
+            <tr>
+              <th>Ticker Symbol</th>
+              <th>Sector</th>
+              <th>Weight in Portfolio</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="portfolio-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Noise-Cancellation Audit Log Section -->
+    <section id="audit-section" style="display: none;">
+      <div class="glass-panel" style="padding: 2rem;">
+        <h2 style="font-family: var(--font-heading); font-size: 1.5rem; margin-bottom: 0.5rem;">
+          Noise-Cancellation & Exit Gate Audit Log
+        </h2>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">
+          In Sarthi, <strong>silence is a feature, not a failure</strong>. Events that fail institutional source confirmation
+          (e.g., single Tier 3 rumors, unverified leaks) are quarantined and dropped here.
+        </p>
+
+        <h3 style="font-size: 1rem; margin-bottom: 1rem; color: #fb7185;">Quarantined / Dropped Events Today:</h3>
+        <ul id="audit-dropped-list" style="list-style: none;"></ul>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Auditable Reasoning Drawer Modal -->
+  <div class="modal-overlay" id="reasoning-drawer">
+    <div class="drawer-content">
+      <div class="drawer-header">
+        <div>
+          <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-cyan); font-weight: 700;">
+            Auditable First-Principles Chain
+          </span>
+          <h2 id="drawer-title" style="font-family: var(--font-heading); font-size: 1.3rem; margin-top: 0.3rem;"></h2>
+          <div style="font-size: 0.82rem; color: var(--text-dim); margin-top: 0.3rem;" id="drawer-source"></div>
+        </div>
+        <button class="drawer-close" id="btn-close-drawer" onclick="closeReasoningDrawer()">&times;</button>
+      </div>
+
+      <!-- Verdict Banner -->
+      <div class="verdict-box vec-monitor" style="margin-bottom: 1.5rem;">
+        <div class="verdict-header">
+          <span id="drawer-impact-vector"></span>
+          <span class="rigour-tag" id="drawer-rigour"></span>
+        </div>
+      </div>
+
+      <!-- 6-Stage Auditable Timeline -->
+      <div class="timeline-block">
+        
+        <!-- Step 1 -->
+        <div class="timeline-step">
+          <div class="step-marker">
+            <div class="step-num">1</div>
+            <div class="step-line"></div>
+          </div>
+          <div class="step-body">
+            <h4>1. Event Detected & Source Verification</h4>
+            <p id="step-detected-text"></p>
+            <div style="font-size: 0.8rem; color: #34d399; margin-top: 0.4rem;" id="step-verify-text"></div>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="timeline-step">
+          <div class="step-marker">
+            <div class="step-num">2</div>
+            <div class="step-line"></div>
+          </div>
+          <div class="step-body">
+            <h4>2. Structural Transmission Mechanism</h4>
+            <p id="step-transmission-text"></p>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="timeline-step">
+          <div class="step-marker">
+            <div class="step-num">3</div>
+            <div class="step-line"></div>
+          </div>
+          <div class="step-body">
+            <h4>3. Why It Matters (Fundamental Economic Math)</h4>
+            <p id="step-why-text"></p>
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="timeline-step">
+          <div class="step-marker">
+            <div class="step-num">4</div>
+            <div class="step-line"></div>
+          </div>
+          <div class="step-body">
+            <h4>4. Verified Historical Analogy</h4>
+            <strong id="step-precedent-title" style="color: #60a5fa; font-size: 0.9rem;"></strong>
+            <p id="step-similarity-text" style="margin-top: 0.4rem;"></p>
+          </div>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="timeline-step">
+          <div class="step-marker">
+            <div class="step-num">5</div>
+            <div class="step-line"></div>
+          </div>
+          <div class="step-body">
+            <h4>5. Mandatory Counter-Analogy (Key Differences Today)</h4>
+            <p id="step-counter-text"></p>
+          </div>
+        </div>
+
+        <!-- Step 6 -->
+        <div class="timeline-step">
+          <div class="step-marker">
+            <div class="step-num">6</div>
+          </div>
+          <div class="step-body">
+            <h4>6. Explicit Caveats & Uncertainties</h4>
+            <div class="step-highlight" id="step-caveat-text"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Scoped Event Assistant Interrogation Layer -->
+      <div class="assistant-box">
+        <div class="assistant-header">
+          <span>💬 Interrogate This Event (Context-Bound Assistant)</span>
+          <span style="font-size: 0.75rem; color: var(--text-dim); font-weight: normal;">No tips · Education only</span>
+        </div>
+        <div class="chat-messages" id="chat-messages"></div>
+        <div class="chat-input-row">
+          <input type="text" id="chat-user-input" class="chat-input" placeholder="Challenge the logic or ask about counter-analogies..." />
+          <button class="btn-send" id="btn-send-chat">Ask</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="/static/js/edge_matcher.js"></script>
+  <script src="/static/js/app.js"></script>
+</body>
+</html>

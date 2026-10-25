@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sarthi — Behavioral Risk Profiling & Onboarding</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <style>
+    .onboarding-card {
+      max-width: 680px;
+      margin: 3rem auto;
+      padding: 2.5rem;
+    }
+    .step-indicator {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+    .step-dot {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+      transition: all 0.2s ease;
+    }
+    .step-dot.active {
+      background: var(--accent-cyan);
+      color: #07090e;
+      box-shadow: 0 0 15px var(--accent-cyan);
+    }
+    .step-dot.completed {
+      background: #10b981;
+      color: #ffffff;
+    }
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    .form-label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text-main);
+    }
+    .form-control {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 0.75rem 1rem;
+      color: var(--text-main);
+      font-size: 0.95rem;
+      outline: none;
+    }
+    .form-control:focus {
+      border-color: var(--accent-cyan);
+    }
+    .choice-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    .choice-card {
+      padding: 1.25rem;
+      border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-subtle);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .choice-card:hover {
+      background: rgba(255, 255, 255, 0.07);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    .choice-card.selected {
+      background: rgba(6, 182, 212, 0.12);
+      border-color: var(--accent-cyan);
+    }
+    .simulation-box {
+      background: rgba(244, 63, 94, 0.08);
+      border: 1px solid rgba(244, 63, 94, 0.25);
+      border-radius: var(--radius-sm);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 2rem;
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="brand-wrapper">
+      <a href="/" style="text-decoration: none;" class="brand-logo">
+        <span>सारथी</span>
+        <span style="font-size: 1.25rem; font-weight: 700; color: #fff;">Sarthi</span>
+      </a>
+      <span class="brand-subtitle">Behavioral Risk Profiling</span>
+    </div>
+    <a href="/" class="btn-secondary">← Back to Dashboard</a>
+  </header>
+
+  <div class="app-container">
+    <div class="glass-panel onboarding-card">
+
+      <!-- Step Indicator -->
+      <div class="step-indicator">
+        <div class="step-dot active" id="dot-1">1</div>
+        <div class="step-dot" id="dot-2">2</div>
+        <div class="step-dot" id="dot-3">3</div>
+        <div class="step-dot" id="dot-4">4</div>
+        <div class="step-dot" id="dot-5">5</div>
+        <div class="step-dot" id="dot-6">6</div>
+        <div class="step-dot" id="dot-7">7</div>
+      </div>
+
+      <!-- Step 1: Identity -->
+      <div class="step-pane" id="step-1">
+        <h2 style="font-family: var(--font-heading); margin-bottom: 0.5rem;">Welcome to Sarthi</h2>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.95rem;">
+          Let's establish your foundational profile. Sarthi is designed to guide your judgment, never replace it.
+        </p>
+
+        <div class="form-group">
+          <label class="form-label" for="user-name">What should we call you?</label>
+          <input type="text" id="user-name" class="form-control" value="Prudent Investor" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="user-age">Age Band</label>
+          <select id="user-age" class="form-control">
+            <option value="18-29">18 – 29 years</option>
+            <option value="30-45" selected>30 – 45 years</option>
+            <option value="46-60">46 – 60 years</option>
+            <option value="60+">60+ years</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Step 2: Income & Engagement -->
+      <div class="step-pane" id="step-2" style="display: none;">
+        <h2 style="font-family: var(--font-heading); margin-bottom: 0.5rem;">Income Situation & Engagement</h2>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.95rem;">
+          Shapes the depth and technicality of our morning briefs.
+        </p>
+
+        <div class="form-group">
+          <label class="form-label">Primary Income Stream</label>
+          <div class="choice-grid">
+            <div class="choice-card selected" onclick="selectChoice(this, 'income')">
+              <strong>Salaried Professional</strong>
+              <div style="font-size: 0.82rem; color: var(--text-muted);">Predictable monthly inflows via SIPs and disciplined savings</div>
+            </div>
+            <div class="choice-card" onclick="selectChoice(this, 'income')">
+              <strong>Business Owner / Entrepreneur</strong>
+              <div style="font-size: 0.82rem; color: var(--text-muted);">Variable cash flows; requires high working-capital liquidity</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3: Investment Profile -->
+      <div class="step-pane" id="step-3" style="display: none;">
+        <h2 style="font-family: var(--font-heading); margin-bottom: 0.5rem;">Investment Horizon</h2>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.95rem;">
+          How long do you intend to stay invested in your primary equities?
+        </p>
+
+        <div class="form-group">
+          <div class="choice-grid">
+            <div class="choice-card selected" onclick="selectChoice(this, 'horizon', 'long_term_5yr_plus')">
+              <strong>Long Term (5+ Years)</strong>
+              <div style="font-size: 0.82rem; color: var(--text-muted);">True wealth compounding; can absorb multi-quarter business cycles</div>
+            </div>
+            <div class="choice-card" onclick="selectChoice(this, 'horizon', 'medium_term_2_5yr')">
+              <strong>Medium Term (2–5 Years)</strong>
+              <div style="font-size: 0.82rem; color: var(--text-muted);">Calibrated wealth accumulation with planned medium-term goals</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 4: Kahneman-Thaler Rupee Simulation -->
+      <div class="step-pane" id="step-4" style="display: none;">
+        <h2 style="font-family: var(--font-heading); margin-bottom: 0.5rem;">Behavioural Loss-Aversion Test</h2>
+        <p style="color: var(--text-muted); margin-bottom: 1.25rem; font-size: 0.95rem;">
+          Traditional questionnaires ask: <em>"Are you aggressive?"</em> Behavioral finance proves stated tolerance
+          fails during a real market crash. Let us simulate an actual rupee drop.
+        </p>
+
+        <div class="simulation-box">
+          <h4 style="color: #fb7185; margin-bottom: 0.5rem;">📉 Simulated Stress Scenario:</h4>
+          <p style="font-size: 0.9rem; color: #f8fafc; line-height: 1.5;">
+            Imagine your <strong>₹10,00,000</strong> equity portfolio suddenly drops to <strong>₹7,80,000</strong> (-22%)
+            in 3 weeks due to sudden global geopolitical tensions and supply shocks.
+          </p>
+        </div>
+
+        <label class="form-label">What is your authentic, unedited instinct?</label>
+        <div class="choice-grid">
+          <div class="choice-card" onclick="selectChoice(this, 'scenario', 'panic_sell')">
+            <strong style="color: #fb7185;">Liquidate & Move to Cash</strong>
+            <div style="font-size: 0.82rem; color: var(--text-muted);">I cannot stomach watching another ₹1,00,000 vanish. Protect principal now.</div>
+          </div>
+          <div class="choice-card selected" onclick="selectChoice(this, 'scenario', 'hold_patient')">
+            <strong style="color: #fcd34d;">Do Nothing; Wait for Mean Reversion</strong>
+            <div style="font-size: 0.82rem; color: var(--text-muted);">Volatility is the price of admission for long-term equity returns. I hold firm.</div>
+          </div>
+          <div class="choice-card" onclick="selectChoice(this, 'scenario', 'buy_dip')">
+            <strong style="color: #34d399;">Deploy Additional Capital (Buy the Dip)</strong>
+            <div style="font-size: 0.82rem; color: var(--text-muted);">If fundamental earnings power is intact, price drops represent higher future IRR.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 5: Portfolio Disclosure Level -->
+      <div class="step-pane" id="step-5" style="display: none;">
+        <h2 style="font-family: var(--font-heading); margin-bottom: 0.5rem;">Data Privacy & Disclosure Level</h2>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.95rem;">
+          You choose how much to share. Sarthi is transparent about the personalization trade-off.
+        </p>
+
+        <div class="choice-grid">
+          <div class="choice-card" onclick="selectChoice(this, 'disclosure', '1')">
+            <strong>Level 1 — Preferences Only</strong>
+            <div style="font-size: 0.82rem; color: var(--text-muted);">General sector-level guidance. Completely private.</div>
+          </div>
+          <div class="choice-card" onclick="selectChoice(this, 'disclosure', '2')">
+            <strong>Level 2 — Rough Holdings</strong>
+            <div style="font-size: 0.82rem; color: var(--text-muted);">Broad sector allocation percentages without specific company names.</div>
+          </div>
+          <div class="choice-card selected" onclick="selectChoice(this, 'disclosure', '3')">
+            <div style="display: flex; justify-content: space-between;">
+              <strong style="color: var(--accent-cyan);">Level 3 — Zero-Knowledge Specific Holdings (Recommended)</strong>
+              <span style="font-size: 0.75rem; color: #34d399; font-weight: 700;">🔒 100% In-Browser</span>
+            </div>
+            <div style="font-size: 0.82rem; color: var(--text-muted);">
+              Most personalized output. Your stock tickers stay strictly in your browser and are never stored on any server.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 6: Avoidances -->
+      <div class="step-pane" id="step-6" style="display: none;">
+        <h2 style="font-family: var(--font-heading); margin-bottom: 0.5rem;">Sector Avoidances</h2>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.95rem;">
+          Select any sectors you explicitly exclude for ethical, religious, or personal mandates.
+          Events in these sectors will be filtered out of your Morning Brief cards.
+        </p>
+
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <label style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.9rem; cursor: pointer;">
+            <input type="checkbox" id="avoid-tobacco" style="width: 18px; height: 18px;" />
+            <span>Tobacco & Cigarettes (ITC, Godfrey Phillips)</span>
+          </label>
+          <label style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.9rem; cursor: pointer;">
+            <input type="checkbox" id="avoid-liquor" style="width: 18px; height: 18px;" />
+            <span>Alcohol & Distilleries (United Spirits, Radico Khaitan)</span>
+          </label>
+          <label style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.9rem; cursor: pointer;">
+            <input type="checkbox" id="avoid-gambling" style="width: 18px; height: 18px;" />
+            <span>Online Gaming & Casinos (Delta Corp)</span>
+          </label>
+          <label style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.9rem; cursor: pointer;">
+            <input type="checkbox" id="avoid-defense" style="width: 18px; height: 18px;" />
+            <span>Defense Contractors & Weapons</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Step 7: Summary & Calibrated Feedback -->
+      <div class="step-pane" id="step-7" style="display: none;">
+        <h2 style="font-family: var(--font-heading); margin-bottom: 0.5rem;">Calibrated Investor Profile</h2>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.95rem;">
+          Review your behavioral risk calibration and rationality alignment:
+        </p>
+
+        <div class="glass-panel" style="padding: 1.5rem; background: rgba(0, 0, 0, 0.3); margin-bottom: 1.5rem;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
+            <span style="color: var(--text-dim);">Investor Persona:</span>
+            <strong id="summary-persona" style="color: #38bdf8;">Balanced Compounding</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
+            <span style="color: var(--text-dim);">Loss Aversion Index (λ):</span>
+            <strong id="summary-lambda">1.60</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
+            <span style="color: var(--text-dim);">Max Drawdown Tolerance:</span>
+            <strong id="summary-drawdown" style="color: #34d399;">20%</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--text-dim);">Edge Privacy:</span>
+            <strong style="color: #34d399;">Level 3 (Local-only)</strong>
+          </div>
+        </div>
+
+        <div id="rationality-callout" style="padding: 1rem; border-radius: var(--radius-sm); font-size: 0.85rem; line-height: 1.5; margin-bottom: 1rem;"></div>
+      </div>
+
+      <!-- Navigation Footer -->
+      <div class="nav-buttons">
+        <button class="btn-secondary" id="btn-prev" onclick="changeStep(-1)" style="visibility: hidden;">Back</button>
+        <button class="btn-primary" id="btn-next" onclick="changeStep(1)">Continue →</button>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="/static/js/edge_matcher.js"></script>
+  <script src="/static/js/onboarding.js"></script>
+</body>
+</html>

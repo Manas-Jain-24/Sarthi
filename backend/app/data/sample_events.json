@@ -1,0 +1,64 @@
+[
+  {
+    "id": "EVT_2026_001",
+    "title": "Ministry of Finance notifies 16% escalation in National Calamity Contingent Duty (NCCD) on cigarettes and specified tobacco items",
+    "source_name": "Press Information Bureau (Govt of India)",
+    "source_tier": 1,
+    "source_url": "https://pib.gov.in/PressReleasePage.aspx?PRID=2098412",
+    "category": "policy",
+    "published_at": "2026-10-25T08:30:00Z",
+    "content": "The Department of Revenue, Ministry of Finance, has issued a notification revising the excise and NCCD schedule on tobacco products by 16% effective immediately.",
+    "related_tickers": ["ITC", "GODFRYPHLP", "VSTIND"],
+    "sectors": ["FMCG", "Tobacco"]
+  },
+  {
+    "id": "EVT_2026_002",
+    "title": "RBI Monetary Policy Committee shifts policy stance from 'Withdrawal of Accommodation' to 'Neutral'; retains Repo Rate at 6.50%",
+    "source_name": "Reserve Bank of India (Official Release)",
+    "source_tier": 1,
+    "source_url": "https://rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=58912",
+    "category": "macro",
+    "published_at": "2026-10-25T10:00:00Z",
+    "content": "The Monetary Policy Committee voted unanimously to revise the monetary policy stance to 'Neutral', signaling flexibility while maintaining vigilance on food inflation.",
+    "related_tickers": ["HDFCBANK", "ICICIBANK", "SBIN", "BAJFINANCE", "DLF"],
+    "sectors": ["Banking", "NBFCs", "Real Estate"]
+  },
+  {
+    "id": "EVT_2026_003",
+    "title": "NCLT sanctions scheme of demerger of Tata Motors into two separate listed entities for Commercial and Passenger Vehicles",
+    "source_name": "BSE Corporate Announcements",
+    "source_tier": 1,
+    "source_url": "https://bseindia.com/corporates/ann.html?TataMotors_Demerger",
+    "category": "earnings",
+    "published_at": "2026-10-25T09:15:00Z",
+    "content": "Tata Motors Ltd has received the certified true copy of the order passed by the National Company Law Tribunal (NCLT) Mumbai Bench sanctioning the scheme of arrangement for demerger.",
+    "related_tickers": ["TATAMOTORS", "TMCV", "TMPV"],
+    "sectors": ["Automotive", "Commercial Vehicles", "EVs"]
+  },
+  {
+    "id": "EVT_2026_004",
+    "title": "Red Sea shipping freight rates jump 45% amid persistent container rerouting around Cape of Good Hope",
+    "source_name": "Reuters India",
+    "source_tier": 2,
+    "secondary_source_name": "The Economic Times",
+    "secondary_source_tier": 2,
+    "source_url": "https://reuters.com/business/red-sea-freight-rates-spike-2026",
+    "category": "geopolitical",
+    "published_at": "2026-10-25T07:45:00Z",
+    "content": "Ocean container carriers report transit delays of 12-14 days and bunker fuel surcharges, impacting Indian merchandise export consignments to Europe.",
+    "related_tickers": ["APOLLOTYRE", "BHARTIARTL", "BALKRISIND", "CONCOR"],
+    "sectors": ["Logistics", "Auto Ancillary", "Textiles"]
+  },
+  {
+    "id": "EVT_2026_005",
+    "title": "Unverified WhatsApp and Telegram rumors claim SEBI to ban all algo-based automated trading for retail accounts",
+    "source_name": "MarketRumorBlog.in",
+    "source_tier": 3,
+    "source_url": "https://marketrumorblog.in/unverified-algo-ban",
+    "category": "policy",
+    "published_at": "2026-10-25T06:00:00Z",
+    "content": "Speculation circulating in retail trading circles claims regulator will impose blanket ban on APIs used by retail trading algorithms.",
+    "related_tickers": ["ANGELONE", "MOTILALOFS"],
+    "sectors": ["Capital Markets", "Brokerages"]
+  }
+]
