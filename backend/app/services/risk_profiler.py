@@ -46,11 +46,12 @@ class RiskProfiler:
             "max_tolerated_drawdown_pct": revealed_drawdown_tolerance,
             "tone_guidance": tone_guidance,
             "has_rationality_gap": is_rationality_gap,
+            "assessment_notice": "Heuristic from one hypothetical answer; not a measured loss-aversion coefficient or suitability assessment.",
             "gap_explanation": (
                 "You indicated a high risk appetite, but selected capital liquidation in a standard "
                 "22% market correction scenario. Sarthi has recalibrated your profile to prevent emotional "
                 "panic-selling during temporary structural adjustments."
                 if is_rationality_gap
-                else "Your stated tolerance aligns harmoniously with your simulated behavioral response."
+                else "Your stated tolerance and hypothetical answer do not conflict under this simple demo rule."
             )
         }

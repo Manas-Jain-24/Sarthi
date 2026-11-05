@@ -28,13 +28,15 @@ class EventAssistantService:
         q = user_query.lower()
         chain = card.reasoning_chain
 
-        if "why" in q or "reason" in q or "logic" in q:
+        if any(term in q for term in ["buy", "sell", "tip", "price target"]):
+            response = "This demo cannot recommend trades or price targets. The analysis is an illustrative hypothesis, not a validated investment conclusion."
+        elif "why" in q or "reason" in q or "logic" in q:
             response = (
                 f"**First-Principles Reasoning for {card.canonical_title[:50]}...**:\n\n"
                 f"• **Transmission Channel**: {chain.transmission_chain}\n"
                 f"• **Economic Rationale**: {chain.why_it_matters}\n"
                 f"• **Current Assessment**: Classified as **{chain.impact_vector.value}** "
-                f"with an evidence rigour score of {chain.evidence_rigour_score}/100."
+                f"as an illustrative, unvalidated hypothesis. Evidence status: {chain.evidence_status}."
             )
         elif "analogy" in q or "history" in q or "past" in q or "precedent" in q:
             response = (
@@ -47,14 +49,8 @@ class EventAssistantService:
             response = (
                 f"**Explicit Uncertainties & Caveats**:\n\n"
                 f"• {chain.explicit_caveat}\n"
-                f"• Sarthi maintains that while the institutional announcement is verified ({chain.source_verification}), "
+                f"• Sarthi maintains that the input is synthetic and not independently verified ({chain.source_verification}), "
                 "market reaction timing depends on quarterly earnings realization and broader macro liquidity."
-            )
-        elif "buy" in q or "sell" in q or "tip" in q or "price target" in q:
-            response = (
-                "**Regulatory & Design Notice**: Sarthi never issues Buy/Sell tips or price predictions. "
-                f"Under SEBI analytical guidelines, our system provides decision support through "
-                f"**{chain.impact_vector.value}** to help you evaluate your own long-term investment thesis."
             )
         else:
             response = (
@@ -66,10 +62,10 @@ class EventAssistantService:
 
         return {
             "event_id": event_id,
-            "response": response,
-            "grounded_in_curated_data": True,
+            "response": "Demo response from a reviewed sample; no AI model or live verification.\n\n" + response,
+            "grounded_in_curated_data": False,
             "impact_vector": chain.impact_vector.value,
-            "evidence_rigour_score": chain.evidence_rigour_score
+            "impact_status": chain.impact_status
         }
 
 

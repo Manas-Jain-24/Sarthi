@@ -56,6 +56,7 @@ class SarthiPipeline:
 
         morning_brief_cards: List[MorningBriefCard] = []
         explore_feed_cards: List[MorningBriefCard] = []
+        blocked_analysis = []
 
         # Step 5, 6, 7: Reason, Constrain, Output
         for cluster in confirmed_clusters:
@@ -64,9 +65,14 @@ class SarthiPipeline:
 
             # Step 6: Constrain (Gate 2)
             passed_gate, gate_msg = self.constraint_gate.apply_constraints(cluster, chain)
+            if not passed_gate and gate_msg.startswith("Blocked:"):
+                blocked_analysis.append({"title": cluster.primary_event.title, "reason": gate_msg})
+                stats["downgraded_at_constraint"] += 1
+                continue
 
             # Step 7: Output
             card = self.formatter.format_card(cluster, chain, passed_gate)
+            card.gate_reason = gate_msg
 
             if passed_gate:
                 morning_brief_cards.append(card)
@@ -78,10 +84,12 @@ class SarthiPipeline:
         stats["final_morning_cards"] = len(morning_brief_cards)
 
         return {
+            "mode": "demo",
+            "data_notice": "Synthetic scenarios, not current news. No live sources or AI model connected.",
             "stats": stats,
             "morning_brief": morning_brief_cards,
             "explore_feed": explore_feed_cards,
-            "dropped_events_audit": [
+            "dropped_events_audit": blocked_analysis + [
                 {"title": item[0].primary_event.title, "reason": item[1]}
                 for item in dropped_unconfirmed
             ]

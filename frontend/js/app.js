@@ -1,3 +1,13 @@
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"}[c]));
+}
+function appendChatBubble(text, role) {
+  const bubble = document.createElement("div");
+  bubble.className = `chat-bubble bubble-${role}`;
+  bubble.style.whiteSpace = "pre-wrap";
+  bubble.textContent = text;
+  document.getElementById("chat-messages").appendChild(bubble);
+}
 /**
  * Sarthi Application Controller
  */
@@ -17,10 +27,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 async function loadPipelineData() {
   try {
     const res = await fetch("/api/v1/pipeline/run");
+    if (!res.ok) throw new Error(`Request failed: ${res.status}`);
     const data = await res.json();
     auditTelemetry = data.stats;
     rawDailyCards = [...data.morning_brief, ...data.explore_feed];
 
+    document.getElementById("demo-notice").textContent = data.data_notice;
     updateTelemetryBanner(data.stats);
     renderCards();
     loadPrecedents();
@@ -31,7 +43,7 @@ async function loadPipelineData() {
     document.getElementById("cards-container").innerHTML = `
       <div class="glass-panel" style="padding: 2rem; text-align: center; grid-column: 1 / -1;">
         <h3>Unable to reach Sarthi API</h3>
-        <p style="color: var(--text-muted); margin-top: 0.5rem;">Ensure backend server is running on port 8000.</p>
+        <p style="color: var(--text-muted); margin-top: 0.5rem;">Please reload the page or try again shortly.</p>
       </div>
     `;
   }
@@ -61,14 +73,14 @@ function renderCards() {
     container.innerHTML = `
       <div class="glass-panel" style="padding: 3rem; text-align: center; grid-column: 1 / -1;">
         <h3 style="color: var(--text-muted); font-family: var(--font-heading);">No cards in this feed</h3>
-        <p style="color: var(--text-dim); margin-top: 0.5rem;">Silence is a feature. Sarthi only surfaces events crossing credibility and relevance thresholds.</p>
+        <p style="color: var(--text-dim); margin-top: 0.5rem;">No eligible events match your holdings. Add holdings or load the example portfolio in My Portfolio. All sample events remain in Explore.</p>
       </div>
     `;
     return;
   }
 
   container.innerHTML = cardsToShow.map(card => {
-    const catClass = `cat-${card.category}`;
+    const catClass = `cat-${escapeHTML(card.category)}`;
     let vecClass = "vec-monitor";
     if (card.impact_vector.includes("Tailwind")) vecClass = "vec-tailwind";
     else if (card.impact_vector.includes("Headwind")) vecClass = "vec-headwind";
@@ -76,7 +88,7 @@ function renderCards() {
 
     const matchedBadge = card.matched_ticker ? `
       <span style="font-size: 0.72rem; color: #60a5fa; background: rgba(59, 130, 246, 0.15); padding: 0.2rem 0.5rem; border-radius: 9999px; font-weight: 600;">
-        ⚡ Matched Holding (${card.matched_ticker})
+        ⚡ Matched Holding (${escapeHTML(card.matched_ticker)})
       </span>
     ` : "";
 
@@ -84,40 +96,42 @@ function renderCards() {
       <div class="glass-panel event-card ${card.is_matched ? 'matched-holding' : ''}">
         <div class="card-top">
           <div class="badge-row">
-            <span class="category-tag ${catClass}">${card.category}</span>
+            <span class="category-tag ${catClass}">${escapeHTML(card.category)}</span>
             <span class="tier-indicator">
-              <span class="tier-dot-${card.highest_tier}">●</span> Tier ${card.highest_tier} Primary
+              <span class="tier-dot-${card.highest_tier}">●</span> Assigned Tier ${card.highest_tier} · Sample
             </span>
           </div>
 
           ${matchedBadge}
 
-          <h3 class="card-title" style="margin-top: 0.5rem;">${card.canonical_title}</h3>
+          <h3 class="card-title" style="margin-top: 0.5rem;">${escapeHTML(card.canonical_title)}</h3>
 
           <div class="card-tickers">
             ${card.impacted_tickers.map(t => `
-              <span class="ticker-pill ${t === card.matched_ticker ? 'matched' : ''}">${t}</span>
+              <span class="ticker-pill ${t === card.matched_ticker ? 'matched' : ''}">${escapeHTML(t)}</span>
             `).join('')}
           </div>
 
           <div class="verdict-box ${vecClass}">
             <div class="verdict-header">
-              <span>${card.impact_vector}</span>
-              <span class="rigour-tag">Rigour: ${card.evidence_rigour_score}/100</span>
+              <span>${escapeHTML(card.impact_vector)}</span>
+              <span class="rigour-tag">${escapeHTML(card.impact_status)}</span>
             </div>
           </div>
 
-          <p class="card-summary">${card.summary_insight}</p>
+          <p class="card-summary">${escapeHTML(card.summary_insight)}</p>
+          <p class="card-summary">${escapeHTML(card.evidence_status)} · Sample date: ${escapeHTML(card.published_at.slice(0, 10))}</p>
         </div>
 
         <div class="card-action">
-          <button class="btn-open-chain" id="btn-view-${card.id}" onclick="openReasoningDrawer('${card.id}')">
+          <button class="btn-open-chain" data-event-id="${escapeHTML(card.id)}">
             <span>🔍 View Auditable Reasoning Chain</span>
           </button>
         </div>
       </div>
     `;
   }).join('');
+  container.querySelectorAll("[data-event-id]").forEach(button => button.addEventListener("click", () => openReasoningDrawer(button.dataset.eventId)));
 }
 
 function openReasoningDrawer(eventId) {
@@ -125,11 +139,20 @@ function openReasoningDrawer(eventId) {
   if (!card) return;
   currentEventCard = card;
 
+  document.getElementById("evidence-excerpt").textContent = card.evidence_excerpt;
+  document.getElementById("evidence-status").textContent = `${card.evidence_status}. ${card.impact_status}. ${card.gate_reason}`;
+  const reference = document.getElementById("evidence-reference");
+  reference.hidden = true;
+  try {
+    const url = new URL(card.reference_url);
+    if (url.protocol === "https:") { reference.href = url.href; reference.hidden = false; }
+  } catch (_) { /* No background link supplied. */ }
+  document.getElementById("sample-date").textContent = `Sample date: ${card.published_at.slice(0, 10)} (not current news)`;
   const chain = card.reasoning_chain;
   document.getElementById("drawer-title").textContent = card.canonical_title;
   document.getElementById("drawer-source").textContent = card.source_attribution;
   document.getElementById("drawer-impact-vector").textContent = card.impact_vector;
-  document.getElementById("drawer-rigour").textContent = `Rigour: ${card.evidence_rigour_score}/100`;
+  document.getElementById("drawer-rigour").textContent = card.impact_status;
 
   // Populate timeline steps
   document.getElementById("step-detected-text").textContent = chain.event_detected;
@@ -143,12 +166,8 @@ function openReasoningDrawer(eventId) {
 
   // Reset chat messages
   const chatBox = document.getElementById("chat-messages");
-  chatBox.innerHTML = `
-    <div class="chat-bubble bubble-bot">
-      Hello! I am your <strong>Event Scrutiny Assistant</strong>. You can challenge the logic of this event, 
-      ask why <em>${chain.historical_analogy_name}</em> was chosen as the precedent, or question the explicit caveats.
-    </div>
-  `;
+  chatBox.replaceChildren();
+  appendChatBubble("This demo assistant uses fixed responses from the selected scenario. Ask about its reasoning, analogy, or uncertainty. Messages are sent to the server; avoid entering private financial details.", "bot");
 
   document.getElementById("reasoning-drawer").classList.add("active");
 }
@@ -166,7 +185,7 @@ function setupAssistantChat() {
     if (!text || !currentEventCard) return;
 
     const chatBox = document.getElementById("chat-messages");
-    chatBox.innerHTML += `<div class="chat-bubble bubble-user">${text}</div>`;
+    appendChatBubble(text, "user");
     input.value = "";
     chatBox.scrollTop = chatBox.scrollHeight;
 
@@ -179,11 +198,12 @@ function setupAssistantChat() {
           user_query: text
         })
       });
-      const data = await res.json();
-      chatBox.innerHTML += `<div class="chat-bubble bubble-bot">${data.response.replace(/\n/g, '<br>')}</div>`;
+      if (!res.ok) throw new Error(`Request failed: ${res.status}`);
+    const data = await res.json();
+      appendChatBubble(data.response, "bot");
       chatBox.scrollTop = chatBox.scrollHeight;
     } catch (e) {
-      chatBox.innerHTML += `<div class="chat-bubble bubble-bot" style="color:#fb7185;">Error reaching assistant API.</div>`;
+      appendChatBubble("Unable to reach the assistant. Please try again.", "bot");
     }
   };
 
@@ -220,14 +240,14 @@ async function loadPrecedents() {
     const container = document.getElementById("precedents-grid");
     container.innerHTML = allPrecedents.map(p => `
       <div class="precedent-card">
-        <div class="precedent-code">${p.id} · ${p.period}</div>
-        <h4 class="precedent-title">${p.name}</h4>
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem;">${p.macro_context}</p>
+        <div class="precedent-code">${escapeHTML(p.id)} · ${escapeHTML(p.period)}</div>
+        <h4 class="precedent-title">${escapeHTML(p.name)}</h4>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem;">${escapeHTML(p.macro_context)}</p>
         <div style="background: rgba(0,0,0,0.25); padding: 0.75rem; border-radius: 6px; font-size: 0.82rem; margin-bottom: 0.5rem;">
-          <strong style="color: #38bdf8;">Mechanism:</strong> ${p.transmission_mechanism}
+          <strong style="color: #38bdf8;">Mechanism:</strong> ${escapeHTML(p.transmission_mechanism)}
         </div>
         <div style="font-size: 0.8rem; color: #a78bfa;">
-          <strong>Key Lesson:</strong> ${p.key_lessons}
+          <strong>Key Lesson:</strong> ${escapeHTML(p.key_lessons)}
         </div>
       </div>
     `).join('');
@@ -237,6 +257,16 @@ async function loadPrecedents() {
 }
 
 function setupPortfolioModal() {
+  document.getElementById("btn-demo-portfolio").addEventListener("click", () => {
+    window.edgeMatcher.savePortfolio(DEFAULT_PORTFOLIO.map(h => ({...h})));
+    renderPortfolioTable(); renderCards();
+    document.getElementById("portfolio-message").textContent = "Example portfolio loaded. These are fictional allocations for the walkthrough.";
+  });
+  document.getElementById("btn-clear-portfolio").addEventListener("click", () => {
+    window.edgeMatcher.savePortfolio([]);
+    renderPortfolioTable(); renderCards();
+    document.getElementById("portfolio-message").textContent = "Holdings cleared from this browser.";
+  });
   const addBtn = document.getElementById("btn-add-holding");
   if (addBtn) {
     addBtn.addEventListener("click", () => {
@@ -244,7 +274,9 @@ function setupPortfolioModal() {
       const sector = document.getElementById("input-sector").value;
       const weight = parseFloat(document.getElementById("input-weight").value);
       if (ticker && weight > 0) {
-        window.edgeMatcher.addHolding(ticker, sector, weight);
+        try { window.edgeMatcher.addHolding(ticker, sector, weight); }
+        catch (error) { document.getElementById("portfolio-message").textContent = error.message; return; }
+        document.getElementById("portfolio-message").textContent = "Holding saved in this browser.";
         renderPortfolioTable();
         renderCards();
         document.getElementById("input-ticker").value = "";
@@ -260,14 +292,15 @@ function renderPortfolioTable() {
   const holdings = window.edgeMatcher.holdings;
   tbody.innerHTML = holdings.map(h => `
     <tr>
-      <td style="font-weight: 700; color: #60a5fa;">${h.ticker}</td>
-      <td>${h.sector}</td>
-      <td>${h.allocation_pct}%</td>
+      <td style="font-weight: 700; color: #60a5fa;">${escapeHTML(h.ticker)}</td>
+      <td>${escapeHTML(h.sector)}</td>
+      <td>${escapeHTML(h.allocation_pct)}%</td>
       <td>
-        <button class="btn-danger" onclick="deleteHolding('${h.ticker}')">Remove</button>
+        <button class="btn-danger" data-remove-ticker="${escapeHTML(h.ticker)}">Remove</button>
       </td>
     </tr>
   `).join('');
+  tbody.querySelectorAll('[data-remove-ticker]').forEach(button => button.addEventListener('click', () => deleteHolding(button.dataset.removeTicker)));
 }
 
 function deleteHolding(ticker) {
@@ -281,8 +314,8 @@ function renderAuditTelemetry(data) {
   if (!droppedList) return;
   droppedList.innerHTML = (data.dropped_events_audit || []).map(item => `
     <li style="margin-bottom: 0.75rem; background: rgba(255,255,255,0.03); padding: 0.85rem; border-radius: 6px; border-left: 3px solid #f43f5e;">
-      <div style="font-weight: 600; color: #f8fafc; font-size: 0.9rem;">${item.title}</div>
-      <div style="color: #fb7185; font-size: 0.82rem; margin-top: 0.25rem;">${item.reason}</div>
+      <div style="font-weight: 600; color: #f8fafc; font-size: 0.9rem;">${escapeHTML(item.title)}</div>
+      <div style="color: #fb7185; font-size: 0.82rem; margin-top: 0.25rem;">${escapeHTML(item.reason)}</div>
     </li>
   `).join('');
 }

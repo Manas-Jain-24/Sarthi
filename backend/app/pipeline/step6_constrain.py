@@ -1,37 +1,23 @@
-"""Step 6: Constrain (Exit Gate 2).
+"""Step 6: check reviewed coverage, explanation completeness and forbidden forecasts.
 
-Structured constraint layer that validates:
-- Evidence rigour threshold (minimum 65% for Morning Brief).
-- Profile compatibility & drawdown suitability.
-- Strict prohibition against black-box or hallucinated numeric claims.
-
-Outputs that fail these checks are downgraded or blocked entirely.
+These checks do not prove factual accuracy or regulatory compliance.
 """
-
 from typing import Tuple
 from ..models.schemas import AuditableReasoningChain
 from .step3_deduplicate import ClusteredEvent
 
 
 class ConstraintGate:
-    MIN_RIGOUR_THRESHOLD = 65
-
     @classmethod
     def apply_constraints(cls, cluster: ClusteredEvent, chain: AuditableReasoningChain) -> Tuple[bool, str]:
-        """Evaluates whether the reasoning chain passes the safety and confidence gate."""
-        # Check 1: Rigour threshold
-        if chain.evidence_rigour_score < cls.MIN_RIGOUR_THRESHOLD:
-            return False, f"Downgraded: Evidence rigour score ({chain.evidence_rigour_score}) below threshold ({cls.MIN_RIGOUR_THRESHOLD})."
-
-        # Check 2: Verify counter-analogy existence (prevents false equivalence bias)
-        if not chain.counter_analogy_differences or len(chain.counter_analogy_differences.strip()) < 10:
-            return False, "Blocked: Reasoning chain missing mandatory Counter-Analogy verification."
-
-        # Check 3: Check for forbidden numeric hallucination patterns (e.g. "will gain 24%", "price target ₹1,200")
-        text_corpus = f"{chain.why_it_matters} {chain.transmission_chain}".lower()
-        forbidden_phrases = ["price target", "target price", "guaranteed return", "will rally by", "will surge to ₹"]
-        for phrase in forbidden_phrases:
-            if phrase in text_corpus:
-                return False, f"Blocked: Prohibited numeric or price forecast detected ('{phrase}')."
-
-        return True, "Passed: All constraint and safety checks validated."
+        if not chain.analysis_available:
+            return False, "Downgraded: No reviewed scenario matches the exact input; analysis withheld."
+        if not all((chain.why_it_matters.strip(), chain.transmission_chain.strip(), chain.explicit_caveat.strip())):
+            return False, "Blocked: Missing interpretation, mechanism, or uncertainty."
+        if len(chain.counter_analogy_differences.strip()) < 10:
+            return False, "Blocked: Missing comparison limitations."
+        text = " ".join(v for v in chain.model_dump().values() if isinstance(v, str)).lower()
+        for phrase in ["price target", "target price", "guaranteed return", "will rally by", "will surge to"]:
+            if phrase in text:
+                return False, f"Blocked: Prohibited forecast detected ('{phrase}')."
+        return True, "Passed: Reviewed demo coverage and explanation checks; factual impact remains unvalidated."

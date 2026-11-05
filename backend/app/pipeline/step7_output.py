@@ -1,7 +1,7 @@
 """Step 7: Output Packaging.
 
 Packages verified reasoning chains into clean MorningBriefCard objects
-with full auditable reasoning chain, explicit caveats, and SEBI-compliant Impact Vectors.
+with full auditable reasoning chain, explicit caveats, and illustrative Impact Vectors.
 """
 
 from typing import List
@@ -34,10 +34,16 @@ class OutputFormatter:
             primary_sector=primary_sector,
             impacted_tickers=event.related_tickers,
             impact_vector=chain.impact_vector,
-            evidence_rigour_score=chain.evidence_rigour_score,
+            evidence_status=chain.evidence_status,
+            impact_status=chain.impact_status,
+            is_sample=event.is_sample,
+            sectors=sectors,
+            evidence_excerpt=event.content,
+            source_url=event.source_url,
+            reference_url=event.reference_url,
             summary_insight=summary_insight,
             reasoning_chain=chain,
             published_at=event.published_at,
-            is_confirmed=True,
+            is_confirmed=False,
             passed_constraint_gate=passed_gate
         )

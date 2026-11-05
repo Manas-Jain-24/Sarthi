@@ -1,9 +1,9 @@
 /**
  * Sarthi Client-Side Edge Matching Engine
  * 
- * Implements Zero-Knowledge Personalization:
+ * Implements Local Browser Personalization:
  * - Level 3 user portfolio holdings are stored ONLY in browser localStorage.
- * - Sensitive financial assets are NEVER transmitted to the server.
+ * - The matcher does not transmit holdings. Free-text chat is sent to the server.
  * - The client receives the broadcasted daily event matrix and performs
  *   local ranking and relevance scoring in-browser.
  */
@@ -33,10 +33,9 @@ class EdgeMatcher {
         return JSON.parse(stored);
       }
     } catch (e) {
-      console.warn("Could not read local storage, using default portfolio.");
+      console.warn("Could not read local storage, starting with no holdings.");
     }
-    this.savePortfolio(DEFAULT_PORTFOLIO);
-    return DEFAULT_PORTFOLIO;
+    return [];
   }
 
   savePortfolio(holdings) {
@@ -77,6 +76,10 @@ class EdgeMatcher {
 
   addHolding(ticker, sector, allocation) {
     const cleanTicker = ticker.trim().toUpperCase();
+    if (!/^[A-Z0-9&.-]{1,24}$/.test(cleanTicker)) throw new Error("Enter a valid ticker using letters, digits, &, . or -.");
+    if (!Number.isFinite(allocation) || allocation <= 0 || allocation > 100) throw new Error("Weight must be greater than 0 and at most 100.");
+    const total = this.holdings.filter(h => h.ticker !== cleanTicker).reduce((sum, h) => sum + h.allocation_pct, 0) + allocation;
+    if (total > 100.000001) throw new Error("Total portfolio allocation cannot exceed 100%.");
     const existing = this.holdings.find(h => h.ticker === cleanTicker);
     if (existing) {
       existing.allocation_pct = allocation;
@@ -107,7 +110,8 @@ class EdgeMatcher {
       let isAvoided = false;
 
       // Check avoided sectors
-      if (avoidedSectors.has(card.primary_sector.toLowerCase())) {
+      const sectors = card.sectors || [card.primary_sector];
+      if (sectors.some(s => avoidedSectors.has(s.toLowerCase()))) {
         isAvoided = true;
       }
 
@@ -120,12 +124,11 @@ class EdgeMatcher {
       }
 
       // Check sector match
-      if (portfolioSectors.has(card.primary_sector.toLowerCase())) {
-        matchedSector = card.primary_sector;
-      }
+      matchedSector = sectors.find(s => portfolioSectors.has(s.toLowerCase())) || null;
 
       // Compute local score
-      let score = card.evidence_rigour_score * 0.4;
+      // Ranking expresses exposure only, never investment confidence.
+      let score = 0;
       if (matchedTicker) {
         const holding = this.holdings.find(h => h.ticker === matchedTicker);
         const weight = holding ? holding.allocation_pct : 10;
@@ -148,7 +151,7 @@ class EdgeMatcher {
     scoredCards.sort((a, b) => b.local_score - a.local_score);
 
     // Morning Brief: Top 5 non-avoided cards
-    const morningBrief = scoredCards.filter(c => !c.is_avoided).slice(0, 5);
+    const morningBrief = scoredCards.filter(c => !c.is_avoided && c.is_matched && c.passed_constraint_gate).slice(0, 5);
     const exploreFeed = scoredCards.filter(c => !morningBrief.includes(c));
 
     return {

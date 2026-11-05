@@ -1,7 +1,7 @@
 """Pydantic schemas and models for Project Sarthi.
 
-Strictly adheres to SEBI-compliant analytical taxonomy (Impact Vectors)
-and zero-knowledge portfolio evaluation.
+Strictly adheres to illustrative analytical taxonomy (Impact Vectors)
+and local browser portfolio evaluation.
 """
 
 from enum import Enum
@@ -27,6 +27,7 @@ class ImpactVector(str, Enum):
     THESIS_HEADWIND = "Thesis Headwind / Margin Pressure"
     MONITOR_VARIANCE = "Monitor Fundamental Variance"
     NO_ACTION_CALM = "No Action / Transient Noise"
+    INSUFFICIENT_EVIDENCE = "Insufficient Evidence / Analysis Withheld"
 
 
 class RawEvent(BaseModel):
@@ -34,7 +35,9 @@ class RawEvent(BaseModel):
     title: str
     source_name: str
     source_tier: SourceTier
-    source_url: str
+    source_url: str = ""
+    reference_url: str = ""
+    is_sample: bool = True
     category: EventCategory
     published_at: str
     content: str
@@ -68,7 +71,9 @@ class AuditableReasoningChain(BaseModel):
     counter_analogy_differences: str  # Mandatory guardrail against false equivalence
     profile_relevance: str
     impact_vector: ImpactVector
-    evidence_rigour_score: int = Field(ge=0, le=100)
+    evidence_status: str = "Sample input; not independently verified"
+    impact_status: str = "Illustrative hypothesis; not validated"
+    analysis_available: bool = True
     explicit_caveat: str
 
 
@@ -81,11 +86,19 @@ class MorningBriefCard(BaseModel):
     primary_sector: str
     impacted_tickers: List[str]
     impact_vector: ImpactVector
-    evidence_rigour_score: int
+    evidence_status: str
+    impact_status: str
+    is_sample: bool = True
+    sectors: List[str] = Field(default_factory=list)
+    evidence_excerpt: str = ""
+    source_url: str = ""
+    reference_url: str = ""
+    gate_reason: str = ""
     summary_insight: str
     reasoning_chain: AuditableReasoningChain
     published_at: str
-    is_confirmed: bool = True
+    is_confirmed: bool = False
+    source_rule_passed: bool = True
     passed_constraint_gate: bool = True
 
 
@@ -122,8 +135,8 @@ class ChatRequest(BaseModel):
 class ChatResponse(BaseModel):
     event_id: str
     response: str
-    grounded_in_curated_data: bool = True
+    grounded_in_curated_data: bool = False
     compliance_disclaimer: str = (
-        "Educational & Analytical Support Only. Sarthi does not execute trades "
-        "or provide unregistered investment advice under SEBI regulations."
+        "Educational demo. Sarthi does not execute trades. "
+        "This prototype has not been assessed for regulatory compliance."
     )

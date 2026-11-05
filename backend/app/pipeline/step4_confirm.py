@@ -23,12 +23,12 @@ class EventConfirmationGate:
 
         # Rule 1: Single Tier 1 source is sufficient
         if tier1_count >= 1:
-            return True, f"Confirmed via Tier 1 Institutional Primary Source ({cluster.primary_event.source_name})"
+            return True, f"Sample rule passed via assigned Tier 1 source ({cluster.primary_event.source_name}); document not independently checked."
 
         # Rule 2: At least two Tier 2 sources required
         if tier2_count >= 2:
             source_names = ", ".join(s["source_name"] for s in cluster.sources if s["tier"] == SourceTier.ENRICHMENT_MEDIA)
-            return True, f"Confirmed via 2 Tier 2 Media Outlets ({source_names})"
+            return True, f"Sample rule passed via 2 distinct Tier 2 names ({source_names}); reporting independence is not verified."
 
         # Rule 3: Tier 3 alone or single Tier 2 is insufficient -> DROP
         if tier1_count == 0 and tier2_count < 2:

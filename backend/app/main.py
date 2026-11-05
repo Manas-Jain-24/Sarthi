@@ -29,7 +29,7 @@ FRONTEND_DIR = BASE_DIR / "frontend"
 app = FastAPI(
     title="Sarthi: AI-Assisted Investment Decision Support System",
     description=(
-        "Institutional-grade noise-cancellation engine for Indian retail investors. "
+        "Prototype noise-cancellation engine for Indian retail investors. "
         "Conservative by default. Reasoning-first always. Silence is a feature."
     ),
     version="2.0.0"

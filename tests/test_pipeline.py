@@ -73,41 +73,20 @@ def test_step4_confirmation_gate():
 
 def test_step5_reasoner_anti_hallucination():
     reasoner = EventReasoner()
-    t1_event = RawEvent(
-        id="T1",
-        title="Ministry of Finance notifies 16% escalation in cigarette excise duty",
-        source_name="PIB",
-        source_tier=SourceTier.PRIMARY_INSTITUTIONAL,
-        source_url="http://pib.gov.in",
-        category=EventCategory.POLICY_REGULATORY,
-        published_at="2026-10-25T10:00:00Z",
-        content="Official tax notification.",
-        related_tickers=["ITC"],
-        sectors=["FMCG", "Tobacco"]
-    )
+    t1_event = EventScanner().scan_sources()[0]
     cluster = ClusteredEvent(t1_event, EventCategory.POLICY_REGULATORY)
     chain = reasoner.reason_through_event(cluster)
 
     assert chain.historical_analogy_id == "IND_TOBACCO_2020"
     assert len(chain.counter_analogy_differences) > 0
     assert chain.impact_vector == ImpactVector.THESIS_HEADWIND
-    assert chain.evidence_rigour_score >= 65
+    assert chain.analysis_available
+    assert "not independently verified" in chain.evidence_status
 
 
 def test_step6_constraint_gate_blocks_forbidden_claims():
     reasoner = EventReasoner()
-    t1_event = RawEvent(
-        id="T1",
-        title="Demerger announcement",
-        source_name="BSE",
-        source_tier=SourceTier.PRIMARY_INSTITUTIONAL,
-        source_url="http://bse.in",
-        category=EventCategory.EARNINGS_CORPORATE,
-        published_at="2026-10-25T10:00:00Z",
-        content="Demerger",
-        related_tickers=["TATAMOTORS"],
-        sectors=["Automotive"]
-    )
+    t1_event = next(e for e in EventScanner().scan_sources() if "demerger" in e.title.lower())
     cluster = ClusteredEvent(t1_event, EventCategory.EARNINGS_CORPORATE)
     chain = reasoner.reason_through_event(cluster)
 
@@ -133,8 +112,9 @@ def test_full_pipeline_orchestration():
     assert len(result["morning_brief"]) >= 3
     assert len(result["dropped_events_audit"]) >= 1
 
-    # Check that Morning Brief cards contain all SEBI-compliant fields
+    # Check that Morning Brief cards contain all explicit demo provenance fields
     card = result["morning_brief"][0]
-    assert card.evidence_rigour_score >= 65
+    assert card.is_sample
+    assert card.impact_status == "Illustrative hypothesis; not validated"
     assert card.reasoning_chain.counter_analogy_differences != ""
     assert card.reasoning_chain.explicit_caveat != ""
