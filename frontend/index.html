@@ -3,148 +3,97 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sarthi — AI-Assisted Investment Decision Support System</title>
+  <title>Overview · Sarthi</title>
   <link rel="stylesheet" href="/static/css/style.css">
   <link rel="stylesheet" href="/static/css/review.css">
+  <link rel="stylesheet" href="/static/css/product.css">
 </head>
-<body>
+<body class="app-shell">
 
-  <!-- Application Header -->
   <header class="app-header">
-    <div class="brand-wrapper">
-      <div class="brand-logo">
-        <span>सारथी</span>
-        <span style="font-size: 1.25rem; font-weight: 700; color: #fff;">Sarthi</span>
-      </div>
-      <span class="brand-subtitle">AI-Assisted Investment Decision Support System</span>
-    </div>
-
-    <div class="header-status-group">
-      <div class="privacy-badge" id="badge-edge-privacy" title="Your stock holdings are stored and processed only in your browser">
-        <span>🔒 Holdings matched in this browser</span>
-      </div>
-      <a href="/onboarding" class="btn-secondary" id="btn-nav-onboarding">
-        <span>🎯 Calibrate Risk Profile</span>
-      </a>
-      <a href="#portfolio" class="btn-primary" id="btn-nav-portfolio" onclick="document.querySelector('[data-tab=portfolio]').click()">
-        <span>💼 Manage Holdings</span>
-      </a>
+    <div class="header-inner">
+      <a href="/" class="wordmark" aria-label="Sarthi home">sarthi<span class="wordmark-dot">.</span></a>
+      <nav class="primary-nav" aria-label="Main navigation">
+        <button class="tab-btn active is-current" data-tab="review" id="tab-review" aria-current="page">Overview</button>
+        <button class="tab-btn" data-tab="explore" id="tab-explore-feed">Research</button>
+        <button class="tab-btn" data-tab="journal" id="tab-journal">Journal</button>
+        <button class="tab-btn" data-tab="portfolio" id="tab-portfolio">Holdings</button>
+      </nav>
+      <details class="more-menu">
+        <summary>More</summary>
+        <div class="menu-panel">
+          <button class="tab-btn" data-tab="timeline" id="tab-timeline">Policy timeline</button>
+          <button class="tab-btn" data-tab="precedents" id="tab-precedents">Reference library</button>
+          <button class="tab-btn" data-tab="audit" id="tab-audit">Source checks</button>
+          <button type="button" data-settings-open>Sources &amp; settings</button>
+          <a href="/onboarding" id="btn-nav-onboarding">Investor profile</a>
+          <a href="/study">Research study</a>
+        </div>
+      </details>
     </div>
   </header>
 
   <!-- Main Container -->
   <main class="app-container">
-    <aside class="glass-panel" style="padding:1rem; margin-bottom:1rem; border:1px solid #fbbf24;" role="status">
-      <strong id="data-label">RBI DOCUMENTS</strong> — <span id="demo-notice">Loading archived RBI documents...</span>
-      <p>This college prototype illustrates source rules and possible economic mechanisms. Its outputs have not been validated for investment use.</p>
-    </aside>
-
-    <section class="glass-panel" style="padding:1rem; margin-bottom:1rem; display:flex; flex-wrap:wrap; gap:1rem; align-items:center;">
-      <label>Data <select id="source-mode" class="chat-input" style="width:auto;">
-        <option value="rbi">Real RBI documents</option><option value="demo">Synthetic demo</option>
-      </select></label>
-      <label><input type="checkbox" id="source-only" /> Compare source-only baseline</label>
-      <button class="btn-secondary" id="btn-refresh-rbi">Check RBI feed</button>
-      <a href="/study" class="btn-secondary">Student comprehension study</a>
-      <span id="provider-status" role="status"></span>
+    <section id="research-toolbar" class="research-header" style="display:none;">
+      <div class="page-heading"><div><h1>Research</h1><p id="research-context">Archived RBI policy announcements.</p></div><button class="btn-secondary" type="button" data-settings-open>Sources</button></div>
+      <div class="research-filters"><div class="view-switch"><button type="button" id="research-all" class="selected">All announcements</button><button type="button" class="tab-btn" data-tab="brief" id="tab-morning-brief">For my holdings</button></div><label class="source-toggle"><input id="source-only" type="checkbox"> Source only</label></div>
     </section>
-    <!-- Live Telemetry Banner -->
-    <section class="glass-panel telemetry-strip" id="telemetry-banner">
-      <div class="telemetry-title">
-        <span class="pulse-dot"></span>
-        <strong>Evidence and Analysis Pipeline</strong>
-        <span style="color: var(--text-dim);">|</span>
-        <span style="color: var(--text-dim);">College research prototype</span>
-      </div>
-      <div class="telemetry-stats">
-        <div class="stat-item">Scanned: <strong id="stat-scanned">0</strong></div>
-        <div class="stat-item">Source rule passed: <strong id="stat-confirmed" style="color: #34d399;">0</strong></div>
-        <div class="stat-item">Inputs dropped: <strong id="stat-dropped" style="color: #fb7185;">0</strong></div>
-        <div class="stat-item">Analysis checks passed: <strong id="stat-passed" style="color: #38bdf8;">0</strong></div>
-      </div>
-    </section>
-
-    <!-- Navigation Tabs -->
-    <nav class="tabs-navigation" aria-label="Dashboard views">
-      <button class="tab-btn active" data-tab="review" id="tab-review">Portfolio Review</button>
-      <button class="tab-btn" data-tab="journal" id="tab-journal">Decision Journal</button>
-      <button class="tab-btn" data-tab="timeline" id="tab-timeline">Policy Timeline</button>
-      <button class="tab-btn" data-tab="brief" id="tab-morning-brief">
-        🌅 Morning Brief (Up to 5 Relevant Events)
-      </button>
-      <button class="tab-btn" data-tab="explore" id="tab-explore-feed">
-        🌐 Explore / Global Feed
-      </button>
-      <button class="tab-btn" data-tab="precedents" id="tab-precedents">
-        📚 Curated Landmark Precedents (20)
-      </button>
-      <button class="tab-btn" data-tab="portfolio" id="tab-portfolio">
-        💼 My Portfolio (Browser Storage)
-      </button>
-      <button class="tab-btn" data-tab="audit" id="tab-audit">
-        🛡️ Noise-Cancellation Audit Log
-      </button>
-    </nav>
-
     <p id="workspace-status" class="workspace-status" role="status" aria-live="polite"></p>
     <section id="review-section" class="review-page">
       <div class="review-hero glass-panel">
-        <div><p class="eyebrow">A deliberate review</p><h1>Your portfolio, in context.</h1>
-          <p>Check your exposure, examine the evidence, and write down what would change your mind.</p></div>
-        <div class="review-actions"><button class="btn-primary" id="export-review-html">Download review report</button><button class="btn-secondary" id="export-review-json">Export review JSON</button></div>
+        <div><h1>Overview</h1><p>Your portfolio at a glance.</p></div>
+        <div class="review-actions"><button class="btn-primary" id="export-review-html">Export review</button><details class="export-menu"><summary aria-label="Other export formats">Other formats</summary><div class="menu-panel"><button class="btn-secondary" id="export-review-json">Download JSON</button></div></details></div>
       </div>
       <div id="review-metrics" class="review-metrics"></div>
       <div class="review-columns">
-        <article class="glass-panel review-panel"><h2>Where your allocation sits</h2><p>Shares of the portfolio you entered. Unassigned allocation is not assumed to be cash.</p>
-          <label>Flag sectors above my review threshold <input id="sector-threshold" type="number" min="1" max="100" value="35"> %</label>
-          <p class="quiet">This threshold is your review preference, not a validated risk limit.</p><div id="sector-breakdown"></div></article>
-        <article class="glass-panel review-panel"><h2>Review queue</h2><p>Review dates follow India Standard Time. An overdue note is a prompt to reflect.</p><div id="review-queue"></div><button class="btn-secondary" id="start-journal">Write a thesis</button></article>
+        <article class="glass-panel review-panel"><div class="panel-heading"><h2>Allocation by sector</h2><details class="inline-details"><summary>Review threshold</summary><label>Flag above <input id="sector-threshold" type="number" min="1" max="100" value="35"> %</label><p class="quiet">A personal review preference.</p></details></div><div id="sector-breakdown"></div><p class="panel-footnote">Based on entered weights. Unassigned allocation is not assumed to be cash.</p></article>
+        <article class="glass-panel review-panel"><h2>Upcoming reviews</h2><div id="review-queue"></div><button class="btn-secondary" id="start-journal">New journal entry</button></article>
       </div>
-      <article class="glass-panel review-panel"><div class="section-heading"><div><p class="eyebrow">Ask what would change</p><h2>Policy scenario worksheet</h2></div>
-        <label>Scenario <select id="scenario-choice" class="chat-input"><option value="easing">Rates fall</option><option value="steady" selected>Rates stay unchanged</option><option value="tightening">Rates rise</option></select></label>
-        <label><input id="compare-scenarios" type="checkbox"> Compare all three</label></div>
-        <p>These are hypothetical questions to investigate. Sector overlap does not estimate an investment outcome.</p><div id="scenario-worksheet"></div></article>
+      <details class="scenario-disclosure glass-panel"><summary><span>Scenario planning</span><span class="quiet">Explore a different policy path</span></summary>
+        <div class="review-panel"><div class="section-heading"><label>Policy rates <select id="scenario-choice" class="chat-input"><option value="easing">Fall</option><option value="steady" selected>Stay unchanged</option><option value="tightening">Rise</option></select></label><label><input id="compare-scenarios" type="checkbox"> Compare all three</label></div>
+        <div id="scenario-worksheet"></div><p class="panel-footnote">A qualitative worksheet for reviewing assumptions.</p></div>
+      </details>
     </section>
     <section id="journal-section" class="review-page" style="display:none;">
-      <div class="section-heading"><div><p class="eyebrow">Keep your reasoning</p><h1>Decision Journal</h1><p>Private browser notes. Each edit preserves the earlier version.</p></div>
-        <div class="review-actions"><button id="export-journal" class="btn-secondary">Download journal backup</button><label class="btn-secondary">Choose journal backup<input id="import-journal" type="file" accept=".json,application/json" hidden></label></div></div>
+      <div class="page-heading"><div><h1>Journal</h1><p>Your thesis, evidence, and follow-up reviews.</p></div><div class="review-actions"><button id="new-journal-entry" class="btn-primary">New entry</button><details class="more-actions"><summary>Backups</summary><div class="menu-panel"><button id="export-journal">Download backup</button><label>Restore backup<input id="import-journal" type="file" accept=".json,application/json" hidden></label></div></details></div></div>
       <div id="journal-restore-preview" class="glass-panel review-panel" hidden></div>
-      <div class="review-columns journal-layout">
-        <form id="journal-form" class="glass-panel review-panel review-form">
+      <div class="journal-layout">
+        <details id="journal-editor" class="journal-editor"><summary>Entry details</summary><form id="journal-form" class="glass-panel review-panel review-form">
           <h2 id="journal-form-title">Write a thesis</h2><input id="journal-id" type="hidden">
           <label>Ticker<input id="journal-ticker" class="chat-input" maxlength="24" placeholder="HDFCBANK" required></label>
-          <label>Why do I own it or want to research it?<textarea id="journal-thesis" maxlength="2000" rows="4" class="chat-input" required></textarea></label>
-          <label>What evidence would change my mind?<textarea id="journal-disconfirming" maxlength="2000" rows="3" class="chat-input" required></textarea></label>
-          <label>My decision<select id="journal-decision" class="chat-input"><option value="research">Research further</option><option value="continue">Continue my current thesis</option><option value="revisit">Revisit my thesis</option></select></label>
-          <label>Review on (India Standard Time)<input id="journal-date" type="date" class="chat-input" required></label>
-          <label>Link an event snapshot<select id="journal-event" class="chat-input"><option value="">No linked event</option></select></label>
-          <p id="journal-source-note" class="quiet">Linked evidence is saved with its publication date and source hash.</p>
-          <div class="review-actions"><button type="submit" class="btn-primary">Save thesis</button><button type="button" id="cancel-journal-edit" class="btn-secondary">Start new note</button></div>
-        </form>
-        <div><div class="review-actions"><label>Show<select id="journal-filter" class="chat-input"><option value="active">Active notes</option><option value="due">Due for review</option><option value="archived">Archived notes</option><option value="all">All notes</option></select></label></div><div id="journal-entries"></div></div>
+          <label>Investment thesis<textarea id="journal-thesis" maxlength="2000" rows="4" class="chat-input" required></textarea></label>
+          <label>What would change your view?<textarea id="journal-disconfirming" maxlength="2000" rows="3" class="chat-input" required></textarea></label>
+          <label>Decision<select id="journal-decision" class="chat-input"><option value="research">Research further</option><option value="continue">Continue my current thesis</option><option value="revisit">Revisit my thesis</option></select></label>
+          <label>Review date<input id="journal-date" type="date" class="chat-input" required></label>
+          <label>Supporting event<select id="journal-event" class="chat-input"><option value="">No linked event</option></select></label>
+          <p id="journal-source-note" class="quiet">An event link keeps a dated copy of the source evidence.</p>
+          <div class="review-actions"><button type="submit" class="btn-primary">Save entry</button><button type="button" id="cancel-journal-edit" class="btn-secondary">Cancel</button></div>
+        </form></details>
+        <div><div class="review-actions journal-filter-row"><label>Show<select id="journal-filter" class="chat-input"><option value="active">Active notes</option><option value="due">Due for review</option><option value="archived">Archived notes</option><option value="all">All notes</option></select></label></div><div id="journal-entries"></div></div>
       </div>
     </section>
     <section id="timeline-section" class="review-page" style="display:none;">
-      <div class="section-heading"><div><p class="eyebrow">Look across announcements</p><h1>Policy Timeline</h1><p id="timeline-coverage">Loading archived observations…</p></div></div>
-      <article class="glass-panel review-panel"><h2>Observed repo-rate snapshots</h2><p>Dots show archived observations. Missing meetings are not interpolated.</p><div id="policy-chart"></div></article>
+      <div class="section-heading"><div><h1>Policy timeline</h1><p id="timeline-coverage">Loading archived observations…</p></div></div>
+      <article class="glass-panel review-panel"><h2>Policy repo rate</h2><p>Archived observations. Missing meetings are not filled.</p><div id="policy-chart"></div></article>
       <div class="review-actions"><label>Find an announcement<input id="timeline-search" class="chat-input" placeholder="Date or title"></label><label>Decision wording<select id="timeline-filter" class="chat-input"><option value="all">All observed decisions</option><option value="cut">Cuts</option><option value="unchanged">Unchanged</option><option value="hike">Hikes</option></select></label></div>
       <div id="timeline-events" class="timeline-list"></div>
     </section>
     <!-- Cards Grid (Morning Brief & Explore) -->
     <section class="cards-grid" id="cards-container" style="display:none;">
       <div class="glass-panel" style="padding: 2rem; text-align: center; grid-column: 1 / -1;">
-        <p style="color: var(--text-muted);">Executing 7-step credibility pipeline...</p>
+        <p style="color: var(--text-muted);">Loading announcements…</p>
       </div>
     </section>
 
     <!-- Curated Landmark Precedents Section -->
     <section id="precedents-section" style="display: none;">
       <div style="margin-bottom: 1.5rem;">
-        <h2 style="font-family: var(--font-heading); font-size: 1.5rem; margin-bottom: 0.5rem;">
-          Historical Reference Library
-        </h2>
+        <h1 style="font-family: var(--font-heading); font-size: 1.5rem; margin-bottom: 0.5rem;">
+          Reference library
+        </h1>
         <p style="color: var(--text-muted); font-size: 0.95rem;">
-          Manually authored historical summaries for exploration. References are not independently validated; comparisons illustrate possible mechanisms and their limitations.
+          Historical context and limitations of comparison.
         </p>
       </div>
       <div class="precedents-grid" id="precedents-grid"></div>
@@ -155,26 +104,24 @@
       <div class="glass-panel" style="padding: 2rem;">
         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
           <div>
-            <h2 style="font-family: var(--font-heading); font-size: 1.5rem; margin-bottom: 0.5rem;">
-              Holdings in This Browser
-            </h2>
+            <h1 style="font-family: var(--font-heading); font-size: 1.5rem; margin-bottom: 0.5rem;">
+              Holdings
+            </h1>
             <p style="color: var(--text-muted); font-size: 0.9rem;">
-              Holdings are saved in localStorage and matched in this browser. This is persistent browser storage, not encryption. Clearing site data removes them. Chat messages are sent to the server.
+              Manage the allocation you want to review. Saved on this device.
             </p>
           </div>
         </div>
 
-        <button class="btn-secondary" id="btn-demo-portfolio">Load example portfolio (replaces current entries)</button>
-        <button class="btn-secondary" id="btn-clear-portfolio">Clear holdings</button>
+        <details class="more-actions holding-options"><summary>Manage</summary><div class="menu-panel"><button id="btn-demo-portfolio">Use example portfolio</button><button id="btn-clear-portfolio" class="danger-text">Clear holdings</button></div></details>
         <p id="portfolio-message" role="status" style="margin:1rem 0;"></p>
-        <details class="import-panel"><summary>Import holdings from CSV</summary><p>Headers: ticker,sector,allocation_pct. Preview first; applying replaces the current holdings. Files stay in this browser.</p>
+        <details class="import-panel"><summary>Import CSV</summary><p>Preview a file before replacing your holdings. Required columns: ticker, sector, allocation_pct.</p>
           <label class="btn-secondary">Choose CSV<input id="portfolio-csv" type="file" accept=".csv,text/csv" hidden></label>
           <button type="button" id="csv-template" class="btn-secondary">Download CSV template</button><button type="button" id="undo-portfolio-import" class="btn-secondary" disabled>Undo last import</button>
           <div id="csv-preview" hidden></div></details>
-        <!-- Add Holding Form -->
-        <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
-          <input type="text" id="input-ticker" placeholder="NSE/BSE Ticker (e.g. INFY)" class="chat-input" style="max-width: 220px;" />
-          <select id="input-sector" class="chat-input" style="max-width: 200px;">
+        <details class="holding-entry"><summary>Add a holding</summary><div class="holding-form">
+          <input type="text" id="input-ticker" aria-label="Ticker" placeholder="Ticker, e.g. INFY" class="chat-input" style="max-width: 220px;" />
+          <select id="input-sector" aria-label="Sector" class="chat-input" style="max-width: 200px;">
             <option value="FMCG">FMCG</option>
             <option value="Banking">Banking</option>
             <option value="IT Services">IT Services</option>
@@ -185,16 +132,16 @@
             <option value="Pharma">Pharma</option>
             <option value="Logistics">Logistics</option>
           </select>
-          <input type="number" id="input-weight" placeholder="Weight %" class="chat-input" style="max-width: 120px;" value="15" min="1" max="100" />
-          <button class="btn-primary" id="btn-add-holding">+ Add Ticker</button>
-        </div>
+          <input type="number" id="input-weight" aria-label="Allocation percent" placeholder="Weight %" class="chat-input" style="max-width: 120px;" value="15" min="1" max="100" />
+          <button class="btn-primary" id="btn-add-holding">Add holding</button>
+        </div></details>
 
         <table class="portfolio-table">
           <thead>
             <tr>
-              <th>Ticker Symbol</th>
+              <th>Ticker</th>
               <th>Sector</th>
-              <th>Weight in Portfolio</th>
+              <th>Allocation</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -206,23 +153,31 @@
     <!-- Noise-Cancellation Audit Log Section -->
     <section id="audit-section" style="display: none;">
       <div class="glass-panel" style="padding: 2rem;">
-        <h2 style="font-family: var(--font-heading); font-size: 1.5rem; margin-bottom: 0.5rem;">
-          Noise-Cancellation & Exit Gate Audit Log
-        </h2>
+        <h1 style="font-family: var(--font-heading); font-size: 1.5rem; margin-bottom: 0.5rem;">
+          Source checks
+        </h1>
         <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">
-          In Sarthi, <strong>silence is a feature, not a failure</strong>. Events that fail institutional source confirmation
-          (e.g., single Tier 3 rumors, unverified leaks) are quarantined and dropped here.
+          Events excluded by the source verification rules.
         </p>
 
-        <h3 style="font-size: 1rem; margin-bottom: 1rem; color: #fb7185;">Sample inputs dropped by a rule:</h3>
+        <h3 style="font-size: 1rem; margin-bottom: 1rem; color: #fb7185;">Excluded events</h3>
         <ul id="audit-dropped-list" style="list-style: none;"></ul>
       </div>
     </section>
 
+    <footer class="app-footer"><span>Saved on this device</span><div><span id="data-label">RBI archive</span><button type="button" data-settings-open>Sources &amp; settings</button></div></footer>
   </main>
+  <dialog id="source-settings" class="settings-dialog" aria-labelledby="settings-title">
+    <div class="dialog-heading"><h2 id="settings-title">Sources &amp; settings</h2><button type="button" id="close-source-settings" aria-label="Close settings">×</button></div>
+    <p id="demo-notice">Loading source information…</p>
+    <label>Data source<select id="source-mode" class="chat-input"><option value="rbi">RBI archive</option><option value="demo">Synthetic examples</option></select></label>
+    <button class="btn-secondary" id="btn-refresh-rbi">Check for new announcements</button><p id="provider-status" role="status"></p>
+    <details class="verification-details"><summary>Verification details</summary><div id="telemetry-banner" class="telemetry-stats"><span>Documents <strong id="stat-scanned">0</strong></span><span>Source checks passed <strong id="stat-confirmed">0</strong></span><span>Excluded <strong id="stat-dropped">0</strong></span><span>Analyses available <strong id="stat-passed">0</strong></span></div></details>
+    <p class="settings-note">Historical announcements are not current news. Generated interpretations require review. Holdings and journal notes use this browser’s storage; keep a backup.</p>
+  </dialog>
 
   <!-- Auditable Reasoning Drawer Modal -->
-  <div class="modal-overlay" id="reasoning-drawer">
+  <div class="modal-overlay" id="reasoning-drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title">
     <div class="drawer-content">
       <div class="drawer-header">
         <div>
@@ -232,10 +187,11 @@
           <h2 id="drawer-title" style="font-family: var(--font-heading); font-size: 1.3rem; margin-top: 0.3rem;"></h2>
           <div style="font-size: 0.82rem; color: var(--text-dim); margin-top: 0.3rem;" id="drawer-source"></div>
         </div>
-        <button class="drawer-close" id="btn-close-drawer" onclick="closeReasoningDrawer()">&times;</button>
+        <button class="drawer-close" id="btn-close-drawer" onclick="closeReasoningDrawer()" aria-label="Close announcement">&times;</button>
       </div>
 
-      <button class="btn-secondary" id="journal-from-event" style="margin-bottom:1rem;">Link this event to a journal note</button>
+      <button class="btn-secondary" id="journal-from-event" style="margin-bottom:1rem;">Add to journal</button>
+      <button class="btn-primary" id="drawer-generate" hidden>Generate analysis</button>
       <!-- Verdict Banner -->
       <div class="verdict-box vec-monitor" style="margin-bottom: 1.5rem;">
         <div class="verdict-header">
@@ -244,17 +200,17 @@
         </div>
       </div>
 
-      <section class="glass-panel" style="padding:1rem; margin-bottom:1rem;">
+      <details id="source-excerpt-details"><summary>Source excerpt</summary><section class="glass-panel" style="padding:1rem; margin-bottom:1rem;">
         <h3 id="evidence-heading">Input evidence</h3>
         <p id="sample-date"></p>
         <blockquote id="evidence-excerpt" style="margin:1rem 0; white-space:pre-wrap;"></blockquote>
         <p id="evidence-status"></p>
         <a id="evidence-reference" target="_blank" rel="noopener noreferrer" hidden>Institution / publisher homepage — background only; does not substantiate this sample</a>
-      </section>
+      </section></details>
       <section id="claim-evidence" style="margin-bottom:1rem;"></section>
       <details style="margin-bottom:1rem;"><summary>Read the archived source document</summary><div id="source-paragraphs"></div></details>
       <!-- 6-Stage Auditable Timeline -->
-      <div class="timeline-block">
+      <details class="reasoning-details"><summary>Reasoning and limitations</summary><div class="timeline-block">
         
         <!-- Step 1 -->
         <div class="timeline-step">
@@ -263,7 +219,7 @@
             <div class="step-line"></div>
           </div>
           <div class="step-body">
-            <h4>1. Event Detected & Source Verification</h4>
+            <h4>Source verification</h4>
             <p id="step-detected-text"></p>
             <div style="font-size: 0.8rem; color: #34d399; margin-top: 0.4rem;" id="step-verify-text"></div>
           </div>
@@ -276,7 +232,7 @@
             <div class="step-line"></div>
           </div>
           <div class="step-body">
-            <h4>2. Structural Transmission Mechanism</h4>
+            <h4>Possible mechanism</h4>
             <p id="step-transmission-text"></p>
           </div>
         </div>
@@ -288,7 +244,7 @@
             <div class="step-line"></div>
           </div>
           <div class="step-body">
-            <h4>3. Why It Matters (Fundamental Economic Math)</h4>
+            <h4>Why it matters</h4>
             <p id="step-why-text"></p>
           </div>
         </div>
@@ -300,7 +256,7 @@
             <div class="step-line"></div>
           </div>
           <div class="step-body">
-            <h4>4. Illustrative Historical Comparison</h4>
+            <h4>Historical comparison</h4>
             <strong id="step-precedent-title" style="color: #60a5fa; font-size: 0.9rem;"></strong>
             <p id="step-similarity-text" style="margin-top: 0.4rem;"></p>
           </div>
@@ -313,7 +269,7 @@
             <div class="step-line"></div>
           </div>
           <div class="step-body">
-            <h4>5. Counterarguments and Comparison Limits</h4>
+            <h4>Counterarguments</h4>
             <p id="step-counter-text"></p>
           </div>
         </div>
@@ -324,18 +280,19 @@
             <div class="step-num">6</div>
           </div>
           <div class="step-body">
-            <h4>6. Explicit Caveats & Uncertainties</h4>
+            <h4>Uncertainties</h4>
             <div class="step-highlight" id="step-caveat-text"></div>
           </div>
         </div>
 
       </div>
 
+      </details>
       <!-- Scoped Event Assistant Interrogation Layer -->
-      <div class="assistant-box">
+      <div class="assistant-box" id="event-assistant">
         <div class="assistant-header">
-          <span>💬 Ask About This Sample (Rule-Based Assistant)</span>
-          <span style="font-size: 0.75rem; color: var(--text-dim); font-weight: normal;">Fixed demo responses · messages sent to server</span>
+          <span>Ask about this example</span>
+          <span style="font-size: 0.75rem; color: var(--text-dim); font-weight: normal;">Example assistant</span>
         </div>
         <div class="chat-messages" id="chat-messages"></div>
         <div class="chat-input-row">

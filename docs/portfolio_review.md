@@ -1,10 +1,14 @@
 # Portfolio Review, Decision Journal and Policy Timeline
 
+## Navigation
+
+Overview, Research, Journal and Holdings are the primary pages. Sources & settings holds archive selection and verification details. More contains the timeline, reference library, source checks and profile. Scenario planning is collapsed on Overview, and the journal editor opens through New entry or Add to journal.
+
 ## Product workflow
 
 This upgrade supports a complete reflection cycle: enter holdings, inspect allocation, examine a source event, record a thesis and disconfirming evidence, return for a review, and export the reasoning. It adds no new paid model requests. The existing explicit Gemini analysis remains available in the event feed.
 
-The initial view is Portfolio Review. The metrics describe entered holdings, allocation and unassigned allocation. The remainder is not assumed to be cash. Sector allocation is aggregated case-insensitively. A user can change the sector review threshold; this is a review preference, not a validated risk rule. That threshold and scenario controls are page preferences and reset on reload.
+The initial view is Overview. The metrics describe entered holdings, allocation and unassigned allocation. The remainder is not assumed to be cash. Sector allocation is aggregated case-insensitively. A user can change the sector review threshold; this is a review preference, not a validated risk rule. That threshold and scenario controls are page preferences and reset on reload.
 
 Three policy scenarios pose qualitative questions about rates falling, staying unchanged or rising. The mapped sectors are explicitly Banking, NBFCs, Real Estate and Automotive. Mapping is a declared heuristic; other holdings are labelled unmapped, not unaffected. The worksheet does not estimate returns, probabilities, losses or financial suitability. Comparing all three includes all three in the export.
 
@@ -45,10 +49,10 @@ Exports and journal backups contain private financial notes. No automatic upload
 
 ## Five-minute college demonstration
 
-1. Open Portfolio Review, then use My Portfolio to preview the sample CSV. Apply it and show 60% entered and 40% unassigned allocation.
+1. Open Overview, then use Holdings to preview the sample CSV. Apply it and show 60% entered and 40% unassigned allocation.
 2. Compare all three policy scenarios and identify which entered sectors are outside the declared mapping.
-3. Open Policy Timeline and inspect a date gap, its source passage, and its difference versus the previous archived observation.
-4. Choose Write a linked note. Enter a thesis and what would change your mind, then save. Edit it and inspect both versions.
+3. Open More → Policy timeline and inspect a date gap, its source passage, and its difference versus the previous archived observation.
+4. Choose Add to journal. Enter a thesis and what would change your mind, then save. Edit it and inspect both versions.
 5. Record a follow-up review with a future date. Reload to show that the history and next date persist.
 6. Download a review report, inspect its holdings, earlier reasoning and source snapshot, and demonstrate CSV import Undo on the same page.
 

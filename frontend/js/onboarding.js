@@ -62,7 +62,7 @@ async function changeStep(delta) {
 
   // Adjust button labels
   document.getElementById("btn-prev").style.visibility = (currentStep === 1) ? "hidden" : "visible";
-  document.getElementById("btn-next").textContent = (currentStep === totalSteps) ? "Launch Dashboard →" : "Continue →";
+  document.getElementById("btn-next").textContent = (currentStep === totalSteps) ? "Open overview" : "Continue";
 }
 
 async function calibrateProfile() {
@@ -88,12 +88,12 @@ async function calibrateProfile() {
       callout.style.background = "rgba(244, 63, 94, 0.12)";
       callout.style.border = "1px solid rgba(244, 63, 94, 0.3)";
       callout.style.color = "#fda4af";
-      callout.innerHTML = `<strong>⚠️ Rationality Gap Detected:</strong> ${data.gap_explanation}`;
+      callout.innerHTML = `<strong>Review your preference:</strong> ${data.gap_explanation}`;
     } else {
       callout.style.background = "rgba(16, 185, 129, 0.12)";
       callout.style.border = "1px solid rgba(16, 185, 129, 0.3)";
       callout.style.color = "#86efac";
-      callout.innerHTML = `<strong>✅ Balanced Calibration:</strong> ${data.gap_explanation}`;
+      callout.innerHTML = `<strong>Profile summary:</strong> ${data.gap_explanation}`;
     }
 
     profileState.calibrated_band = data.calibrated_band;

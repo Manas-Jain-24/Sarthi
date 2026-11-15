@@ -11,6 +11,7 @@ import tests.test_risk_profiler as trp
 import tests.test_regressions as regression
 import tests.test_rbi as rbi_tests
 import tests.test_timeline as timeline_tests
+import tests.test_ui_contract as ui_tests
 
 def run_all_tests():
     print("=" * 60)
@@ -31,6 +32,7 @@ def run_all_tests():
     tests.extend((name, getattr(regression, name)) for name in sorted(dir(regression)) if name.startswith("test_"))
     tests.extend((name, getattr(rbi_tests, name)) for name in sorted(dir(rbi_tests)) if name.startswith("test_"))
     tests.extend((name, getattr(timeline_tests, name)) for name in sorted(dir(timeline_tests)) if name.startswith("test_"))
+    tests.extend((name, getattr(ui_tests, name)) for name in sorted(dir(ui_tests)) if name.startswith("test_"))
 
     passed = 0
     for name, test_func in tests:

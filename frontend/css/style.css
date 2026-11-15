@@ -1,5 +1,5 @@
 /* Sarthi Design System - Institutional Glassmorphism Dark Mode */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
+/* Uses system fonts; no external font requests. */
 
 :root {
   --bg-base: #07090e;

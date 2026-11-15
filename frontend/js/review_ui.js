@@ -30,18 +30,18 @@
     }
     $("journal-event").value=selected;
   }
-  function resetForm(){ $("journal-form").reset();$("journal-id").value="";editingSource=null;$("journal-date").value=core.todayInIndia();$("journal-form-title").textContent="Write a thesis";fillEvents(); }
+  function resetForm(){ if($("journal-editor")) $("journal-editor").open=false; $("journal-form").reset();$("journal-id").value="";editingSource=null;$("journal-date").value=core.todayInIndia();$("journal-form-title").textContent="New entry";fillEvents(); }
   function renderSummary() {
     const summary=core.portfolioSummary(window.edgeMatcher.holdings,Number($("sector-threshold").value));
     const entries=store.list(),due=entries.filter(entry=>store.due(entry)).sort((a,b)=>store.nextReviewOn(a).localeCompare(store.nextReviewOn(b)));
     $("review-metrics").innerHTML=[
-      [summary.holdingCount,"Holdings entered"],[summary.allocated.toFixed(1)+"%","Allocation entered"],
-      [summary.unassigned.toFixed(1)+"%","Allocation unassigned"],[due.length,"Notes due for review"]
+      [summary.holdingCount,"Holdings"],[summary.allocated.toFixed(1)+"%","Allocated"],
+      [summary.unassigned.toFixed(1)+"%","Unassigned"],[due.length,"Reviews due"]
     ].map(([value,label])=>`<article class="glass-panel review-metric"><strong>${e(value)}</strong><span>${e(label)}</span></article>`).join("");
     $("sector-breakdown").innerHTML=summary.sectors.length?summary.sectors.map(s=>`<div class="allocation-row"><div class="allocation-label"><span>${e(s.name)}</span><span>${e(s.allocation.toFixed(1))}%${s.allocation>summary.sectorLimit?" · above your threshold":""}</span></div><div class="allocation-track"><span class="allocation-fill" style="width:${s.allocation}%"></span></div></div>`).join(""):
-      '<p>Start in My Portfolio: enter holdings or preview a CSV import. You can also use the clearly labelled example portfolio.</p>';
+      '<p>Add your holdings to see the allocation breakdown.</p>';
     $("review-queue").innerHTML=due.length?due.slice(0,5).map(entry=>`<p><button class="btn-secondary" data-edit-note="${e(entry.id)}">${e(entry.revisions.at(-1).ticker)} · review ${e(store.nextReviewOn(entry))}</button></p>`).join(""):
-      `<p>${entries.length?"No active notes are due. You can still review any note in the journal.":"Write down a thesis and what would disconfirm it, then choose when to review it."}</p>`;
+      `<p>${entries.length?"No reviews due.":"Your journal is empty."}</p>`;
     $("review-queue").querySelectorAll("[data-edit-note]").forEach(b=>b.addEventListener("click",()=>editNote(b.dataset.editNote)));
     const scenarios=$("compare-scenarios").checked?["easing","steady","tightening"]:[currentScenario()];
     $("scenario-worksheet").className=scenarios.length===3?"scenario-grid":"";
@@ -55,10 +55,10 @@
   }
   function editNote(id) {
     const entry=store.list().find(entry=>entry.id===id);if(!entry)return;
-    navigate("journal");const latest=entry.revisions.at(-1);editingSource=latest.source;
+    navigate("journal");$("journal-editor").open=true;const latest=entry.revisions.at(-1);editingSource=latest.source;
     $("journal-id").value=id;$("journal-ticker").value=latest.ticker;$("journal-thesis").value=latest.thesis;
     $("journal-disconfirming").value=latest.disconfirming;$("journal-decision").value=latest.decision;$("journal-date").value=store.nextReviewOn(entry);
-    $("journal-form-title").textContent=`Edit ${latest.ticker} · next revision ${latest.version+1}`;fillEvents(latest.source?.id||"");$("journal-ticker").focus();
+    $("journal-form-title").textContent=`Edit ${latest.ticker}`;fillEvents(latest.source?.id||"");$("journal-ticker").focus();
   }
   function renderJournal() {
     const filter=$("journal-filter").value;
@@ -66,22 +66,22 @@
     $("journal-entries").innerHTML=entries.length?entries.map(entry=>{
       const latest=entry.revisions.at(-1);
       return `<article class="glass-panel review-panel journal-card"><div class="section-heading"><h2>${e(latest.ticker)}</h2><span class="review-badge ${store.due(entry)?"due-badge":""}">${entry.archived?"Archived":store.due(entry)?"Review due":"Review scheduled"}</span></div>
-        <p>Version ${latest.version} · ${e(latest.decision)} · next review ${e(store.nextReviewOn(entry))}</p>
-        <h3>My thesis</h3><blockquote>${e(latest.thesis)}</blockquote><h3>What would change my mind</h3><blockquote>${e(latest.disconfirming)}</blockquote>
+        <p>${e(({research:"Research",continue:"Maintain thesis",revisit:"Revisit thesis"})[latest.decision])} · Review ${e(displayDate(store.nextReviewOn(entry)))} · v${latest.version}</p>
+        <h3>Thesis</h3><blockquote>${e(latest.thesis)}</blockquote><h3>Review triggers</h3><blockquote>${e(latest.disconfirming)}</blockquote>
         <details><summary>Linked evidence snapshot</summary>${showSnapshot(latest.source)}</details>
         <div class="review-actions"><button class="btn-secondary" data-edit="${e(entry.id)}">Edit thesis</button><button class="btn-secondary" data-archive="${e(entry.id)}">${entry.archived?"Reopen":"Archive"}</button></div>
         <details><summary>Revision and review history (${entry.revisions.length+entry.reviews.length})</summary>
           ${entry.revisions.map(r=>`<section class="journal-revision"><strong>Version ${r.version} · ${e(r.saved_at)}</strong><p>Decision: ${e(r.decision)} · review ${e(r.review_on)}</p><blockquote>${e(r.thesis)}</blockquote><p>Disconfirming evidence:</p><blockquote>${e(r.disconfirming)}</blockquote>${showSnapshot(r.source)}</section>`).join("")}
-          ${entry.reviews.map(r=>`<section class="journal-revision"><strong>Review of version ${r.revision_version}: ${e(r.outcome)}</strong><p>${e(r.saved_at)} · next review ${e(r.next_review_on)}</p><blockquote>${e(r.note)}</blockquote></section>`).join("")}</details>
+          ${entry.reviews.map(r=>`<section class="journal-revision"><strong>Version ${r.revision_version} review · ${e(r.outcome)}</strong><p>${e(r.saved_at)} · next review ${e(r.next_review_on)}</p><blockquote>${e(r.note)}</blockquote></section>`).join("")}</details>
         ${entry.archived?"":`<details class="review-record"><summary>Record a review</summary><form data-review-id="${e(entry.id)}">
-          <label>How does my thesis look now?<select name="outcome" class="chat-input"><option value="uncertain">Still uncertain</option><option value="unchanged">Unchanged</option><option value="stronger">Stronger</option><option value="weaker">Weaker</option></select></label>
-          <label>What did I learn?<textarea name="note" rows="3" maxlength="2000" class="chat-input" required></textarea></label>
+          <label>Thesis status<select name="outcome" class="chat-input"><option value="uncertain">Still uncertain</option><option value="unchanged">Unchanged</option><option value="stronger">Stronger</option><option value="weaker">Weaker</option></select></label>
+          <label>Review note<textarea name="note" rows="3" maxlength="2000" class="chat-input" required></textarea></label>
           <label>Next review date<input name="next_review_on" type="date" class="chat-input" required></label><button class="btn-primary" type="submit">Save review</button></form></details>`}</article>`;
-    }).join(""):'<p class="glass-panel review-panel">No notes in this view. Your first note can start with a question, not a conclusion.</p>';
+    }).join(""):'<p class="glass-panel review-panel">No entries yet.</p>';
     $("journal-entries").querySelectorAll("[data-edit]").forEach(b=>b.addEventListener("click",()=>editNote(b.dataset.edit)));
-    $("journal-entries").querySelectorAll("[data-archive]").forEach(b=>b.addEventListener("click",()=>run(()=>{store.archive(b.dataset.archive);render();status("Journal status updated locally. The history is preserved.");})));
+    $("journal-entries").querySelectorAll("[data-archive]").forEach(b=>b.addEventListener("click",()=>run(()=>{store.archive(b.dataset.archive);render();status("Entry updated.");})));
     $("journal-entries").querySelectorAll("[data-review-id]").forEach(form=>form.addEventListener("submit",event=>{
-      event.preventDefault();run(()=>{store.review(form.dataset.reviewId,{outcome:form.elements.outcome.value,note:form.elements.note.value,next_review_on:form.elements.next_review_on.value});render();status("Review saved. Earlier reasoning remains in the history.");});
+      event.preventDefault();run(()=>{store.review(form.dataset.reviewId,{outcome:form.elements.outcome.value,note:form.elements.note.value,next_review_on:form.elements.next_review_on.value});render();status("Review saved.");});
     }));
   }
   function renderTimeline() {
@@ -93,23 +93,23 @@
       const first=Date.parse(observations[0].published_on),last=Date.parse(observations.at(-1).published_on),min=Math.min(...observations.map(o=>o.repo_rate_pct))-.25,max=Math.max(...observations.map(o=>o.repo_rate_pct))+.25;
       const x=o=>55+(Date.parse(o.published_on)-first)/Math.max(1,last-first)*665,y=o=>175-(o.repo_rate_pct-min)/Math.max(.1,max-min)*140;
       $("policy-chart").innerHTML=`<svg viewBox="0 0 780 225" role="img" aria-label="Repo rate observations from ${e(coverage.from)} through ${e(coverage.through)}. A dated text list follows.">
-        <line x1="55" y1="175" x2="735" y2="175" stroke="#334155"/><text x="10" y="35" fill="#94a3b8" font-size="12">${max.toFixed(2)}%</text><text x="10" y="175" fill="#94a3b8" font-size="12">${min.toFixed(2)}%</text>
-        ${observations.map(o=>`<circle cx="${x(o)}" cy="${y(o)}" r="5" fill="#67e8f9"><title>${e(o.published_on)}: ${o.repo_rate_pct}%</title></circle>`).join("")}
-        <text x="55" y="210" fill="#94a3b8" font-size="12">${e(coverage.from)}</text><text x="640" y="210" fill="#94a3b8" font-size="12">${e(coverage.through)}</text></svg>`;
+        <line x1="55" y1="175" x2="735" y2="175" stroke="#dce4dc"/><text x="10" y="35" fill="#7d8b80" font-size="12">${max.toFixed(2)}%</text><text x="10" y="175" fill="#7d8b80" font-size="12">${min.toFixed(2)}%</text>
+        ${observations.map(o=>`<circle cx="${x(o)}" cy="${y(o)}" r="5" fill="#557c61"><title>${e(o.published_on)}: ${o.repo_rate_pct}%</title></circle>`).join("")}
+        <text x="55" y="210" fill="#7d8b80" font-size="12">${e(coverage.from)}</text><text x="640" y="210" fill="#7d8b80" font-size="12">${e(coverage.through)}</text></svg>`;
     }
     const query=$("timeline-search").value.toLowerCase(),filter=$("timeline-filter").value;
     const filtered=[...timeline.observations].reverse().filter(o=>(filter==="all"||o.decision_wording===filter)&&`${o.title} ${o.published_on}`.toLowerCase().includes(query));
     $("timeline-events").innerHTML=filtered.length?filtered.map(o=>`<article class="glass-panel review-panel timeline-item"><p class="date-label">${e(o.published_on)} · ${e(o.decision_wording)}</p><h2>${o.repo_rate_pct===null?"Rate not extracted":e(o.repo_rate_pct)+"% policy repo rate"}</h2>
       <p>${o.change_since_previous_archived_bps===null?"First observation in this archive.":`${o.change_since_previous_archived_bps>0?"+":""}${o.change_since_previous_archived_bps} basis points versus the previous archived observation, ${o.days_since_previous_archived} days earlier. This may span missing meetings.`}</p>
       <details><summary>Source passage [${e(o.paragraph_id)}]</summary><blockquote>${e(o.evidence_excerpt)}</blockquote></details>
-      <div class="review-actions"><a class="btn-secondary" href="${href(o.source_url)}" target="_blank" rel="noopener noreferrer">Original RBI source</a><button class="btn-secondary" data-timeline-note="${e(o.id)}">Write a linked note</button></div></article>`).join(""):'<p>No archived observations match these filters.</p>';
+      <div class="review-actions"><a class="btn-secondary" href="${href(o.source_url)}" target="_blank" rel="noopener noreferrer">RBI source</a><button class="btn-secondary" data-timeline-note="${e(o.id)}">Add to journal</button></div></article>`).join(""):'<p>No archived observations match these filters.</p>';
     $("timeline-events").querySelectorAll("[data-timeline-note]").forEach(b=>b.addEventListener("click",()=>{
       const o=timeline.observations.find(o=>o.id===b.dataset.timelineNote);
       noteFromEvent({id:o.id,canonical_title:o.title,published_at:o.published_on,source_url:o.source_url,source_text_sha256:o.source_text_sha256,is_sample:false,evidence_excerpt:o.evidence_excerpt});
     }));
   }
   function render(){run(()=>{renderSummary();renderJournal();});}
-  function noteFromEvent(card){closeReasoningDrawer();navigate("journal");resetForm();editingSource=core.sourceSnapshot(card);fillEvents(card.id);$("journal-ticker").focus();status("An event snapshot is linked. Write your own thesis and disconfirming evidence.");}
+  function noteFromEvent(card){closeReasoningDrawer();navigate("journal");resetForm();$("journal-editor").open=true;editingSource=core.sourceSnapshot(card);fillEvents(card.id);$("journal-ticker").focus();status("Event linked to the new entry.");}
   function reportHTML(report) {
     const source=report.evidence;
     return `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Sarthi portfolio review</title><style>body{font:16px/1.6 system-ui;max-width:900px;margin:3rem auto;padding:0 1rem;color:#172033}table{border-collapse:collapse;width:100%}td,th{border:1px solid #cbd5e1;padding:.5rem;text-align:left}article{margin:2rem 0;break-inside:avoid}blockquote{white-space:pre-wrap;border-left:3px solid #0e7490;padding-left:1rem}small{color:#475569}@media print{body{margin:0}a{color:inherit}}</style>
@@ -160,14 +160,15 @@
   document.addEventListener("DOMContentLoaded",()=>{
     resetForm();setupImports();
     if(store.problem || window.edgeMatcher.portfolioWarning)status(store.problem || window.edgeMatcher.portfolioWarning);
-    $("start-journal").addEventListener("click",()=>{navigate("journal");resetForm();});
+    $("start-journal").addEventListener("click",()=>{navigate("journal");resetForm();$("journal-editor").open=true;$("journal-ticker").focus();});
+    $("new-journal-entry").addEventListener("click",()=>$("start-journal").click());
     $("cancel-journal-edit").addEventListener("click",resetForm);
     $("journal-form").addEventListener("submit",event=>{event.preventDefault();run(()=>{
       const selected=$("journal-event").value,card=events.find(card=>card.id===selected);
       const input={ticker:$("journal-ticker").value,thesis:$("journal-thesis").value,disconfirming:$("journal-disconfirming").value,review_on:$("journal-date").value,decision:$("journal-decision").value,
         source:card?core.sourceSnapshot(card):(editingSource?.id===selected?editingSource:null)};
       if($("journal-id").value)store.update($("journal-id").value,input);else store.create(input);
-      resetForm();render();status("Thesis saved in this browser. No journal text was sent to the server.");
+      resetForm();render();status("Entry saved on this device.");
     });});
     ["sector-threshold","scenario-choice","compare-scenarios"].forEach(id=>$(id).addEventListener("change",()=>run(renderSummary)));
     $("journal-filter").addEventListener("change",renderJournal);

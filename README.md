@@ -4,13 +4,19 @@ A college-project prototype for explaining how financial events might affect Ind
 
 **Synthetic demo mode:** all incoming events are synthetic fixtures, dated for a walkthrough. They are not current news. The application does not fetch source documents or call an AI model. Analysis is manually authored for exact sample inputs, and unknown or changed inputs receive no conclusion.
 
+## Interface
+
+Four primary sections: **Overview**, **Research**, **Journal**, and **Holdings**. Policy timeline, reference library, source checks and the profile are under **More**. Source selection, model status and verification details are in **Sources & settings**.
+
+The interface uses neutral surfaces, system fonts and a single green accent. Scenario planning, journal editing, backup tools and detailed evidence open when needed. The announcement drawer supports Escape, keyboard focus containment and focus restoration. No external font service is used.
+
 ## Portfolio review workspace
 
-The default screen is now **Portfolio Review**: entered allocation, sector breakdown, a user-chosen concentration review threshold, notes due for review, and three hypothetical policy worksheets. These prompts support reflection; they do not calculate returns or recommend trades.
+The default screen is **Overview**: entered allocation, sector breakdown, a user-chosen concentration review threshold, notes due for review, and three hypothetical policy worksheets. These prompts support reflection; they do not calculate returns or recommend trades.
 
-- **My Portfolio:** add holdings or import a CSV with `ticker,sector,allocation_pct`. A preview validates the entire file before replacing anything. Undo is available on the same page until another holdings edit or reload. Imported files never leave the browser.
-- **Decision Journal:** write a thesis, evidence that would change your mind, your own decision label, and a review date. Attach a dated source snapshot from the event drawer or Policy Timeline. Editing appends a revision; follow-up reviews record what you learned and schedule the next review. Archiving is reversible.
-- **Policy Timeline:** inspect the dated repo-rate observations, filter the actual wording, and link an event to a note. Dots are discrete observations; missing meetings are not filled. Differences compare adjacent archived observations, not necessarily adjacent RBI meetings.
+- **Holdings:** add holdings or import a CSV with `ticker,sector,allocation_pct`. A preview validates the entire file before replacing anything. Undo is available on the same page until another holdings edit or reload. Imported files never leave the browser.
+- **Journal:** write a thesis, evidence that would change your mind, your own decision label, and a review date. Attach a dated source snapshot from the event drawer or Policy Timeline. Editing appends a revision; follow-up reviews record what you learned and schedule the next review. Archiving is reversible.
+- **More → Policy timeline:** inspect the dated repo-rate observations, filter the actual wording, and link an event to a note. Dots are discrete observations; missing meetings are not filled. Differences compare adjacent archived observations, not necessarily adjacent RBI meetings.
 - **Export:** download a self-contained printable HTML review or JSON, including holdings, the selected scenario comparison, journal history, and loaded real-source references. Journal backups can be validated and restored locally, with a backup of the previous journal downloaded before replacement.
 
 No portfolio, journal or scenario worksheet is sent to Gemini or a backend journal service. They use persistent localStorage, which is not encrypted or tamper-proof. Exported reports contain private financial notes; keep backups yourself. Clearing site data removes local records. The app does not measure whether a thesis is correct or whether the journal improves decisions.
@@ -23,11 +29,11 @@ The dashboard defaults to the review workspace with **Real RBI documents** selec
 
 Two recorded, real Gemini Flash-Lite outputs are included, tied to the exact source hashes, model and prompt version. They work without a key. Their factual sections render validated source quotes; interpretations cite their premises and remain hypotheses requiring human review. Quote occurrence does not prove that an interpretation follows from the evidence.
 
-To generate new analysis, copy `.env.example` to `.env`, add `GEMINI_API_KEY`, and optionally set `GEMINI_MODEL` (default `gemini-3.5-flash-lite`). Restart the server after changing configuration. Use **Generate Gemini analysis** on an individual card. No provider call occurs on page load or GET requests. Only the selected public RBI document goes to Gemini; local holdings are not sent. Accepted analyses are cached by document hash, model, and prompt version. The configurable daily attempt budget includes failed requests. `.env` and `.cache` are ignored by Git.
+To generate new analysis, copy `.env.example` to `.env`, add `GEMINI_API_KEY`, and optionally set `GEMINI_MODEL` (default `gemini-3.5-flash-lite`). Restart the server after changing configuration. Open an announcement in **Research**, then use **Generate analysis** to request a new interpretation. No provider call occurs on page load or GET requests. Only the selected public RBI document goes to Gemini; local holdings are not sent. Accepted analyses are cached by document hash, model, and prompt version. The configurable daily attempt budget includes failed requests. `.env` and `.cache` are ignored by Git.
 
-Use **Compare source-only baseline** to hide AI interpretations, and **View Auditable Reasoning Chain** to inspect quotes and the full archived document. Portfolio relevance displays the allocation overlapping the mapped sectors; this is a heuristic exposure measure, not a prediction of gains or losses.
+Use **Source only** to compare the source text, and **Read source / Read analysis** to inspect an announcement. Supporting passages and detailed reasoning expand on demand. Portfolio relevance displays the allocation overlapping the mapped sectors; this is a heuristic exposure measure, not a prediction of gains or losses.
 
-**Check RBI feed** explicitly reads [RBI's rolling press-release RSS feed](https://www.rbi.org.in/pressreleases_rss.xml), selects MPC resolutions, and downloads at most three original RBI HTML documents. A rolling feed can contain no matching resolutions; a successful check with zero matches does not mean that the historical archive is current. Retrieval errors preserve the archive. Refresh never invokes Gemini. The service runs locally on `127.0.0.1`; mutation endpoints reject non-local and cross-origin actions.
+**Sources → Check for new announcements** explicitly reads [RBI's rolling press-release RSS feed](https://www.rbi.org.in/pressreleases_rss.xml), selects MPC resolutions, and downloads at most three original RBI HTML documents. A rolling feed can contain no matching resolutions; a successful check with zero matches does not mean that the historical archive is current. Retrieval errors preserve the archive. Refresh never invokes Gemini. The service runs locally on `127.0.0.1`; mutation endpoints reject non-local and cross-origin actions.
 
 ```sh
 python scripts/refresh_rbi.py
@@ -38,7 +44,7 @@ python scripts/evaluate_rbi.py --split holdout --generate
 
 The four-document holdout evaluation on 15 November 2026 produced two accepted Gemini analyses, one rejected citation and one provider service failure: **50% accepted coverage**. Both accepted answers matched the annotated repo rate and passed literal citation checks; the source-only extractor matched all four rates. These results do not establish semantic entailment or improved comprehension. See `docs/evaluation/rbi_holdout_2026-11-15.json` and `docs/rbi_evaluation.md` for the complete denominators and limitations.
 
-The **Student comprehension study** link opens a voluntary adult consent flow comparing source passages and recorded AI briefings across different documents. It uses anonymous local JSON export, with no automatic submission. No student study has been conducted yet.
+The **More → Research study** link opens a voluntary adult consent flow comparing source passages and recorded AI briefings across different documents. It uses anonymous local JSON export, with no automatic submission. No student study has been conducted yet.
 
 ```sh
 python scripts/analyze_study.py path/to/voluntarily-shared-files
@@ -83,8 +89,8 @@ Open http://localhost:8000. The source archive, recorded analyses, synthetic dem
 
 ## Three-minute demonstration
 
-1. Open the dashboard, select **Synthetic demo**, and read the demo-data notice. An empty portfolio starts with an empty brief.
-2. In **My Portfolio**, click **Load example portfolio**. This explicitly replaces the current browser entries with fictional allocations.
+1. Open **Sources & settings**, choose **Synthetic examples**, then open **Research**. An empty portfolio starts with an empty brief.
+2. In **Holdings**, click **Load example portfolio**. This explicitly replaces the current browser entries with fictional allocations.
 3. Open the tobacco-duty sample. Compare the synthetic evidence excerpt with the proposed tax/pricing mechanism and the stated unknowns.
 4. Open the monetary-policy sample. Explain why a neutral stance does not establish future cuts or higher bank earnings.
 5. Open the demerger sample. Inspect why the bank-merger analogy is weak and why separation does not guarantee value creation.

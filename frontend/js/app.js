@@ -18,11 +18,13 @@ let allPrecedents = [];
 let auditTelemetry = null;
 let dataMode = "rbi";
 let loadSequence = 0;
+let drawerReturnFocus = null;
 
 document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("source-mode").addEventListener("change", loadPipelineData);
   document.getElementById("source-only").addEventListener("change", () => { renderCards(); if (currentEventCard && document.getElementById("reasoning-drawer").classList.contains("active")) openReasoningDrawer(currentEventCard.id); });
   document.getElementById("btn-refresh-rbi").addEventListener("click", refreshRBI);
+  setupShell();
   setupTabs();
   setupPortfolioModal();
   setupAssistantChat();
@@ -43,7 +45,9 @@ async function loadPipelineData() {
     rawDailyCards = [...data.morning_brief, ...data.explore_feed];
 
     document.getElementById("demo-notice").textContent = data.data_notice;
-    document.getElementById("data-label").textContent = dataMode === "rbi" ? "REAL RBI ARCHIVE" : "SYNTHETIC DEMO";
+    document.getElementById("data-label").textContent = dataMode === "rbi" ? "RBI archive" : "Synthetic examples";
+    const latest = rawDailyCards.map(c => c.published_at.slice(0,10)).sort().at(-1);
+    document.getElementById("research-context").textContent = dataMode === "rbi" ? `Archived RBI announcements${latest ? ". Through " + displayDate(latest) : ""}.` : "Synthetic examples for demonstration.";
     document.getElementById("btn-refresh-rbi").disabled = dataMode !== "rbi";
     document.getElementById("source-only").disabled = dataMode !== "rbi";
     if (dataMode === "rbi") {
@@ -76,93 +80,70 @@ function updateTelemetryBanner(stats) {
   document.getElementById("stat-passed").textContent = stats.passed_constraint || 0;
 }
 
+function displayDate(value) {
+  const date = new Date(value.slice(0,10) + "T12:00:00Z");
+  return Number.isNaN(date.getTime()) ? value.slice(0,10) : new Intl.DateTimeFormat("en-IN", {day:"2-digit",month:"short",year:"numeric"}).format(date);
+}
 function renderCards() {
   const container = document.getElementById("cards-container");
-  const activeTab = document.querySelector(".tab-btn.active").dataset.tab;
-  
-  const personalized = window.edgeMatcher.matchAndPersonalize(rawDailyCards);
-  let cardsToShow = [];
-
-  if (activeTab === "brief") {
-    cardsToShow = personalized.morningBrief;
-  } else if (activeTab === "explore") {
-    cardsToShow = personalized.exploreFeed;
-  }
-
-  if (cardsToShow.length === 0) {
-    container.innerHTML = `
-      <div class="glass-panel" style="padding: 3rem; text-align: center; grid-column: 1 / -1;">
-        <h3 style="color: var(--text-muted); font-family: var(--font-heading);">No cards in this feed</h3>
-        <p style="color: var(--text-dim); margin-top: 0.5rem;">No relevant events in this view. Add holdings or load the example portfolio in My Portfolio, or browse Explore. Source-only cards contain no AI conclusion.</p>
-      </div>
-    `;
+  const view = document.querySelector(".tab-btn.active").dataset.tab;
+  if (view !== "brief" && view !== "explore") return;
+  const personal = window.edgeMatcher.matchAndPersonalize(rawDailyCards);
+  const cards = view === "brief" ? personal.morningBrief : rawDailyCards;
+  document.getElementById("research-all").classList.toggle("selected", view === "explore");
+  if (!cards.length) {
+    container.innerHTML = `<div class="empty-state"><h2>${view === "brief" ? "No matching announcements" : "No announcements available"}</h2><p>${view === "brief" ? "Add your holdings to see relevant research here." : "Check your source settings or try again later."}</p></div>`;
     return;
   }
-
-  container.innerHTML = cardsToShow.map(card => {
-    const baselineView = document.getElementById("source-only").checked && !card.is_sample;
-    const catClass = `cat-${escapeHTML(card.category)}`;
-    let vecClass = "vec-monitor";
-    if (card.impact_vector.includes("Tailwind")) vecClass = "vec-tailwind";
-    else if (card.impact_vector.includes("Headwind")) vecClass = "vec-headwind";
-    else if (card.impact_vector.includes("No Action")) vecClass = "vec-calm";
-
-    const matchedBadge = card.matched_ticker ? `
-      <span style="font-size: 0.72rem; color: #60a5fa; background: rgba(59, 130, 246, 0.15); padding: 0.2rem 0.5rem; border-radius: 9999px; font-weight: 600;">
-        ⚡ Matched Holding (${escapeHTML(card.matched_ticker)})
-      </span>
-    ` : "";
-
-    return `
-      <div class="glass-panel event-card ${card.is_matched ? 'matched-holding' : ''}">
-        <div class="card-top">
-          <div class="badge-row">
-            <span class="category-tag ${catClass}">${escapeHTML(card.category)}</span>
-            <span class="tier-indicator">
-              <span class="tier-dot-${card.highest_tier}">●</span> Tier ${card.highest_tier} · ${card.is_sample ? "Sample" : "RBI original"}
-            </span>
-          </div>
-
-          ${matchedBadge}
-          <p>${escapeHTML(card.relevance_explanation || "")}</p>
-
-          <h3 class="card-title" style="margin-top: 0.5rem;">${escapeHTML(card.canonical_title)}</h3>
-
-          <div class="card-tickers">
-            ${card.impacted_tickers.map(t => `
-              <span class="ticker-pill ${t === card.matched_ticker ? 'matched' : ''}">${escapeHTML(t)}</span>
-            `).join('')}
-          </div>
-
-          <div class="verdict-box ${vecClass}">
-            <div class="verdict-header">
-              <span>${escapeHTML(baselineView ? "Source text only" : card.impact_vector)}</span>
-              <span class="rigour-tag">${escapeHTML(baselineView ? "No interpretation in this comparison" : card.impact_status)}</span>
-            </div>
-          </div>
-
-          <p class="card-summary">${escapeHTML(baselineView ? card.baseline_text : card.summary_insight)}</p>
-          <p class="card-summary">${escapeHTML(card.evidence_status)} · ${card.is_sample ? "Sample date" : "Published"}: ${escapeHTML(card.published_at.slice(0, 10))}</p>
-          ${card.analysis_model ? `<p class="card-summary">Recorded Gemini analysis: ${escapeHTML(card.analysis_model)}, ${escapeHTML(card.analysis_generated_at.slice(0, 10))}</p>` : ""}
-        </div>
-
-        <div class="card-action">
-          ${!card.is_sample && card.analysis_status !== "generated" ? `<button class="btn-secondary" data-analyze-id="${escapeHTML(card.id)}">Generate Gemini analysis</button>` : ""}
-          <button class="btn-open-chain" data-event-id="${escapeHTML(card.id)}">
-            <span>🔍 View Auditable Reasoning Chain</span>
-          </button>
-        </div>
-      </div>
-    `;
-  }).join('');
-  container.querySelectorAll("[data-analyze-id]").forEach(button => button.addEventListener("click", () => generateAnalysis(button.dataset.analyzeId, button)));
+  const baseline = document.getElementById("source-only").checked;
+  container.innerHTML = cards.map(card => {
+    const match = (card.baseline_text || "").match(/policy repo rate[^.;]{0,150}?(?:at|to)\s+(\d+(?:\.\d+)?)\s+per cent/i);
+    const title = card.is_sample ? card.canonical_title : match ? `Policy repo rate: ${match[1]}%` : "Monetary policy decision";
+    const text = (baseline && !card.is_sample ? card.baseline_text : card.summary_insight).replace(/\s+/g," ").trim();
+    const preview = text.length > 190 ? text.slice(0,187) + "…" : text;
+    const label = card.is_sample ? "Synthetic example" : card.analysis_status === "generated" ? "Analysis available" : "Source document";
+    return `<article class="research-row"><time class="research-date">${escapeHTML(displayDate(card.published_at))}</time><div><h2>${escapeHTML(title)}</h2><p>${escapeHTML(preview)}</p><p class="research-meta">${escapeHTML(label)}${card.matched_ticker ? " · " + escapeHTML(card.matched_ticker) : ""}</p></div><button class="btn-open-chain" data-event-id="${escapeHTML(card.id)}">Read ${card.analysis_status === "generated" && !baseline ? "analysis" : "source"} →</button></article>`;
+  }).join("");
   container.querySelectorAll("[data-event-id]").forEach(button => button.addEventListener("click", () => openReasoningDrawer(button.dataset.eventId)));
+}
+function setupShell() {
+  const dialog = document.getElementById("source-settings");
+  document.querySelectorAll("[data-settings-open]").forEach(button => button.addEventListener("click", () => {
+    document.querySelectorAll(".more-menu[open], .more-actions[open], .export-menu[open]").forEach(menu => menu.open = false);
+    dialog.showModal();
+  }));
+  document.getElementById("close-source-settings").addEventListener("click", () => dialog.close());
+  dialog.addEventListener("click", event => {if (event.target === dialog) {const r=dialog.getBoundingClientRect();if(event.clientX<r.left || event.clientX>r.right || event.clientY<r.top || event.clientY>r.bottom)dialog.close();}});
+  document.addEventListener("click", event => {
+    const selected = event.target.closest(".more-menu, .more-actions, .export-menu");
+    document.querySelectorAll(".more-menu[open], .more-actions[open], .export-menu[open]").forEach(menu => {
+      if(menu !== selected || event.target.closest(".menu-panel button, .menu-panel a")) menu.open=false;
+    });
+  });
+  document.getElementById("research-all").addEventListener("click", () => document.getElementById("tab-explore-feed").click());
+  const drawer = document.getElementById("reasoning-drawer");
+  drawer.addEventListener("click", event => {if(event.target === drawer)closeReasoningDrawer();});
+  document.addEventListener("keydown", event => {
+    if (!drawer.classList.contains("active")) return;
+    if (event.key === "Escape") {event.preventDefault();closeReasoningDrawer();}
+    if (event.key === "Tab") {
+      const controls = [...drawer.querySelectorAll("button:not([disabled]), a[href], input:not([disabled]), summary")].filter(node => node.getClientRects().length);
+      const first = controls[0], last = controls.at(-1);
+      if (event.shiftKey && document.activeElement === first) {event.preventDefault();last?.focus();}
+      else if (!event.shiftKey && document.activeElement === last) {event.preventDefault();first?.focus();}
+    }
+  });
 }
 
 function openReasoningDrawer(eventId) {
   const card = rawDailyCards.find(c => c.id === eventId);
   if (!card) return;
+  if (!document.getElementById("reasoning-drawer").classList.contains("active")) drawerReturnFocus = document.activeElement;
   currentEventCard = card;
+  const generate = document.getElementById("drawer-generate");
+  generate.hidden = card.is_sample || card.analysis_status === "generated";
+  generate.onclick = () => generateAnalysis(card.id, generate);
+  document.getElementById("event-assistant").hidden = !card.is_sample;
   document.getElementById("journal-from-event").onclick = () => window.workspaceUI?.noteFromEvent(card);
 
   document.getElementById("evidence-excerpt").textContent = card.evidence_excerpt;
@@ -178,6 +159,7 @@ function openReasoningDrawer(eventId) {
   } catch (_) { /* No background link supplied. */ }
   document.getElementById("sample-date").textContent = `${card.is_sample ? "Sample date" : "Published"}: ${card.published_at.slice(0, 10)}. Archived dates do not indicate current news.`;
   document.getElementById("evidence-heading").textContent = card.is_sample ? "Synthetic sample input" : "Evidence from the archived RBI resolution";
+  document.getElementById("source-excerpt-details").open = card.analysis_status !== "generated";
   renderEvidence(card);
   const sourceOnly = document.getElementById("source-only").checked && !card.is_sample;
   const chain = card.reasoning_chain;
@@ -205,10 +187,19 @@ function openReasoningDrawer(eventId) {
   else appendChatBubble("This demo assistant uses fixed responses from the selected scenario. Ask about its reasoning, analogy, or uncertainty. Messages are sent to the server; avoid entering private financial details.", "bot");
 
   document.getElementById("reasoning-drawer").classList.add("active");
+  document.querySelector(".app-header").inert = true;
+  document.querySelector(".app-container").inert = true;
+  document.body.style.overflow = "hidden";
+  document.getElementById("btn-close-drawer").focus();
 }
 
 function closeReasoningDrawer() {
   document.getElementById("reasoning-drawer").classList.remove("active");
+  document.querySelector(".app-header").inert = false;
+  document.querySelector(".app-container").inert = false;
+  document.body.style.overflow = "";
+  if (drawerReturnFocus?.isConnected) drawerReturnFocus.focus();
+  drawerReturnFocus = null;
 }
 
 function setupAssistantChat() {
@@ -256,9 +247,18 @@ function setupTabs() {
       tab.classList.add("active");
 
       const target = tab.dataset.tab;
+      document.querySelectorAll(".primary-nav .tab-btn").forEach(item => {
+        const selected = item.dataset.tab === target || (target === "brief" && item.dataset.tab === "explore");
+        item.classList.toggle("is-current", selected);
+        if(selected)item.setAttribute("aria-current","page");else item.removeAttribute("aria-current");
+      });
+      document.querySelectorAll(".more-menu[open], .more-actions[open], .export-menu[open]").forEach(menu => menu.open = false);
+      document.getElementById("research-toolbar").style.display = target === "brief" || target === "explore" ? "block" : "none";
+      const names={review:"Overview",journal:"Journal",timeline:"Policy timeline",brief:"Research",explore:"Research",portfolio:"Holdings",precedents:"Reference library",audit:"Source checks"};
+      document.title = names[target] + " · Sarthi";
       ["review", "journal", "timeline"].forEach(name => { document.getElementById(`${name}-section`).style.display = target === name ? "block" : "none"; });
       window.workspaceUI?.render();
-      document.getElementById("cards-container").style.display = (target === "brief" || target === "explore") ? "grid" : "none";
+      document.getElementById("cards-container").style.display = (target === "brief" || target === "explore") ? "flex" : "none";
       document.getElementById("precedents-section").style.display = (target === "precedents") ? "block" : "none";
       document.getElementById("portfolio-section").style.display = (target === "portfolio") ? "block" : "none";
       document.getElementById("audit-section").style.display = (target === "audit") ? "block" : "none";
@@ -279,13 +279,8 @@ async function loadPrecedents() {
       <div class="precedent-card">
         <div class="precedent-code">${escapeHTML(p.id)} · ${escapeHTML(p.period)}</div>
         <h4 class="precedent-title">${escapeHTML(p.name)}</h4>
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem;">${escapeHTML(p.macro_context)}</p>
-        <div style="background: rgba(0,0,0,0.25); padding: 0.75rem; border-radius: 6px; font-size: 0.82rem; margin-bottom: 0.5rem;">
-          <strong style="color: #38bdf8;">Mechanism:</strong> ${escapeHTML(p.transmission_mechanism)}
-        </div>
-        <div style="font-size: 0.8rem; color: #a78bfa;">
-          <strong>Key Lesson:</strong> ${escapeHTML(p.key_lessons)}
-        </div>
+        <p class="quiet">${escapeHTML(p.macro_context)}</p>
+        <details><summary>Read context</summary><div class="reference-mechanism">${escapeHTML(p.transmission_mechanism)}</div><p class="quiet">${escapeHTML(p.key_lessons)}</p></details>
       </div>
     `).join('');
   } catch (e) {
@@ -363,16 +358,17 @@ function renderAuditTelemetry(data) {
 
 async function generateAnalysis(id, button) {
   button.disabled = true;
-  button.textContent = "Analyzing with Gemini…";
+  button.textContent = "Preparing analysis…";
   const status = document.getElementById("provider-status");
   try {
     const response = await fetch(`/api/v1/rbi/analyze/${encodeURIComponent(id)}`, {method:"POST"});
     const result = await response.json();
     if (!response.ok) throw new Error(result.detail || "Gemini analysis unavailable.");
     await loadPipelineData();
+    openReasoningDrawer(id);
     status.textContent = result.analysis.abstain ? "Gemini abstained. See source evidence." : "Gemini analysis saved. Citations checked for text occurrence; interpretation requires review.";
   } catch (error) { status.textContent = error.message; }
-  finally { button.disabled = false; button.textContent = "Generate Gemini analysis"; }
+  finally { document.getElementById("workspace-status").textContent = status.textContent; button.disabled = false; button.textContent = "Generate analysis"; }
 }
 async function refreshRBI() {
   const button = document.getElementById("btn-refresh-rbi");
@@ -386,7 +382,7 @@ async function refreshRBI() {
     await loadPipelineData();
     status.textContent = `Feed checked: ${result.matching_items} matching resolutions; ${result.retrieved.length} retrieved; ${result.failures.length} failed. Older resolutions may be absent from the rolling feed.`;
   } catch (error) { status.textContent = error.message; }
-  finally { button.disabled = false; }
+  finally { document.getElementById("workspace-status").textContent = status.textContent; button.disabled = false; }
 }
 function renderEvidence(card) {
   const claims = document.getElementById("claim-evidence");
@@ -395,13 +391,16 @@ function renderEvidence(card) {
     for (const claim of card.cited_claims || []) {
       const item = document.createElement("article");
       const heading = document.createElement("h4");
-      heading.textContent = claim.kind === "fact" ? "Fact (verbatim source quote)" : "AI interpretation (hypothesis)";
+      heading.textContent = claim.kind === "fact" ? "Source quote" : "Interpretation · requires review";
       item.appendChild(heading);
       const text = document.createElement("p"); text.textContent = claim.text; item.appendChild(text);
-      for (const citation of claim.citations) {
-        const quote = document.createElement("blockquote");
-        quote.textContent = `[${citation.paragraph_id}] ${citation.quote}`;
-        item.appendChild(quote);
+      if (claim.kind === "interpretation") {
+        const supporting = document.createElement("details");
+        const summary = document.createElement("summary"); summary.textContent = "Supporting passages"; supporting.appendChild(summary);
+        for (const citation of claim.citations) {
+          const quote = document.createElement("blockquote"); quote.textContent = `[${citation.paragraph_id}] ${citation.quote}`; supporting.appendChild(quote);
+        }
+        item.appendChild(supporting);
       }
       claims.appendChild(item);
     }
