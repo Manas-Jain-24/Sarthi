@@ -170,6 +170,12 @@ def rbi_brief():
     return build_rbi_brief()
 
 
+@app.get("/api/v1/rbi/timeline")
+def rbi_timeline():
+    from .services.rbi_timeline import build_timeline
+    return build_timeline()
+
+
 @app.get("/api/v1/rbi/documents/{document_id}")
 def rbi_document(document_id: str):
     document = next((d for d in all_documents() if d.id == document_id), None)

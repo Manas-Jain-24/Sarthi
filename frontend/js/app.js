@@ -51,6 +51,7 @@ async function loadPipelineData() {
       if (sequence !== loadSequence) return;
       document.getElementById("provider-status").textContent = status.configured ? `Gemini: ${status.model}. Analysis runs on request.` : "Gemini key is not configured. Source documents are available.";
     } else document.getElementById("provider-status").textContent = "Fixed synthetic scenarios; no model requests.";
+    window.workspaceUI?.setEvents(rawDailyCards);
     updateTelemetryBanner(data.stats);
     renderCards();
     loadPrecedents();
@@ -58,6 +59,7 @@ async function loadPipelineData() {
     renderAuditTelemetry(data);
   } catch (err) {
     console.error("Failed to load pipeline data:", err);
+    document.getElementById("provider-status").textContent = "Public event feed unavailable. Your local journal and portfolio are still accessible.";
     document.getElementById("cards-container").innerHTML = `
       <div class="glass-panel" style="padding: 2rem; text-align: center; grid-column: 1 / -1;">
         <h3>Unable to reach Sarthi API</h3>
@@ -161,6 +163,7 @@ function openReasoningDrawer(eventId) {
   const card = rawDailyCards.find(c => c.id === eventId);
   if (!card) return;
   currentEventCard = card;
+  document.getElementById("journal-from-event").onclick = () => window.workspaceUI?.noteFromEvent(card);
 
   document.getElementById("evidence-excerpt").textContent = card.evidence_excerpt;
   document.getElementById("evidence-status").textContent = `${card.evidence_status}. ${card.impact_status}. ${card.gate_reason}`;
@@ -253,6 +256,8 @@ function setupTabs() {
       tab.classList.add("active");
 
       const target = tab.dataset.tab;
+      ["review", "journal", "timeline"].forEach(name => { document.getElementById(`${name}-section`).style.display = target === name ? "block" : "none"; });
+      window.workspaceUI?.render();
       document.getElementById("cards-container").style.display = (target === "brief" || target === "explore") ? "grid" : "none";
       document.getElementById("precedents-section").style.display = (target === "precedents") ? "block" : "none";
       document.getElementById("portfolio-section").style.display = (target === "portfolio") ? "block" : "none";
@@ -290,12 +295,14 @@ async function loadPrecedents() {
 
 function setupPortfolioModal() {
   document.getElementById("btn-demo-portfolio").addEventListener("click", () => {
-    window.edgeMatcher.savePortfolio(DEFAULT_PORTFOLIO.map(h => ({...h})));
+    try { window.edgeMatcher.savePortfolio(DEFAULT_PORTFOLIO.map(h => ({...h}))); }
+    catch(error) { document.getElementById("portfolio-message").textContent = error.message; return; }
     renderPortfolioTable(); renderCards();
     document.getElementById("portfolio-message").textContent = "Example portfolio loaded. These are fictional allocations for the walkthrough.";
   });
   document.getElementById("btn-clear-portfolio").addEventListener("click", () => {
-    window.edgeMatcher.savePortfolio([]);
+    try { window.edgeMatcher.savePortfolio([]); }
+    catch(error) { document.getElementById("portfolio-message").textContent = error.message; return; }
     renderPortfolioTable(); renderCards();
     document.getElementById("portfolio-message").textContent = "Holdings cleared from this browser.";
   });
@@ -319,6 +326,7 @@ function setupPortfolioModal() {
 }
 
 function renderPortfolioTable() {
+  window.workspaceUI?.render();
   const tbody = document.getElementById("portfolio-tbody");
   if (!tbody) return;
   const holdings = window.edgeMatcher.holdings;
@@ -336,7 +344,8 @@ function renderPortfolioTable() {
 }
 
 function deleteHolding(ticker) {
-  window.edgeMatcher.removeHolding(ticker);
+  try { window.edgeMatcher.removeHolding(ticker); }
+  catch(error) { document.getElementById("portfolio-message").textContent = error.message; return; }
   renderPortfolioTable();
   renderCards();
 }

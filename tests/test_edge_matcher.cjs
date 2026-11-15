@@ -7,6 +7,7 @@ const context = vm.createContext({window: {}, console, localStorage: {
   getItem: key => storage.get(key) ?? null,
   setItem: (key, value) => storage.set(key, value)
 }});
+vm.runInContext(fs.readFileSync('frontend/js/review_core.js', 'utf8'), context);
 vm.runInContext(fs.readFileSync('frontend/js/edge_matcher.js', 'utf8'), context);
 const matcher = context.window.edgeMatcher;
 const card = (id, extra = {}) => ({id, primary_sector: 'FMCG', sectors: ['FMCG', 'Tobacco'], impacted_tickers: ['ITC'], passed_constraint_gate: true, ...extra});

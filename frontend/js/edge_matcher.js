@@ -30,21 +30,23 @@ class EdgeMatcher {
     try {
       const stored = localStorage.getItem(STORAGE_KEY_PORTFOLIO);
       if (stored) {
-        return JSON.parse(stored);
+        return window.SarthiReview.validateHoldings(JSON.parse(stored));
       }
     } catch (e) {
+      this.portfolioWarning = "Saved holdings could not be validated. The saved data has not been overwritten. Check your backup before replacing holdings.";
       console.warn("Could not read local storage, starting with no holdings.");
     }
     return [];
   }
 
   savePortfolio(holdings) {
-    this.holdings = holdings;
+    const validated = window.SarthiReview.validateHoldings(holdings);
     try {
-      localStorage.setItem(STORAGE_KEY_PORTFOLIO, JSON.stringify(holdings));
+      localStorage.setItem(STORAGE_KEY_PORTFOLIO, JSON.stringify(validated));
     } catch (e) {
-      console.error("Failed to persist local portfolio:", e);
+      throw new Error("Browser storage could not save the portfolio. Nothing was changed.");
     }
+    this.holdings = validated;
   }
 
   loadProfile() {
@@ -80,23 +82,23 @@ class EdgeMatcher {
     if (!Number.isFinite(allocation) || allocation <= 0 || allocation > 100) throw new Error("Weight must be greater than 0 and at most 100.");
     const total = this.holdings.filter(h => h.ticker !== cleanTicker).reduce((sum, h) => sum + h.allocation_pct, 0) + allocation;
     if (total > 100.000001) throw new Error("Total portfolio allocation cannot exceed 100%.");
-    const existing = this.holdings.find(h => h.ticker === cleanTicker);
+    const next = this.holdings.map(h=>({...h}));
+    const existing = next.find(h => h.ticker === cleanTicker);
     if (existing) {
       existing.allocation_pct = allocation;
       existing.sector = sector;
     } else {
-      this.holdings.push({
+      next.push({
         ticker: cleanTicker,
         sector: sector,
         allocation_pct: allocation
       });
     }
-    this.savePortfolio(this.holdings);
+    this.savePortfolio(next);
   }
 
   removeHolding(ticker) {
-    this.holdings = this.holdings.filter(h => h.ticker !== ticker);
-    this.savePortfolio(this.holdings);
+    this.savePortfolio(this.holdings.filter(h => h.ticker !== ticker));
   }
 
   matchAndPersonalize(dailyCards) {

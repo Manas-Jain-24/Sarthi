@@ -4,9 +4,22 @@ A college-project prototype for explaining how financial events might affect Ind
 
 **Synthetic demo mode:** all incoming events are synthetic fixtures, dated for a walkthrough. They are not current news. The application does not fetch source documents or call an AI model. Analysis is manually authored for exact sample inputs, and unknown or changed inputs receive no conclusion.
 
+## Portfolio review workspace
+
+The default screen is now **Portfolio Review**: entered allocation, sector breakdown, a user-chosen concentration review threshold, notes due for review, and three hypothetical policy worksheets. These prompts support reflection; they do not calculate returns or recommend trades.
+
+- **My Portfolio:** add holdings or import a CSV with `ticker,sector,allocation_pct`. A preview validates the entire file before replacing anything. Undo is available on the same page until another holdings edit or reload. Imported files never leave the browser.
+- **Decision Journal:** write a thesis, evidence that would change your mind, your own decision label, and a review date. Attach a dated source snapshot from the event drawer or Policy Timeline. Editing appends a revision; follow-up reviews record what you learned and schedule the next review. Archiving is reversible.
+- **Policy Timeline:** inspect the dated repo-rate observations, filter the actual wording, and link an event to a note. Dots are discrete observations; missing meetings are not filled. Differences compare adjacent archived observations, not necessarily adjacent RBI meetings.
+- **Export:** download a self-contained printable HTML review or JSON, including holdings, the selected scenario comparison, journal history, and loaded real-source references. Journal backups can be validated and restored locally, with a backup of the previous journal downloaded before replacement.
+
+No portfolio, journal or scenario worksheet is sent to Gemini or a backend journal service. They use persistent localStorage, which is not encrypted or tamper-proof. Exported reports contain private financial notes; keep backups yourself. Clearing site data removes local records. The app does not measure whether a thesis is correct or whether the journal improves decisions.
+
+See `docs/portfolio_review.md` for a complete demonstration and recovery guide.
+
 ## RBI evidence and Gemini path
 
-The dashboard now opens on **Real RBI documents**. Eleven original MPC resolutions (December 2023 to February 2026) are archived in `backend/app/data/rbi/`, with their publication/retrieval dates, original HTML, SHA-256 hashes and numbered evidence paragraphs. These are historical publications, not current news. Switch to Synthetic demo to use the original scenarios.
+The dashboard defaults to the review workspace with **Real RBI documents** selected as its evidence source. Eleven original MPC resolutions (December 2023 to February 2026) are archived in `backend/app/data/rbi/`, with their publication/retrieval dates, original HTML, SHA-256 hashes and numbered evidence paragraphs. These are historical publications, not current news. Switch to Synthetic demo to use the original scenarios.
 
 Two recorded, real Gemini Flash-Lite outputs are included, tied to the exact source hashes, model and prompt version. They work without a key. Their factual sections render validated source quotes; interpretations cite their premises and remain hypotheses requiring human review. Quote occurrence does not prove that an interpretation follows from the evidence.
 
@@ -83,6 +96,7 @@ Open http://localhost:8000. The source archive, recorded analyses, synthetic dem
 ```sh
 python tests/run_tests.py
 node tests/test_edge_matcher.cjs
+node tests/test_review.cjs
 node --check frontend/js/app.js
 ```
 

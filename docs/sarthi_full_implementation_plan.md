@@ -1,3 +1,9 @@
+# Review workspace upgrade
+
+Portfolio Review, a local versioned Decision Journal, dated RBI Policy Timeline, validated CSV import with preview and undo, and private HTML/JSON review exports are now implemented. See [the review workflow and recovery guide](portfolio_review.md). The journal is editable local browser data, and scenario worksheets are qualitative prompts rather than predictions. This update supersedes earlier planning notes that list CSV import as unimplemented.
+
+---
+
 # Implementation update: 15 November 2026
 
 The RBI document path is now implemented alongside the synthetic demo: eleven original resolutions with provenance, Gemini structured analysis and literal citation checks, local allocation-overlap explanations, source-only comparison, bounded live RSS retrieval, offline regression checks, and a formative student-study flow. Two real recorded Gemini outputs are bundled for repeatable demonstrations.
