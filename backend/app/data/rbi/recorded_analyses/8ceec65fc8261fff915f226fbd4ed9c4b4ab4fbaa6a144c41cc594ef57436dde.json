@@ -1,0 +1,62 @@
+{
+  "document_id": "RBI_61749",
+  "text_sha256": "8afaf7a070a71cfe8e7aae4742e60048551f88dff73f095fb85f7930176ad6a7",
+  "requested_model": "gemini-3.5-flash-lite",
+  "resolved_model": "gemini-3.5-flash-lite",
+  "prompt_version": "rbi-evidence-v2",
+  "generated_at": "2026-11-15T13:59:45.641740+00:00",
+  "analysis": {
+    "abstain": false,
+    "abstention_reason": "",
+    "claims": [
+      {
+        "kind": "fact",
+        "text": "the MPC voted unanimously to reduce the policy repo rate under the liquidity adjustment facility (LAF) to 5.25 per cent.",
+        "citations": [
+          {
+            "paragraph_id": "p3",
+            "quote": "the MPC voted unanimously to reduce the policy repo rate under the liquidity adjustment facility (LAF) to 5.25 per cent."
+          }
+        ]
+      },
+      {
+        "kind": "fact",
+        "text": "Consequently, the standing deposit facility (SDF) rate shall stand adjusted to 5.00 per cent and the marginal standing facility (MSF) rate and the Bank Rate to 5.50 per cent.",
+        "citations": [
+          {
+            "paragraph_id": "p3",
+            "quote": "Consequently, the standing deposit facility (SDF) rate shall stand adjusted to 5.00 per cent and the marginal standing facility (MSF) rate and the Bank Rate to 5.50 per cent."
+          }
+        ]
+      },
+      {
+        "kind": "interpretation",
+        "text": "The reduction in the repo rate paired with healthy non-food bank credit expansion could theoretically lower borrowing costs for corporations and financial institutions, potentially supporting investment activity.",
+        "citations": [
+          {
+            "paragraph_id": "p3",
+            "quote": "the MPC voted unanimously to reduce the policy repo rate under the liquidity adjustment facility (LAF) to 5.25 per cent."
+          },
+          {
+            "paragraph_id": "p7",
+            "quote": "Investment activity remains healthy with private investment gaining steam on the back of expansion in non-food bank credit and high capacity utilisation."
+          }
+        ]
+      }
+    ],
+    "affected_sectors": [
+      "Banking",
+      "NBFCs",
+      "Real Estate",
+      "Automotive"
+    ],
+    "uncertainties": [
+      "Global inflation dynamics remain uneven and external uncertainties pose downside risks to the outlook.",
+      "Merchandise exports face headwinds despite strong services exports."
+    ],
+    "counterarguments": [
+      "External uncertainties and volatile equity markets could alter macroeconomic conditions independently of domestic policy rate adjustments."
+    ],
+    "repo_rate_pct": 5.25
+  }
+}

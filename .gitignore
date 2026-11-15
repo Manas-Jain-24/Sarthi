@@ -27,6 +27,10 @@ ENV/
 # Environment Variables
 .env
 .env.local
+.env.*
+!.env.example
+.cache/
+output/
 *.env
 
 # IDEs

@@ -22,6 +22,8 @@ const result = matcher.matchAndPersonalize([
 ]);
 assert.deepEqual(Array.from(result.morningBrief, c => c.id), ['matched']);
 assert.equal(result.exploreFeed.length, 2);
+assert.equal(result.morningBrief[0].matched_allocation_pct, 50, 'A holding matching ticker and sector must count once');
+assert.match(result.morningBrief[0].relevance_explanation, /50.0%/);
 matcher.saveProfile({avoided_sectors: ['Tobacco']});
 assert.equal(matcher.matchAndPersonalize([card('avoided')]).morningBrief.length, 0, 'Check every affected sector');
 matcher.saveProfile({avoided_sectors: []});

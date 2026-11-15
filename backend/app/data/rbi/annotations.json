@@ -1,0 +1,79 @@
+{
+  "RBI_62169": {
+    "split": "holdout",
+    "repo_rate_pct": 5.25,
+    "evidence_paragraph_id": "p3",
+    "annotation_status": "author-reviewed source fact; independent second review pending",
+    "text_sha256": "01c6e69d421898adb1fba224f0093dc90f93e7b943e3c9a6012130c1e267aedf"
+  },
+  "RBI_61749": {
+    "split": "holdout",
+    "repo_rate_pct": 5.25,
+    "evidence_paragraph_id": "p3",
+    "annotation_status": "author-reviewed source fact; independent second review pending",
+    "text_sha256": "8afaf7a070a71cfe8e7aae4742e60048551f88dff73f095fb85f7930176ad6a7"
+  },
+  "RBI_61332": {
+    "split": "holdout",
+    "repo_rate_pct": 5.5,
+    "evidence_paragraph_id": "p3",
+    "annotation_status": "author-reviewed source fact; independent second review pending",
+    "text_sha256": "3b64d71c8698a14619dc1bc7fcb657ad4048a0403a2633952d09a15bf60f973e"
+  },
+  "RBI_60957": {
+    "split": "holdout",
+    "repo_rate_pct": 5.5,
+    "evidence_paragraph_id": "p3",
+    "annotation_status": "author-reviewed source fact; independent second review pending",
+    "text_sha256": "46a1aa8f0222dc9ace6f6c284efca13dc60248e1185e85cd8a469ccbe54b848b"
+  },
+  "RBI_60604": {
+    "split": "development",
+    "repo_rate_pct": 5.5,
+    "evidence_paragraph_id": "p3",
+    "annotation_status": "author-reviewed source fact; independent second review pending",
+    "text_sha256": "d16c49e81bd42512f8d7448a7086e5273cb29be03ac08954597dda36e1502591"
+  },
+  "RBI_59692": {
+    "split": "development",
+    "repo_rate_pct": 6.25,
+    "evidence_paragraph_id": "p3",
+    "annotation_status": "author-reviewed source fact; independent second review pending",
+    "text_sha256": "ee7af3112eca2ec249503542c8dba0ec12c8ca6556969a7a08b9b38d614a0243"
+  },
+  "RBI_59244": {
+    "split": "development",
+    "repo_rate_pct": 6.5,
+    "evidence_paragraph_id": "p3",
+    "annotation_status": "author-reviewed source fact; independent second review pending",
+    "text_sha256": "57895cf1e645fb3fbcb82f3bd4100cfa0f6d000d24f3eaf99e3a8f2d65c273df"
+  },
+  "RBI_58447": {
+    "split": "development",
+    "repo_rate_pct": 6.5,
+    "evidence_paragraph_id": "p2",
+    "annotation_status": "author-reviewed source fact; independent second review pending",
+    "text_sha256": "20835e7219801ed48c234234ec1d70c531d1a5d4fd3689c171e9dcf9f4712104"
+  },
+  "RBI_58050": {
+    "split": "development",
+    "repo_rate_pct": 6.5,
+    "evidence_paragraph_id": "p2",
+    "annotation_status": "author-reviewed source fact; independent second review pending",
+    "text_sha256": "1ddd1cf5f863ec56cd4a69295d7fd469119591c43bfe2439b1161b9518fe6aff"
+  },
+  "RBI_57275": {
+    "split": "development",
+    "repo_rate_pct": 6.5,
+    "evidence_paragraph_id": "p2",
+    "annotation_status": "author-reviewed source fact; independent second review pending",
+    "text_sha256": "f3e811b935c2b3270a55690d2bcda28274e95f47f3a0f34b8ec5ae9339d4b741"
+  },
+  "RBI_56888": {
+    "split": "development",
+    "repo_rate_pct": 6.5,
+    "evidence_paragraph_id": "p2",
+    "annotation_status": "author-reviewed source fact; independent second review pending",
+    "text_sha256": "312a014259c4cf5eba03ea2d68ccedbe80ee84c5a5eb4d1f1d04adbdb69cee7a"
+  }
+}

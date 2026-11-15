@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sarthi comprehension study</title><link rel="stylesheet" href="/static/css/style.css"></head>
+<body><main class="app-container" style="max-width:850px; padding:2rem;">
+  <a href="/">Back to Sarthi</a>
+  <h1>Understanding RBI announcements</h1>
+  <section class="glass-panel" style="padding:1.5rem; margin:1rem 0;" id="consent-panel">
+    <p>This optional college research exercise compares a source passage with an AI briefing across different announcements. It takes roughly five minutes. It does not assess investment skill or provide investment advice.</p>
+    <p>For adults aged eighteen or older. Participation is voluntary; you may leave at any time. We ask for no name, contact details, or holdings. Responses remain in this page's memory until you download an anonymous JSON file. Nothing is submitted to a research server. Share the file with the project researcher only if you choose.</p>
+    <label><input type="checkbox" id="consent"> I am eighteen or older, understand the exercise, and consent to participate.</label>
+    <p id="study-status" role="status">Loading materials…</p>
+    <button id="study-start" class="btn-primary" disabled>Start exercise</button>
+  </section>
+  <section id="trial" hidden class="glass-panel" style="padding:1.5rem; margin:1rem 0;">
+    <p id="trial-progress"></p><h2 id="trial-title"></h2>
+    <p id="trial-text" style="white-space:pre-wrap; line-height:1.7;"></p>
+    <form id="study-form" style="display:grid; gap:1rem; margin-top:2rem;">
+      <label>What policy repo rate is reported (percent)? <input class="chat-input" id="answer-rate" type="number" min="0" max="30" step="0.01" required></label>
+      <label>Does this announcement establish that banking shares must rise?
+        <select class="chat-input" id="answer-certainty" required><option value="">Choose…</option><option value="yes">Yes</option><option value="no">No</option><option value="unknown">I cannot tell</option></select>
+      </label>
+      <label>How confident are you in your answers? (one = very unsure; five = very sure)
+        <select class="chat-input" id="answer-confidence" required><option value="">Choose…</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select>
+      </label>
+      <button class="btn-primary" type="submit">Continue</button>
+    </form>
+  </section>
+  <section id="study-end" hidden class="glass-panel" style="padding:1.5rem;">
+    <h2>Exercise complete</h2><p>You saw source passages and Gemini briefings on different documents in a randomized order. Neither determines future share returns. Thank you for participating. Downloading does not submit your responses anywhere.</p>
+    <button id="study-download" class="btn-primary">Download anonymous responses</button>
+  </section>
+</main><script src="/static/js/study.js"></script></body></html>

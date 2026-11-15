@@ -125,16 +125,21 @@ class EdgeMatcher {
 
       // Check sector match
       matchedSector = sectors.find(s => portfolioSectors.has(s.toLowerCase())) || null;
+      const matchedHoldings = this.holdings.filter(h =>
+        card.impacted_tickers.some(t => t.toUpperCase() === h.ticker.toUpperCase()) ||
+        sectors.some(s => s.toLowerCase() === h.sector.toLowerCase()));
+      const exposure = matchedHoldings.reduce((sum, h) => sum + h.allocation_pct, 0);
+      const relevance = matchedHoldings.length ?
+        `${exposure.toFixed(1)}% of your entered allocation overlaps the listed tickers or sectors. This is exposure overlap, not an estimate of gain or loss.` :
+        "No overlap with your entered holdings. Sector mapping is a heuristic.";
 
       // Compute local score
       // Ranking expresses exposure only, never investment confidence.
       let score = 0;
       if (matchedTicker) {
-        const holding = this.holdings.find(h => h.ticker === matchedTicker);
-        const weight = holding ? holding.allocation_pct : 10;
-        score += 40 + (weight * 0.5);
+        score += 40 + (exposure * 0.5);
       } else if (matchedSector) {
-        score += 20;
+        score += 20 + (exposure * 0.5);
       }
 
       return {
@@ -142,6 +147,8 @@ class EdgeMatcher {
         is_matched: !!matchedTicker || !!matchedSector,
         matched_ticker: matchedTicker,
         matched_sector: matchedSector,
+        matched_allocation_pct: exposure,
+        relevance_explanation: relevance,
         is_avoided: isAvoided,
         local_score: score
       };

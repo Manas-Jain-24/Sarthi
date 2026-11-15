@@ -1,0 +1,2 @@
+# Preserve downloaded source bytes so SHA-256 provenance survives Windows checkout.
+backend/app/data/rbi/originals/*.html -text

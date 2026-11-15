@@ -2,9 +2,38 @@
 
 A college-project prototype for explaining how financial events might affect Indian sectors and portfolio exposure.
 
-**Demo mode:** all incoming events are synthetic fixtures, dated for a walkthrough. They are not current news. The application does not fetch source documents or call an AI model. Analysis is manually authored for exact sample inputs, and unknown or changed inputs receive no conclusion.
+**Synthetic demo mode:** all incoming events are synthetic fixtures, dated for a walkthrough. They are not current news. The application does not fetch source documents or call an AI model. Analysis is manually authored for exact sample inputs, and unknown or changed inputs receive no conclusion.
 
-## What works
+## RBI evidence and Gemini path
+
+The dashboard now opens on **Real RBI documents**. Eleven original MPC resolutions (December 2023 to February 2026) are archived in `backend/app/data/rbi/`, with their publication/retrieval dates, original HTML, SHA-256 hashes and numbered evidence paragraphs. These are historical publications, not current news. Switch to Synthetic demo to use the original scenarios.
+
+Two recorded, real Gemini Flash-Lite outputs are included, tied to the exact source hashes, model and prompt version. They work without a key. Their factual sections render validated source quotes; interpretations cite their premises and remain hypotheses requiring human review. Quote occurrence does not prove that an interpretation follows from the evidence.
+
+To generate new analysis, copy `.env.example` to `.env`, add `GEMINI_API_KEY`, and optionally set `GEMINI_MODEL` (default `gemini-3.5-flash-lite`). Restart the server after changing configuration. Use **Generate Gemini analysis** on an individual card. No provider call occurs on page load or GET requests. Only the selected public RBI document goes to Gemini; local holdings are not sent. Accepted analyses are cached by document hash, model, and prompt version. The configurable daily attempt budget includes failed requests. `.env` and `.cache` are ignored by Git.
+
+Use **Compare source-only baseline** to hide AI interpretations, and **View Auditable Reasoning Chain** to inspect quotes and the full archived document. Portfolio relevance displays the allocation overlapping the mapped sectors; this is a heuristic exposure measure, not a prediction of gains or losses.
+
+**Check RBI feed** explicitly reads [RBI's rolling press-release RSS feed](https://www.rbi.org.in/pressreleases_rss.xml), selects MPC resolutions, and downloads at most three original RBI HTML documents. A rolling feed can contain no matching resolutions; a successful check with zero matches does not mean that the historical archive is current. Retrieval errors preserve the archive. Refresh never invokes Gemini. The service runs locally on `127.0.0.1`; mutation endpoints reject non-local and cross-origin actions.
+
+```sh
+python scripts/refresh_rbi.py
+python scripts/evaluate_rbi.py --split holdout
+# Explicit provider requests for missing accepted outputs (uses quota):
+python scripts/evaluate_rbi.py --split holdout --generate
+```
+
+The four-document holdout evaluation on 15 November 2026 produced two accepted Gemini analyses, one rejected citation and one provider service failure: **50% accepted coverage**. Both accepted answers matched the annotated repo rate and passed literal citation checks; the source-only extractor matched all four rates. These results do not establish semantic entailment or improved comprehension. See `docs/evaluation/rbi_holdout_2026-11-15.json` and `docs/rbi_evaluation.md` for the complete denominators and limitations.
+
+The **Student comprehension study** link opens a voluntary adult consent flow comparing source passages and recorded AI briefings across different documents. It uses anonymous local JSON export, with no automatic submission. No student study has been conducted yet.
+
+```sh
+python scripts/analyze_study.py path/to/voluntarily-shared-files
+```
+
+Implementation references: [Gemini generateContent](https://ai.google.dev/api/generate-content), [structured output](https://ai.google.dev/gemini-api/docs/structured-output), and [model names](https://ai.google.dev/gemini-api/docs/models). The initial corpus was retrieved directly from RBI, including the [December 2024 resolution](https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=59244).
+
+## What works in the synthetic demo
 
 - A FastAPI backend runs classification, clustering, source-tier rules, reviewed scenario lookup, explanation checks, and output packaging.
 - The static HTML/CSS/JavaScript frontend displays evidence separately from interpretation, mechanisms, historical comparisons, limitations, and caveats.
@@ -37,11 +66,11 @@ python -m pip install -r requirements.txt
 python scripts/run_server.py
 ```
 
-Open http://localhost:8000. No API keys, paid services, database, or Node build step are required.
+Open http://localhost:8000. The source archive, recorded analyses, synthetic demo and study materials need no key or database. New Gemini generation requires a local key and may use provider quota. No Node build step is required.
 
 ## Three-minute demonstration
 
-1. Open the dashboard and read the demo-data notice. An empty portfolio starts with an empty brief.
+1. Open the dashboard, select **Synthetic demo**, and read the demo-data notice. An empty portfolio starts with an empty brief.
 2. In **My Portfolio**, click **Load example portfolio**. This explicitly replaces the current browser entries with fictional allocations.
 3. Open the tobacco-duty sample. Compare the synthetic evidence excerpt with the proposed tax/pricing mechanism and the stated unknowns.
 4. Open the monetary-policy sample. Explain why a neutral stance does not establish future cuts or higher bank earnings.
@@ -57,13 +86,13 @@ node tests/test_edge_matcher.cjs
 node --check frontend/js/app.js
 ```
 
-Node is only needed for frontend checks. The checks cover abstention on changed or unknown inputs, duplicate-source counting, date/category clustering boundaries, forecast blocking across explanation fields, blocked-card exclusion, API provenance labels, fixed-assistant boundaries, local relevance and exclusions, allocation validation, and empty portfolios. They do not establish factual correctness, investment performance, or legal compliance.
+Node is only needed for frontend checks. The checks cover abstention on changed or unknown inputs, duplicate-source counting, date/category clustering boundaries, forecast blocking across explanation fields, blocked-card exclusion, API provenance labels, fixed-assistant boundaries, local relevance and exclusions, allocation validation, and empty portfolios. They do not establish semantic entailment, investment performance, or legal compliance. Real-source tests use mocked provider transports; the separately recorded holdout report documents real Gemini calls.
 
 ## Privacy and limitations
 
 localStorage is persistent browser storage, not encryption or a cryptographic zero-knowledge system. Scripts running on the same origin can access it; clearing site data removes it. Portfolio matching does not transmit holdings, but free-text assistant messages are sent to the backend. There is no cross-device sync or formal privacy audit.
 
-This is an educational prototype. No claim of SEBI approval or regulatory compliance is made. Renaming a recommendation does not establish a legal exemption. No trade execution, validated forecasts, live ingestion, database integration, or general conversational AI is implemented. The Next.js, Supabase, and Claude integrations described in the original proposal remain future work; the PDF is preserved as the original proposal, not the implementation specification.
+This is an educational prototype. No claim of SEBI approval or regulatory compliance is made. Renaming a recommendation does not establish a legal exemption. No trade execution, validated forecasts, database integration, or general conversational AI is implemented. The real-source path supports only RBI MPC resolutions. The Next.js, Supabase, and Claude integrations described in the original proposal remain unimplemented; Gemini is the implemented provider. The PDF is preserved as the original proposal, not the implementation specification.
 
 ## Structure
 

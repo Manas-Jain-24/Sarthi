@@ -1,0 +1,180 @@
+{
+  "evaluated_at": "2026-11-15T13:59:51.777517+00:00",
+  "split": "holdout",
+  "model": "gemini-3.5-flash-lite",
+  "prompt_version": "rbi-evidence-v2",
+  "document_count": 4,
+  "annotation_notice": "Initial author-reviewed factual labels, not independent gold-standard annotation. No labels are sent to Gemini.",
+  "baseline": {
+    "repo_rate_exact_matches": 4,
+    "total": 4
+  },
+  "ai": {
+    "generated": 2,
+    "abstained": 0,
+    "not_generated": 2,
+    "repo_rate_exact_matches": 2,
+    "citation_occurrence_checks_passed": 2,
+    "coverage": 0.5,
+    "citation_check_rejections": 1,
+    "provider_unavailable": 1
+  },
+  "human_study": {
+    "participants": 0,
+    "status": "not_collected",
+    "finding": null
+  },
+  "limitations": "Quote occurrence and rate extraction are mechanical checks, not factual entailment, relevance, comprehension or investment-performance evidence. Rejected generations are not included as accepted answers.",
+  "cases": [
+    {
+      "document_id": "RBI_62169",
+      "source_url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=62169",
+      "published_on": "2026-02-06",
+      "text_sha256": "01c6e69d421898adb1fba224f0093dc90f93e7b943e3c9a6012130c1e267aedf",
+      "split": "holdout",
+      "expected_repo_rate_pct": 5.25,
+      "baseline_repo_rate_pct": 5.25,
+      "baseline_correct": true,
+      "ai_status": "not_generated",
+      "ai_repo_correct": null,
+      "citation_occurrence_valid": null,
+      "ai_claims": [],
+      "resolved_model": null,
+      "generated_at": null,
+      "error": "Gemini unavailable (HTTP 503: provider failure). No analysis was generated.",
+      "human_factual_error_count": null,
+      "human_citation_entailment_score": null,
+      "human_relevance_score": null,
+      "human_comprehension_score": null
+    },
+    {
+      "document_id": "RBI_61749",
+      "source_url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=61749",
+      "published_on": "2025-12-05",
+      "text_sha256": "8afaf7a070a71cfe8e7aae4742e60048551f88dff73f095fb85f7930176ad6a7",
+      "split": "holdout",
+      "expected_repo_rate_pct": 5.25,
+      "baseline_repo_rate_pct": 5.25,
+      "baseline_correct": true,
+      "ai_status": "generated",
+      "ai_repo_correct": true,
+      "citation_occurrence_valid": true,
+      "ai_claims": [
+        {
+          "kind": "fact",
+          "text": "the MPC voted unanimously to reduce the policy repo rate under the liquidity adjustment facility (LAF) to 5.25 per cent.",
+          "citations": [
+            {
+              "paragraph_id": "p3",
+              "quote": "the MPC voted unanimously to reduce the policy repo rate under the liquidity adjustment facility (LAF) to 5.25 per cent."
+            }
+          ]
+        },
+        {
+          "kind": "fact",
+          "text": "Consequently, the standing deposit facility (SDF) rate shall stand adjusted to 5.00 per cent and the marginal standing facility (MSF) rate and the Bank Rate to 5.50 per cent.",
+          "citations": [
+            {
+              "paragraph_id": "p3",
+              "quote": "Consequently, the standing deposit facility (SDF) rate shall stand adjusted to 5.00 per cent and the marginal standing facility (MSF) rate and the Bank Rate to 5.50 per cent."
+            }
+          ]
+        },
+        {
+          "kind": "interpretation",
+          "text": "The reduction in the repo rate paired with healthy non-food bank credit expansion could theoretically lower borrowing costs for corporations and financial institutions, potentially supporting investment activity.",
+          "citations": [
+            {
+              "paragraph_id": "p3",
+              "quote": "the MPC voted unanimously to reduce the policy repo rate under the liquidity adjustment facility (LAF) to 5.25 per cent."
+            },
+            {
+              "paragraph_id": "p7",
+              "quote": "Investment activity remains healthy with private investment gaining steam on the back of expansion in non-food bank credit and high capacity utilisation."
+            }
+          ]
+        }
+      ],
+      "resolved_model": "gemini-3.5-flash-lite",
+      "generated_at": "2026-11-15T13:59:45.641740+00:00",
+      "error": null,
+      "human_factual_error_count": null,
+      "human_citation_entailment_score": null,
+      "human_relevance_score": null,
+      "human_comprehension_score": null
+    },
+    {
+      "document_id": "RBI_61332",
+      "source_url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=61332",
+      "published_on": "2025-10-01",
+      "text_sha256": "3b64d71c8698a14619dc1bc7fcb657ad4048a0403a2633952d09a15bf60f973e",
+      "split": "holdout",
+      "expected_repo_rate_pct": 5.5,
+      "baseline_repo_rate_pct": 5.5,
+      "baseline_correct": true,
+      "ai_status": "generated",
+      "ai_repo_correct": true,
+      "citation_occurrence_valid": true,
+      "ai_claims": [
+        {
+          "kind": "fact",
+          "text": "keep the policy repo rate under the liquidity adjustment facility (LAF) unchanged at 5.50 per cent",
+          "citations": [
+            {
+              "paragraph_id": "p3",
+              "quote": "keep the policy repo rate under the liquidity adjustment facility (LAF) unchanged at 5.50 per cent"
+            }
+          ]
+        },
+        {
+          "kind": "fact",
+          "text": "consequently, the standing deposit facility (SDF) rate remains at 5.25 per cent while the marginal standing facility (MSF) rate and the Bank Rate remains at 5.75 per cent.",
+          "citations": [
+            {
+              "paragraph_id": "p3",
+              "quote": "consequently, the standing deposit facility (SDF) rate remains at 5.25 per cent while the marginal standing facility (MSF) rate and the Bank Rate remains at 5.75 per cent."
+            }
+          ]
+        },
+        {
+          "kind": "interpretation",
+          "text": "The decision to keep the policy repo rate unchanged while maintaining a neutral stance may reflect a cautious approach by the committee as they observe the ongoing transmission of previous measures.",
+          "citations": [
+            {
+              "paragraph_id": "p13",
+              "quote": "The MPC, therefore, considered it prudent to wait for the impact of policy actions to play out and greater clarity to emerge before charting the next course of action. Accordingly, the MPC unanimously voted to keep the policy repo rate unchanged at 5.5 per cent. The MPC also decided to retain the stance at neutral."
+            }
+          ]
+        }
+      ],
+      "resolved_model": "gemini-3.5-flash-lite",
+      "generated_at": "2026-11-15T13:59:48.671074+00:00",
+      "error": null,
+      "human_factual_error_count": null,
+      "human_citation_entailment_score": null,
+      "human_relevance_score": null,
+      "human_comprehension_score": null
+    },
+    {
+      "document_id": "RBI_60957",
+      "source_url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=60957",
+      "published_on": "2025-08-06",
+      "text_sha256": "46a1aa8f0222dc9ace6f6c284efca13dc60248e1185e85cd8a469ccbe54b848b",
+      "split": "holdout",
+      "expected_repo_rate_pct": 5.5,
+      "baseline_repo_rate_pct": 5.5,
+      "baseline_correct": true,
+      "ai_status": "not_generated",
+      "ai_repo_correct": null,
+      "citation_occurrence_valid": null,
+      "ai_claims": [],
+      "resolved_model": null,
+      "generated_at": null,
+      "error": "Gemini evidence check rejected the output: Citation quote does not match the referenced evidence paragraph.",
+      "human_factual_error_count": null,
+      "human_citation_entailment_score": null,
+      "human_relevance_score": null,
+      "human_comprehension_score": null
+    }
+  ]
+}

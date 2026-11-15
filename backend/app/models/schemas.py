@@ -100,6 +100,13 @@ class MorningBriefCard(BaseModel):
     is_confirmed: bool = False
     source_rule_passed: bool = True
     passed_constraint_gate: bool = True
+    evidence_paragraphs: List[Dict[str, str]] = Field(default_factory=list)
+    cited_claims: List[Dict[str, Any]] = Field(default_factory=list)
+    analysis_model: str = ""
+    analysis_generated_at: str = ""
+    analysis_status: str = "demo"
+    baseline_text: str = ""
+    source_text_sha256: str = ""
 
 
 class UserProfile(BaseModel):

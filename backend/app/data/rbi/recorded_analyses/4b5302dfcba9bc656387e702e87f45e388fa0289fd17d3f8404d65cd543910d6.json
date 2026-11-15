@@ -1,0 +1,58 @@
+{
+  "document_id": "RBI_61332",
+  "text_sha256": "3b64d71c8698a14619dc1bc7fcb657ad4048a0403a2633952d09a15bf60f973e",
+  "requested_model": "gemini-3.5-flash-lite",
+  "resolved_model": "gemini-3.5-flash-lite",
+  "prompt_version": "rbi-evidence-v2",
+  "generated_at": "2026-11-15T13:59:48.671074+00:00",
+  "analysis": {
+    "abstain": false,
+    "abstention_reason": "",
+    "claims": [
+      {
+        "kind": "fact",
+        "text": "keep the policy repo rate under the liquidity adjustment facility (LAF) unchanged at 5.50 per cent",
+        "citations": [
+          {
+            "paragraph_id": "p3",
+            "quote": "keep the policy repo rate under the liquidity adjustment facility (LAF) unchanged at 5.50 per cent"
+          }
+        ]
+      },
+      {
+        "kind": "fact",
+        "text": "consequently, the standing deposit facility (SDF) rate remains at 5.25 per cent while the marginal standing facility (MSF) rate and the Bank Rate remains at 5.75 per cent.",
+        "citations": [
+          {
+            "paragraph_id": "p3",
+            "quote": "consequently, the standing deposit facility (SDF) rate remains at 5.25 per cent while the marginal standing facility (MSF) rate and the Bank Rate remains at 5.75 per cent."
+          }
+        ]
+      },
+      {
+        "kind": "interpretation",
+        "text": "The decision to keep the policy repo rate unchanged while maintaining a neutral stance may reflect a cautious approach by the committee as they observe the ongoing transmission of previous measures.",
+        "citations": [
+          {
+            "paragraph_id": "p13",
+            "quote": "The MPC, therefore, considered it prudent to wait for the impact of policy actions to play out and greater clarity to emerge before charting the next course of action. Accordingly, the MPC unanimously voted to keep the policy repo rate unchanged at 5.5 per cent. The MPC also decided to retain the stance at neutral."
+          }
+        ]
+      }
+    ],
+    "affected_sectors": [
+      "Banking",
+      "Real Estate",
+      "Automotive"
+    ],
+    "uncertainties": [
+      "Ongoing tariff and trade policy uncertainties might impact external demand.",
+      "Prolonged geopolitical tensions and volatility in international financial markets pose downside risks."
+    ],
+    "counterarguments": [
+      "Some members argued for a change in stance from neutral to accommodative.",
+      "Unfavourable base effects could exert upward pressure on headline CPI inflation in later periods."
+    ],
+    "repo_rate_pct": 5.5
+  }
+}

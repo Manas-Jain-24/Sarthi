@@ -34,17 +34,26 @@
   <!-- Main Container -->
   <main class="app-container">
     <aside class="glass-panel" style="padding:1rem; margin-bottom:1rem; border:1px solid #fbbf24;" role="status">
-      <strong>DEMO DATA</strong> — <span id="demo-notice">Synthetic scenarios, not current news. No live sources or AI model connected.</span>
+      <strong id="data-label">RBI DOCUMENTS</strong> — <span id="demo-notice">Loading archived RBI documents...</span>
       <p>This college prototype illustrates source rules and possible economic mechanisms. Its outputs have not been validated for investment use.</p>
     </aside>
 
+    <section class="glass-panel" style="padding:1rem; margin-bottom:1rem; display:flex; flex-wrap:wrap; gap:1rem; align-items:center;">
+      <label>Data <select id="source-mode" class="chat-input" style="width:auto;">
+        <option value="rbi">Real RBI documents</option><option value="demo">Synthetic demo</option>
+      </select></label>
+      <label><input type="checkbox" id="source-only" /> Compare source-only baseline</label>
+      <button class="btn-secondary" id="btn-refresh-rbi">Check RBI feed</button>
+      <a href="/study" class="btn-secondary">Student comprehension study</a>
+      <span id="provider-status" role="status"></span>
+    </section>
     <!-- Live Telemetry Banner -->
     <section class="glass-panel telemetry-strip" id="telemetry-banner">
       <div class="telemetry-title">
         <span class="pulse-dot"></span>
-        <strong>7-Step Demo Pipeline</strong>
+        <strong>Evidence and Analysis Pipeline</strong>
         <span style="color: var(--text-dim);">|</span>
-        <span style="color: var(--text-dim);">College prototype · sample scenarios</span>
+        <span style="color: var(--text-dim);">College research prototype</span>
       </div>
       <div class="telemetry-stats">
         <div class="stat-item">Scanned: <strong id="stat-scanned">0</strong></div>
@@ -57,7 +66,7 @@
     <!-- Navigation Tabs -->
     <nav class="tabs-navigation" aria-label="Dashboard views">
       <button class="tab-btn active" data-tab="brief" id="tab-morning-brief">
-        🌅 Morning Brief (Up to 5 Relevant Samples)
+        🌅 Morning Brief (Up to 5 Relevant Events)
       </button>
       <button class="tab-btn" data-tab="explore" id="tab-explore-feed">
         🌐 Explore / Global Feed
@@ -166,7 +175,7 @@
       <div class="drawer-header">
         <div>
           <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-cyan); font-weight: 700;">
-            Sample Evidence and Interpretation
+            Evidence and Interpretation
           </span>
           <h2 id="drawer-title" style="font-family: var(--font-heading); font-size: 1.3rem; margin-top: 0.3rem;"></h2>
           <div style="font-size: 0.82rem; color: var(--text-dim); margin-top: 0.3rem;" id="drawer-source"></div>
@@ -183,12 +192,14 @@
       </div>
 
       <section class="glass-panel" style="padding:1rem; margin-bottom:1rem;">
-        <h3>Input evidence (synthetic sample)</h3>
+        <h3 id="evidence-heading">Input evidence</h3>
         <p id="sample-date"></p>
         <blockquote id="evidence-excerpt" style="margin:1rem 0; white-space:pre-wrap;"></blockquote>
         <p id="evidence-status"></p>
         <a id="evidence-reference" target="_blank" rel="noopener noreferrer" hidden>Institution / publisher homepage — background only; does not substantiate this sample</a>
       </section>
+      <section id="claim-evidence" style="margin-bottom:1rem;"></section>
+      <details style="margin-bottom:1rem;"><summary>Read the archived source document</summary><div id="source-paragraphs"></div></details>
       <!-- 6-Stage Auditable Timeline -->
       <div class="timeline-block">
         
@@ -249,7 +260,7 @@
             <div class="step-line"></div>
           </div>
           <div class="step-body">
-            <h4>5. Mandatory Counter-Analogy (Key Differences Today)</h4>
+            <h4>5. Counterarguments and Comparison Limits</h4>
             <p id="step-counter-text"></p>
           </div>
         </div>

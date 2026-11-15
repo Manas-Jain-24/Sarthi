@@ -1,0 +1,5 @@
+document_id,source_url,split,ai_status,human_factual_error_count,human_citation_entailment_score,human_relevance_score,human_comprehension_score
+RBI_62169,https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=62169,holdout,not_generated,,,,
+RBI_61749,https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=61749,holdout,generated,,,,
+RBI_61332,https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=61332,holdout,generated,,,,
+RBI_60957,https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=60957,holdout,not_generated,,,,

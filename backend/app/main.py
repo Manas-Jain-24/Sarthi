@@ -7,7 +7,7 @@ Mounts the static frontend for the client-side edge-matching web app.
 
 from pathlib import Path
 from typing import Dict, Any, List
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, Request, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
@@ -22,6 +22,11 @@ from .pipeline.orchestrator import pipeline
 from .services.analogy_service import analogy_service
 from .services.risk_profiler import RiskProfiler
 from .services.event_assistant import event_assistant
+from .services.rbi_brief import build_rbi_brief, all_documents, refresh_live
+from .services.gemini_analysis import analyze_and_cache, model_name
+from .models.rbi import AnalysisUnavailable
+import os
+import httpx
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 FRONTEND_DIR = BASE_DIR / "frontend"
@@ -38,8 +43,8 @@ app = FastAPI(
 # Enable CORS for edge clients
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
+    allow_origins=["http://localhost:8000", "http://127.0.0.1:8000"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -144,6 +149,72 @@ def query_event_assistant(req: ChatRequest) -> ChatResponse:
     )
 
 
+def local_action(request: Request):
+    """The local prototype's network/provider mutations are same-origin only."""
+    if request.client.host not in {"127.0.0.1", "::1"}:
+        raise HTTPException(403, "Run this action from the local application.")
+    origin = request.headers.get("origin")
+    if origin and origin != f"{request.url.scheme}://{request.headers.get('host')}":
+        raise HTTPException(403, "Cross-origin action rejected.")
+
+
+@app.get("/api/v1/rbi/status")
+def rbi_status():
+    return {"provider": "gemini", "model": model_name(),
+            "configured": bool(os.getenv("GEMINI_API_KEY", "").strip()),
+            "document_count": len(all_documents()), "analysis_trigger": "explicit request only"}
+
+
+@app.get("/api/v1/rbi/brief")
+def rbi_brief():
+    return build_rbi_brief()
+
+
+@app.get("/api/v1/rbi/documents/{document_id}")
+def rbi_document(document_id: str):
+    document = next((d for d in all_documents() if d.id == document_id), None)
+    if not document:
+        raise HTTPException(404, "RBI document not found.")
+    return document
+
+
+@app.get("/api/v1/rbi/study-material")
+def study_material():
+    from .services.gemini_analysis import cached_analysis
+    from .services.rbi_brief import baseline_paragraph
+    materials = []
+    for document in all_documents():
+        record = cached_analysis(document)
+        if not record or record.analysis.abstain:
+            continue
+        analysis = record.analysis
+        materials.append({"document_id": document.id, "title": document.title,
+                          "source_url": document.source_url, "source_text_sha256": document.text_sha256,
+                          "model": record.resolved_model, "prompt_version": record.prompt_version,
+                          "baseline": baseline_paragraph(document).text,
+                          "briefing": "\n\n".join([f"{claim.kind.title()}: {claim.text}" for claim in analysis.claims] +
+                                                     ["Uncertainty: " + s for s in analysis.uncertainties] +
+                                                     ["Counterargument: " + s for s in analysis.counterarguments])})
+    return {"cases": materials[:4], "minimum_cases": 2, "notice": "Real accepted AI outputs only; no substitute demo text."}
+
+
+@app.post("/api/v1/rbi/analyze/{document_id}", dependencies=[Depends(local_action)])
+def rbi_analyze(document_id: str):
+    document = rbi_document(document_id)
+    try:
+        return analyze_and_cache(document)
+    except AnalysisUnavailable as exc:
+        raise HTTPException(503, str(exc)) from None
+
+
+@app.post("/api/v1/rbi/refresh", dependencies=[Depends(local_action)])
+def rbi_refresh():
+    try:
+        return refresh_live()
+    except (httpx.HTTPError, ValueError, OSError):
+        raise HTTPException(503, "RBI feed unavailable, changed, or refresh too frequent. Archived documents remain available.") from None
+
+
 # Serve Static Frontend Files
 if FRONTEND_DIR.exists():
     app.mount("/static", StaticFiles(directory=str(FRONTEND_DIR)), name="static")
@@ -155,3 +226,7 @@ if FRONTEND_DIR.exists():
     @app.get("/onboarding")
     def serve_onboarding():
         return FileResponse(FRONTEND_DIR / "onboarding.html")
+
+    @app.get("/study")
+    def serve_study():
+        return FileResponse(FRONTEND_DIR / "study.html")

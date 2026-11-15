@@ -1,3 +1,11 @@
+# Implementation update: 15 November 2026
+
+The RBI document path is now implemented alongside the synthetic demo: eleven original resolutions with provenance, Gemini structured analysis and literal citation checks, local allocation-overlap explanations, source-only comparison, bounded live RSS retrieval, offline regression checks, and a formative student-study flow. Two real recorded Gemini outputs are bundled for repeatable demonstrations.
+
+See [RBI evaluation and study protocol](rbi_evaluation.md) and the README for current commands and the actual 50% accepted holdout coverage. Student data has not yet been collected. The earlier scope notes below are preserved as planning history; their statements that live retrieval and AI integration are absent are superseded by this update. Next.js, Supabase and general conversational AI remain unimplemented.
+
+---
+
 # Sarthi: implementation status and college-project scope
 
 The executable implementation is the reference for project status. The original PDF records the initial vision and contains superseded claims about scoring, privacy, and capabilities.
