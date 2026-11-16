@@ -37,7 +37,7 @@ def must_reject(call):
 
 def test_real_archive_integrity_and_scope():
     docs = load_documents()
-    assert len(docs) == 11
+    assert len(docs) == 22
     labels = json.loads((DATA / "annotations.json").read_text())
     assert sum(l["split"] == "holdout" for l in labels.values()) == 4
     for doc in docs:
@@ -126,7 +126,7 @@ def test_gemini_transport_contract_and_safe_failures():
 
 
 def test_cached_record_does_not_call_provider_again():
-    doc = load_documents()[0]
+    doc = next(d for d in load_documents() if d.id == "RBI_55178")
     with TemporaryDirectory() as folder, patch.object(gemini, "CACHE", Path(folder)), patch.dict(os.environ, {"GEMINI_API_KEY": "fake-key-for-offline-test"}):
         record = gemini.AnalysisRecord(document_id=doc.id, text_sha256=doc.text_sha256,
             requested_model=gemini.model_name(), resolved_model="test-model", prompt_version=gemini.PROMPT_VERSION,

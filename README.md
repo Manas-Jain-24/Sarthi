@@ -2,38 +2,13 @@
 
 A college-project prototype for explaining how financial events might affect Indian sectors and portfolio exposure.
 
-**Synthetic demo mode:** all incoming events are synthetic fixtures, dated for a walkthrough. They are not current news. The application does not fetch source documents or call an AI model. Analysis is manually authored for exact sample inputs, and unknown or changed inputs receive no conclusion.
+The default evidence source is an archive of real RBI monetary-policy resolutions, with optional Gemini analysis on request. A separate synthetic mode provides fixed walkthrough examples. Neither mode predicts returns or recommends trades.
 
 ## Interface
 
-Four primary sections: **Overview**, **Research**, **Journal**, and **Holdings**. Policy timeline, reference library, source checks and the profile are under **More**. Source selection, model status and verification details are in **Sources & settings**.
+Four primary sections: **Overview**, **Research**, **Journal**, and **Holdings**. Policy timeline, reference library, source checks and the profile are under **More**. Source selection, model status and verification details are in **Sources: Check for new announcements** checks the [official policy listing](https://www.rbi.org.in/Scripts/Annualpolicy.aspx) alongside [RBI's rolling RSS feed](https://www.rbi.org.in/pressreleases_rss.xml). It downloads at most six resolutions per run, rotating older checks after unseen documents. Settings shows check time separately from the latest publication, incomplete checks, source revisions, and recent Gemini outcomes. A source check expires after 24 hours. The listing covers its displayed fiscal year; this is not a complete historical archive. Retrieval errors preserve existing evidence. Refresh never invokes Gemini. The local service rejects non-local and cross-origin mutations.
 
-The interface uses neutral surfaces, system fonts and a single green accent. Scenario planning, journal editing, backup tools and detailed evidence open when needed. The announcement drawer supports Escape, keyboard focus containment and focus restoration. No external font service is used.
-
-## Portfolio review workspace
-
-The default screen is **Overview**: entered allocation, sector breakdown, a user-chosen concentration review threshold, notes due for review, and three hypothetical policy worksheets. These prompts support reflection; they do not calculate returns or recommend trades.
-
-- **Holdings:** add holdings or import a CSV with `ticker,sector,allocation_pct`. A preview validates the entire file before replacing anything. Undo is available on the same page until another holdings edit or reload. Imported files never leave the browser.
-- **Journal:** write a thesis, evidence that would change your mind, your own decision label, and a review date. Attach a dated source snapshot from the event drawer or Policy Timeline. Editing appends a revision; follow-up reviews record what you learned and schedule the next review. Archiving is reversible.
-- **More → Policy timeline:** inspect the dated repo-rate observations, filter the actual wording, and link an event to a note. Dots are discrete observations; missing meetings are not filled. Differences compare adjacent archived observations, not necessarily adjacent RBI meetings.
-- **Export:** download a self-contained printable HTML review or JSON, including holdings, the selected scenario comparison, journal history, and loaded real-source references. Journal backups can be validated and restored locally, with a backup of the previous journal downloaded before replacement.
-
-No portfolio, journal or scenario worksheet is sent to Gemini or a backend journal service. They use persistent localStorage, which is not encrypted or tamper-proof. Exported reports contain private financial notes; keep backups yourself. Clearing site data removes local records. The app does not measure whether a thesis is correct or whether the journal improves decisions.
-
-See `docs/portfolio_review.md` for a complete demonstration and recovery guide.
-
-## RBI evidence and Gemini path
-
-The dashboard defaults to the review workspace with **Real RBI documents** selected as its evidence source. Eleven original MPC resolutions (December 2023 to February 2026) are archived in `backend/app/data/rbi/`, with their publication/retrieval dates, original HTML, SHA-256 hashes and numbered evidence paragraphs. These are historical publications, not current news. Switch to Synthetic demo to use the original scenarios.
-
-Two recorded, real Gemini Flash-Lite outputs are included, tied to the exact source hashes, model and prompt version. They work without a key. Their factual sections render validated source quotes; interpretations cite their premises and remain hypotheses requiring human review. Quote occurrence does not prove that an interpretation follows from the evidence.
-
-To generate new analysis, copy `.env.example` to `.env`, add `GEMINI_API_KEY`, and optionally set `GEMINI_MODEL` (default `gemini-3.5-flash-lite`). Restart the server after changing configuration. Open an announcement in **Research**, then use **Generate analysis** to request a new interpretation. No provider call occurs on page load or GET requests. Only the selected public RBI document goes to Gemini; local holdings are not sent. Accepted analyses are cached by document hash, model, and prompt version. The configurable daily attempt budget includes failed requests. `.env` and `.cache` are ignored by Git.
-
-Use **Source only** to compare the source text, and **Read source / Read analysis** to inspect an announcement. Supporting passages and detailed reasoning expand on demand. Portfolio relevance displays the allocation overlapping the mapped sectors; this is a heuristic exposure measure, not a prediction of gains or losses.
-
-**Sources → Check for new announcements** explicitly reads [RBI's rolling press-release RSS feed](https://www.rbi.org.in/pressreleases_rss.xml), selects MPC resolutions, and downloads at most three original RBI HTML documents. A rolling feed can contain no matching resolutions; a successful check with zero matches does not mean that the historical archive is current. Retrieval errors preserve the archive. Refresh never invokes Gemini. The service runs locally on `127.0.0.1`; mutation endpoints reject non-local and cross-origin actions.
+Transient Gemini failures retry once by default, with short backoff. Evidence/schema failures never retry automatically. Each outgoing request, including retries, consumes the persistent daily budget. `GEMINI_MAX_RETRIES` accepts zero to two; long provider retry delays return control instead of retrying early. Request history stores document hashes and outcome codes, never credentials, holdings, or response bodies.
 
 ```sh
 python scripts/refresh_rbi.py
@@ -44,7 +19,9 @@ python scripts/evaluate_rbi.py --split holdout --generate
 
 The four-document holdout evaluation on 15 November 2026 produced two accepted Gemini analyses, one rejected citation and one provider service failure: **50% accepted coverage**. Both accepted answers matched the annotated repo rate and passed literal citation checks; the source-only extractor matched all four rates. These results do not establish semantic entailment or improved comprehension. See `docs/evaluation/rbi_holdout_2026-11-15.json` and `docs/rbi_evaluation.md` for the complete denominators and limitations.
 
-The **More → Research study** link opens a voluntary adult consent flow comparing source passages and recorded AI briefings across different documents. It uses anonymous local JSON export, with no automatic submission. No student study has been conducted yet.
+The expanded run on 17 November (India time) requested six new documents: **five accepted, one provider failure**. All five accepted rates and literal citations passed; the extractor matched all eleven new rate labels. The archive now covers seven hikes, twelve holds and three cuts. These are implementation-reviewed labels pending independent review. See `docs/evaluation/rbi_expanded_2026-11-17.json`.
+
+The **More → Research study** link opens a voluntary adult consent flow comparing source passages and recorded AI briefings across different documents. It uses anonymous local JSON export, with no automatic submission. Four hash-bound cases are frozen for the pilot, so a later refresh cannot change participant materials. The recruitment text, scoring commands and independent-review form are in `docs/pilot/`. Actual volunteer responses and independent human review remain to be collected.
 
 ```sh
 python scripts/analyze_study.py path/to/voluntarily-shared-files
@@ -85,7 +62,7 @@ python -m pip install -r requirements.txt
 python scripts/run_server.py
 ```
 
-Open http://localhost:8000. The source archive, recorded analyses, synthetic demo and study materials need no key or database. New Gemini generation requires a local key and may use provider quota. No Node build step is required.
+Open http://localhost:8000. The source archive, recorded analyses, synthetic demo and study materials need no key or external database. New Gemini generation requires a local key and may use provider quota. Operational history and atomic request budgets use a local SQLite file under ignored `.cache/`. No Node build step is required.
 
 ## Three-minute demonstration
 

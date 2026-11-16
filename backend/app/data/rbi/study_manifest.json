@@ -1,0 +1,296 @@
+{
+  "protocol": "rbi-comprehension-v2",
+  "pilot_id": "rbi-pilot-2026-11-16",
+  "created_at": "2026-11-16T20:08:12.939934+00:00",
+  "review_status": "Implementation checks passed; independent human entailment review pending.",
+  "cases": [
+    {
+      "document_id": "RBI_63742",
+      "title": "Monetary Policy Statement, 2026-27 Resolution of the Monetary Policy Committee October 5 to 7, 2026",
+      "source_url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=63742",
+      "source_text_sha256": "0aad214836898e18eb6b7da4d1b503d3943607e783213c1bf183e844ad8351b2",
+      "model": "gemini-3.5-flash-lite",
+      "prompt_version": "rbi-evidence-v2",
+      "record": {
+        "document_id": "RBI_63742",
+        "text_sha256": "0aad214836898e18eb6b7da4d1b503d3943607e783213c1bf183e844ad8351b2",
+        "requested_model": "gemini-3.5-flash-lite",
+        "resolved_model": "gemini-3.5-flash-lite",
+        "prompt_version": "rbi-evidence-v2",
+        "generated_at": "2026-11-16T20:04:49.724546+00:00",
+        "analysis": {
+          "abstain": false,
+          "abstention_reason": "",
+          "claims": [
+            {
+              "kind": "fact",
+              "text": "After a detailed assessment of the evolving macroeconomic and financial developments and the outlook, the MPC voted unanimously to increase the policy repo rate under the liquidity adjustment facility (LAF) by 25 bps to 5.50 per cent. Consequently, the standing deposit facility (SDF) rate stands adjusted at 5.25 per cent and the marginal standing facility (MSF) rate and the Bank Rate at 5.75 per cent. The MPC also decided to change the stance to calibrated tightening.",
+              "citations": [
+                {
+                  "paragraph_id": "p3",
+                  "quote": "After a detailed assessment of the evolving macroeconomic and financial developments and the outlook, the MPC voted unanimously to increase the policy repo rate under the liquidity adjustment facility (LAF) by 25 bps to 5.50 per cent. Consequently, the standing deposit facility (SDF) rate stands adjusted at 5.25 per cent and the marginal standing facility (MSF) rate and the Bank Rate at 5.75 per cent. The MPC also decided to change the stance to calibrated tightening."
+                }
+              ]
+            },
+            {
+              "kind": "interpretation",
+              "text": "An increase in the policy repo rate could potentially raise borrowing costs for banks, which might subsequently influence lending rates across various financial products.",
+              "citations": [
+                {
+                  "paragraph_id": "p3",
+                  "quote": "After a detailed assessment of the evolving macroeconomic and financial developments and the outlook, the MPC voted unanimously to increase the policy repo rate under the liquidity adjustment facility (LAF) by 25 bps to 5.50 per cent."
+                }
+              ]
+            }
+          ],
+          "affected_sectors": [
+            "Banking",
+            "NBFCs",
+            "Real Estate",
+            "Automotive"
+          ],
+          "uncertainties": [
+            "Uncertainty regarding the duration and extent of future rate actions based on evolving conditions.",
+            "Uncertainty regarding the trajectory of energy prices and supply chain pressures amidst the lingering conflict."
+          ],
+          "counterarguments": [
+            "Strong domestic growth and resilient economic activity might offset the dampening effect of higher borrowing costs.",
+            "Supply side pressures might be mitigated by active diversification of supply sources and government policy interventions."
+          ],
+          "repo_rate_pct": 5.5
+        }
+      },
+      "baseline": "2. After a detailed assessment of the evolving macroeconomic and financial developments and the outlook, the MPC voted unanimously to increase the policy repo rate under the liquidity adjustment facility (LAF) by 25 bps to 5.50 per cent. Consequently, the standing deposit facility (SDF) rate stands adjusted at 5.25 per cent and the marginal standing facility (MSF) rate and the Bank Rate at 5.75 per cent. The MPC also decided to change the stance to calibrated tightening.",
+      "briefing": "Fact: After a detailed assessment of the evolving macroeconomic and financial developments and the outlook, the MPC voted unanimously to increase the policy repo rate under the liquidity adjustment facility (LAF) by 25 bps to 5.50 per cent. Consequently, the standing deposit facility (SDF) rate stands adjusted at 5.25 per cent and the marginal standing facility (MSF) rate and the Bank Rate at 5.75 per cent. The MPC also decided to change the stance to calibrated tightening.\n\nInterpretation: An increase in the policy repo rate could potentially raise borrowing costs for banks, which might subsequently influence lending rates across various financial products.\n\nUncertainty: Uncertainty regarding the duration and extent of future rate actions based on evolving conditions.\n\nUncertainty: Uncertainty regarding the trajectory of energy prices and supply chain pressures amidst the lingering conflict.\n\nCounterargument: Strong domestic growth and resilient economic activity might offset the dampening effect of higher borrowing costs.\n\nCounterargument: Supply side pressures might be mitigated by active diversification of supply sources and government policy interventions."
+    },
+    {
+      "document_id": "RBI_63287",
+      "title": "Monetary Policy Statement, 2026-27 Resolution of the Monetary Policy Committee August 3 to 5, 2026",
+      "source_url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=63287",
+      "source_text_sha256": "8dd2513021021a8298ea0a4cdf7d9900dd83793fd915f3d75a30bbcbca5bf263",
+      "model": "gemini-3.5-flash-lite",
+      "prompt_version": "rbi-evidence-v2",
+      "record": {
+        "document_id": "RBI_63287",
+        "text_sha256": "8dd2513021021a8298ea0a4cdf7d9900dd83793fd915f3d75a30bbcbca5bf263",
+        "requested_model": "gemini-3.5-flash-lite",
+        "resolved_model": "gemini-3.5-flash-lite",
+        "prompt_version": "rbi-evidence-v2",
+        "generated_at": "2026-11-16T20:05:01.815808+00:00",
+        "analysis": {
+          "abstain": false,
+          "abstention_reason": "",
+          "claims": [
+            {
+              "kind": "fact",
+              "text": "The Monetary Policy Committee (MPC) held its 62nd meeting from August 3 to 5, 2026, under the chairmanship of Shri Sanjay Malhotra, Governor, Reserve Bank of India.",
+              "citations": [
+                {
+                  "paragraph_id": "p2",
+                  "quote": "The Monetary Policy Committee (MPC) held its 62nd meeting from August 3 to 5, 2026, under the chairmanship of Shri Sanjay Malhotra, Governor, Reserve Bank of India."
+                },
+                {
+                  "paragraph_id": "p3",
+                  "quote": "After a detailed assessment of the evolving macroeconomic and financial developments and the outlook, the MPC voted unanimously to keep the policy repo rate under the liquidity adjustment facility (LAF) unchanged at 5.25 per cent."
+                }
+              ]
+            },
+            {
+              "kind": "fact",
+              "text": "Consequently, the standing deposit facility (SDF) rate remains at 5.00 per cent and the marginal standing facility (MSF) rate and the Bank Rate remain at 5.50 per cent.",
+              "citations": [
+                {
+                  "paragraph_id": "p3",
+                  "quote": "Consequently, the standing deposit facility (SDF) rate remains at 5.00 per cent and the marginal standing facility (MSF) rate and the Bank Rate remain at 5.50 per cent."
+                }
+              ]
+            },
+            {
+              "kind": "fact",
+              "text": "While CPI inflation increased to 4.4 per cent in June 2026 after remaining below the target for 16 consecutive months, it turned out to be lower by 30 basis points (bps) than what was earlier projected for Q1:2026-27. The increase in June was primarily due to higher food and fuel inflation.",
+              "citations": [
+                {
+                  "paragraph_id": "p11",
+                  "quote": "While CPI inflation increased to 4.4 per cent in June 2026 after remaining below the target for 16 consecutive months, it turned out to be lower by 30 basis points (bps) than what was earlier projected for Q1:2026-27. The increase in June was primarily due to higher food and fuel inflation."
+                }
+              ]
+            },
+            {
+              "kind": "interpretation",
+              "text": "A steady policy repo rate combined with robust bank credit growth indicators might support continued financing availability, which could influence activity in sectors such as Banking and Real Estate if borrowing costs remain stable.",
+              "citations": [
+                {
+                  "paragraph_id": "p3",
+                  "quote": "After a detailed assessment of the evolving macroeconomic and financial developments and the outlook, the MPC voted unanimously to keep the policy repo rate under the liquidity adjustment facility (LAF) unchanged at 5.25 per cent."
+                },
+                {
+                  "paragraph_id": "p8",
+                  "quote": "Investment continues to be resilient, as suggested by various indicators related to construction, capital goods and bank credit."
+                }
+              ]
+            }
+          ],
+          "affected_sectors": [
+            "Banking",
+            "Real Estate"
+          ],
+          "uncertainties": [
+            "Uncertain spatial and temporal rainfall distribution influenced by El Nino conditions could alter agricultural outcomes and rural demand.",
+            "Global oil price volatility driven by geopolitical developments may create unpredictable shifts in inflation paths."
+          ],
+          "counterarguments": [
+            "Supply side pressures and food and fuel price increases might become more broad-based than currently anticipated, potentially altering policy effectiveness.",
+            "Global economic headwinds and shifting policy expectations could dampen domestic demand irrespective of repo rate continuity."
+          ],
+          "repo_rate_pct": 5.25
+        }
+      },
+      "baseline": "2. After a detailed assessment of the evolving macroeconomic and financial developments and the outlook, the MPC voted unanimously to keep the policy repo rate under the liquidity adjustment facility (LAF) unchanged at 5.25 per cent. Consequently, the standing deposit facility (SDF) rate remains at 5.00 per cent and the marginal standing facility (MSF) rate and the Bank Rate remain at 5.50 per cent. The MPC also decided to continue with the neutral stance.",
+      "briefing": "Fact: The Monetary Policy Committee (MPC) held its 62nd meeting from August 3 to 5, 2026, under the chairmanship of Shri Sanjay Malhotra, Governor, Reserve Bank of India.\n\nFact: Consequently, the standing deposit facility (SDF) rate remains at 5.00 per cent and the marginal standing facility (MSF) rate and the Bank Rate remain at 5.50 per cent.\n\nFact: While CPI inflation increased to 4.4 per cent in June 2026 after remaining below the target for 16 consecutive months, it turned out to be lower by 30 basis points (bps) than what was earlier projected for Q1:2026-27. The increase in June was primarily due to higher food and fuel inflation.\n\nInterpretation: A steady policy repo rate combined with robust bank credit growth indicators might support continued financing availability, which could influence activity in sectors such as Banking and Real Estate if borrowing costs remain stable.\n\nUncertainty: Uncertain spatial and temporal rainfall distribution influenced by El Nino conditions could alter agricultural outcomes and rural demand.\n\nUncertainty: Global oil price volatility driven by geopolitical developments may create unpredictable shifts in inflation paths.\n\nCounterargument: Supply side pressures and food and fuel price increases might become more broad-based than currently anticipated, potentially altering policy effectiveness.\n\nCounterargument: Global economic headwinds and shifting policy expectations could dampen domestic demand irrespective of repo rate continuity."
+    },
+    {
+      "document_id": "RBI_61749",
+      "title": "Monetary Policy Statement, 2025-26 Resolution of the Monetary Policy Committee December 3 to 5, 2025",
+      "source_url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=61749",
+      "source_text_sha256": "8afaf7a070a71cfe8e7aae4742e60048551f88dff73f095fb85f7930176ad6a7",
+      "model": "gemini-3.5-flash-lite",
+      "prompt_version": "rbi-evidence-v2",
+      "record": {
+        "document_id": "RBI_61749",
+        "text_sha256": "8afaf7a070a71cfe8e7aae4742e60048551f88dff73f095fb85f7930176ad6a7",
+        "requested_model": "gemini-3.5-flash-lite",
+        "resolved_model": "gemini-3.5-flash-lite",
+        "prompt_version": "rbi-evidence-v2",
+        "generated_at": "2026-11-15T13:59:45.641740+00:00",
+        "analysis": {
+          "abstain": false,
+          "abstention_reason": "",
+          "claims": [
+            {
+              "kind": "fact",
+              "text": "the MPC voted unanimously to reduce the policy repo rate under the liquidity adjustment facility (LAF) to 5.25 per cent.",
+              "citations": [
+                {
+                  "paragraph_id": "p3",
+                  "quote": "the MPC voted unanimously to reduce the policy repo rate under the liquidity adjustment facility (LAF) to 5.25 per cent."
+                }
+              ]
+            },
+            {
+              "kind": "fact",
+              "text": "Consequently, the standing deposit facility (SDF) rate shall stand adjusted to 5.00 per cent and the marginal standing facility (MSF) rate and the Bank Rate to 5.50 per cent.",
+              "citations": [
+                {
+                  "paragraph_id": "p3",
+                  "quote": "Consequently, the standing deposit facility (SDF) rate shall stand adjusted to 5.00 per cent and the marginal standing facility (MSF) rate and the Bank Rate to 5.50 per cent."
+                }
+              ]
+            },
+            {
+              "kind": "interpretation",
+              "text": "The reduction in the repo rate paired with healthy non-food bank credit expansion could theoretically lower borrowing costs for corporations and financial institutions, potentially supporting investment activity.",
+              "citations": [
+                {
+                  "paragraph_id": "p3",
+                  "quote": "the MPC voted unanimously to reduce the policy repo rate under the liquidity adjustment facility (LAF) to 5.25 per cent."
+                },
+                {
+                  "paragraph_id": "p7",
+                  "quote": "Investment activity remains healthy with private investment gaining steam on the back of expansion in non-food bank credit and high capacity utilisation."
+                }
+              ]
+            }
+          ],
+          "affected_sectors": [
+            "Banking",
+            "NBFCs",
+            "Real Estate",
+            "Automotive"
+          ],
+          "uncertainties": [
+            "Global inflation dynamics remain uneven and external uncertainties pose downside risks to the outlook.",
+            "Merchandise exports face headwinds despite strong services exports."
+          ],
+          "counterarguments": [
+            "External uncertainties and volatile equity markets could alter macroeconomic conditions independently of domestic policy rate adjustments."
+          ],
+          "repo_rate_pct": 5.25
+        }
+      },
+      "baseline": "2. After a detailed assessment of the evolving macroeconomic and financial developments and the outlook, the MPC voted unanimously to reduce the policy repo rate under the liquidity adjustment facility (LAF) to 5.25 per cent. Consequently, the standing deposit facility (SDF) rate shall stand adjusted to 5.00 per cent and the marginal standing facility (MSF) rate and the Bank Rate to 5.50 per cent. The MPC also decided to continue with the neutral stance.",
+      "briefing": "Fact: the MPC voted unanimously to reduce the policy repo rate under the liquidity adjustment facility (LAF) to 5.25 per cent.\n\nFact: Consequently, the standing deposit facility (SDF) rate shall stand adjusted to 5.00 per cent and the marginal standing facility (MSF) rate and the Bank Rate to 5.50 per cent.\n\nInterpretation: The reduction in the repo rate paired with healthy non-food bank credit expansion could theoretically lower borrowing costs for corporations and financial institutions, potentially supporting investment activity.\n\nUncertainty: Global inflation dynamics remain uneven and external uncertainties pose downside risks to the outlook.\n\nUncertainty: Merchandise exports face headwinds despite strong services exports.\n\nCounterargument: External uncertainties and volatile equity markets could alter macroeconomic conditions independently of domestic policy rate adjustments."
+    },
+    {
+      "document_id": "RBI_54818",
+      "title": "Monetary Policy Statement, 2022-23 Resolution of the Monetary Policy Committee (MPC) December 5-7, 2022",
+      "source_url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=54818",
+      "source_text_sha256": "895cf323652e63b3cde8d142d67b0a8aa9ec8e032cda605e81d5b11abe0649d6",
+      "model": "gemini-3.5-flash-lite",
+      "prompt_version": "rbi-evidence-v2",
+      "record": {
+        "document_id": "RBI_54818",
+        "text_sha256": "895cf323652e63b3cde8d142d67b0a8aa9ec8e032cda605e81d5b11abe0649d6",
+        "requested_model": "gemini-3.5-flash-lite",
+        "resolved_model": "gemini-3.5-flash-lite",
+        "prompt_version": "rbi-evidence-v2",
+        "generated_at": "2026-11-16T20:05:28.452944+00:00",
+        "analysis": {
+          "abstain": false,
+          "abstention_reason": "",
+          "claims": [
+            {
+              "kind": "fact",
+              "text": "Increase the policy repo rate under the liquidity adjustment facility (LAF) by 35 basis points to 6.25 per cent with immediate effect.",
+              "citations": [
+                {
+                  "paragraph_id": "p2",
+                  "quote": "Increase the policy repo rate under the liquidity adjustment facility (LAF) by 35 basis points to 6.25 per cent with immediate effect."
+                }
+              ]
+            },
+            {
+              "kind": "fact",
+              "text": "Consequently, the standing deposit facility (SDF) rate stands adjusted to 6.00 per cent and the marginal standing facility (MSF) rate and the Bank Rate to 6.50 per cent.",
+              "citations": [
+                {
+                  "paragraph_id": "p3",
+                  "quote": "Consequently, the standing deposit facility (SDF) rate stands adjusted to 6.00 per cent and the marginal standing facility (MSF) rate and the Bank Rate to 6.50 per cent."
+                }
+              ]
+            },
+            {
+              "kind": "interpretation",
+              "text": "Based on the stated objective to remain focused on withdrawal of accommodation and break core inflation persistence, higher policy rates could potentially influence borrowing costs across various financial segments, which may affect sectors such as Banking and NBFCs.",
+              "citations": [
+                {
+                  "paragraph_id": "p4",
+                  "quote": "The MPC also decided to remain focused on withdrawal of accommodation to ensure that inflation remains within the target going forward, while supporting growth."
+                },
+                {
+                  "paragraph_id": "p19",
+                  "quote": "On balance, the MPC is of the view that, further calibrated monetary policy action is warranted to keep inflation expectations anchored, break the core inflation persistence and contain second round effects"
+                }
+              ]
+            }
+          ],
+          "affected_sectors": [
+            "Banking",
+            "NBFCs"
+          ],
+          "uncertainties": [
+            "Global economic outlook is skewed to the downside and capital flows to emerging market economies remain volatile.",
+            "Adverse climate events are increasingly becoming a significant source of upside risk to food prices."
+          ],
+          "counterarguments": [
+            "Economic activity exhibits resilience and aggregate demand conditions have been supported by pent-up spending.",
+            "Some members voted against the repo rate hike or against the withdrawal of accommodation stance."
+          ],
+          "repo_rate_pct": 6.25
+        }
+      },
+      "baseline": "Increase the policy repo rate under the liquidity adjustment facility (LAF) by 35 basis points to 6.25 per cent with immediate effect.",
+      "briefing": "Fact: Increase the policy repo rate under the liquidity adjustment facility (LAF) by 35 basis points to 6.25 per cent with immediate effect.\n\nFact: Consequently, the standing deposit facility (SDF) rate stands adjusted to 6.00 per cent and the marginal standing facility (MSF) rate and the Bank Rate to 6.50 per cent.\n\nInterpretation: Based on the stated objective to remain focused on withdrawal of accommodation and break core inflation persistence, higher policy rates could potentially influence borrowing costs across various financial segments, which may affect sectors such as Banking and NBFCs.\n\nUncertainty: Global economic outlook is skewed to the downside and capital flows to emerging market economies remain volatile.\n\nUncertainty: Adverse climate events are increasingly becoming a significant source of upside risk to food prices.\n\nCounterargument: Economic activity exhibits resilience and aggregate demand conditions have been supported by pent-up spending.\n\nCounterargument: Some members voted against the repo rate hike or against the withdrawal of accommodation stance."
+    }
+  ],
+  "manifest_sha256": "475fda81dbaeaaf9ee5ac60526595853b6195f3316c61ce1982127699ef3cb1d"
+}

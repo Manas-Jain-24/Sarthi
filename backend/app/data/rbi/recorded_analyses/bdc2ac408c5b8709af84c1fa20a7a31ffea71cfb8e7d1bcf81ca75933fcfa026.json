@@ -1,0 +1,49 @@
+{
+  "document_id": "RBI_63742",
+  "text_sha256": "0aad214836898e18eb6b7da4d1b503d3943607e783213c1bf183e844ad8351b2",
+  "requested_model": "gemini-3.5-flash-lite",
+  "resolved_model": "gemini-3.5-flash-lite",
+  "prompt_version": "rbi-evidence-v2",
+  "generated_at": "2026-11-16T20:04:49.724546+00:00",
+  "analysis": {
+    "abstain": false,
+    "abstention_reason": "",
+    "claims": [
+      {
+        "kind": "fact",
+        "text": "After a detailed assessment of the evolving macroeconomic and financial developments and the outlook, the MPC voted unanimously to increase the policy repo rate under the liquidity adjustment facility (LAF) by 25 bps to 5.50 per cent. Consequently, the standing deposit facility (SDF) rate stands adjusted at 5.25 per cent and the marginal standing facility (MSF) rate and the Bank Rate at 5.75 per cent. The MPC also decided to change the stance to calibrated tightening.",
+        "citations": [
+          {
+            "paragraph_id": "p3",
+            "quote": "After a detailed assessment of the evolving macroeconomic and financial developments and the outlook, the MPC voted unanimously to increase the policy repo rate under the liquidity adjustment facility (LAF) by 25 bps to 5.50 per cent. Consequently, the standing deposit facility (SDF) rate stands adjusted at 5.25 per cent and the marginal standing facility (MSF) rate and the Bank Rate at 5.75 per cent. The MPC also decided to change the stance to calibrated tightening."
+          }
+        ]
+      },
+      {
+        "kind": "interpretation",
+        "text": "An increase in the policy repo rate could potentially raise borrowing costs for banks, which might subsequently influence lending rates across various financial products.",
+        "citations": [
+          {
+            "paragraph_id": "p3",
+            "quote": "After a detailed assessment of the evolving macroeconomic and financial developments and the outlook, the MPC voted unanimously to increase the policy repo rate under the liquidity adjustment facility (LAF) by 25 bps to 5.50 per cent."
+          }
+        ]
+      }
+    ],
+    "affected_sectors": [
+      "Banking",
+      "NBFCs",
+      "Real Estate",
+      "Automotive"
+    ],
+    "uncertainties": [
+      "Uncertainty regarding the duration and extent of future rate actions based on evolving conditions.",
+      "Uncertainty regarding the trajectory of energy prices and supply chain pressures amidst the lingering conflict."
+    ],
+    "counterarguments": [
+      "Strong domestic growth and resilient economic activity might offset the dampening effect of higher borrowing costs.",
+      "Supply side pressures might be mitigated by active diversification of supply sources and government policy interventions."
+    ],
+    "repo_rate_pct": 5.5
+  }
+}

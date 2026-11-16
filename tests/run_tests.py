@@ -1,6 +1,8 @@
 """Runner for Sarthi test suite without third-party runner dependencies."""
 
 import sys
+from tempfile import TemporaryDirectory
+from unittest.mock import patch
 from pathlib import Path
 
 # Add project root to sys.path
@@ -12,6 +14,8 @@ import tests.test_regressions as regression
 import tests.test_rbi as rbi_tests
 import tests.test_timeline as timeline_tests
 import tests.test_ui_contract as ui_tests
+import tests.test_research_operations as operations
+from backend.app.services import research_state
 
 def run_all_tests():
     print("=" * 60)
@@ -34,10 +38,12 @@ def run_all_tests():
     tests.extend((name, getattr(timeline_tests, name)) for name in sorted(dir(timeline_tests)) if name.startswith("test_"))
     tests.extend((name, getattr(ui_tests, name)) for name in sorted(dir(ui_tests)) if name.startswith("test_"))
 
+    tests.extend((name, getattr(operations,name)) for name in dir(operations) if name.startswith("test_"))
     passed = 0
     for name, test_func in tests:
         try:
-            test_func()
+            with TemporaryDirectory() as folder, patch.object(research_state,"DB",Path(folder)/"research.sqlite3"):
+                test_func()
             print(f"  [PASS] {name}")
             passed += 1
         except Exception as e:

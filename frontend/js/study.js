@@ -2,8 +2,10 @@ let materials = [];
 let trials = [];
 let current = 0;
 let trialStarted;
+let cohort;
 const responses = [];
 const participant = crypto.randomUUID();
+const testMode = new URLSearchParams(location.search).get("test") === "1";
 const random = () => crypto.getRandomValues(new Uint32Array(1))[0] / 4294967296;
 
 function showTrial() {
@@ -22,10 +24,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     const response = await fetch("/api/v1/rbi/study-material");
     if (!response.ok) throw new Error();
     const data = await response.json();
+    cohort = data;
     materials = data.cases;
     document.getElementById("study-status").textContent = materials.length >= 2 ?
-      `${materials.length} announcements are ready. Participation requires consent.` :
-      "The researcher must generate accepted Gemini analyses for at least two RBI documents before the study can start.";
+      `${materials.length} announcements are ready. ${testMode ? "Test run: the export will be excluded from participant findings." : "Participation requires consent."}` :
+      "The researcher must prepare fixed study materials before the exercise can start.";
   } catch (_) { document.getElementById("study-status").textContent = "Study materials unavailable. Please return later."; }
   consent.addEventListener("change", () => { start.disabled = !consent.checked || materials.length < 2; });
   start.addEventListener("click", () => {
@@ -52,7 +55,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     else { document.getElementById("trial").hidden=true; document.getElementById("study-end").hidden=false; }
   });
   document.getElementById("study-download").addEventListener("click", () => {
-    const result = {protocol:"rbi-comprehension-v1", participant_id:participant, consent:true,
+    const result = {protocol:cohort.protocol, pilot_id:cohort.pilot_id, manifest_sha256:cohort.manifest_sha256,
+      participant_id:participant, consent:true, adult_eligible:true, test_record:testMode,
       completed_at:new Date().toISOString(), responses};
     const url=URL.createObjectURL(new Blob([JSON.stringify(result,null,2)],{type:"application/json"}));
     const link=document.createElement("a"); link.href=url; link.download=`sarthi-study-${participant}.json`; link.click();

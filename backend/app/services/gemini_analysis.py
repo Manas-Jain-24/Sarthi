@@ -3,6 +3,10 @@ import json
 import os
 import re
 import threading
+import time
+import math
+import uuid
+from email.utils import parsedate_to_datetime
 from datetime import datetime, timezone
 from pathlib import Path
 import httpx
@@ -10,6 +14,7 @@ from dotenv import load_dotenv
 from pydantic import ValidationError
 from ..models.rbi import RBIAnalysis, AnalysisRecord, AnalysisUnavailable
 from .rbi_source import digest, utc_now
+from . import research_state
 
 ROOT = Path(__file__).resolve().parents[3]
 load_dotenv(ROOT / ".env")
@@ -116,11 +121,16 @@ def cached_analysis(document):
         return None
 
 
-def request_analysis(document, client=None):
+def request_analysis(document, client=None, *, max_retries=None, sleeper=time.sleep):
     key = os.getenv("GEMINI_API_KEY", "").strip()
     if not key:
-        raise AnalysisUnavailable("Set GEMINI_API_KEY in the local .env file to enable Gemini analysis.")
+        raise AnalysisUnavailable("Set GEMINI_API_KEY in the local .env file to enable Gemini analysis.", code="not_configured")
     model = model_name()
+    try:
+        retries = max(0,min(2,int(os.getenv("GEMINI_MAX_RETRIES", "1") if max_retries is None else max_retries)))
+        limit = max(1,min(50,int(os.getenv("GEMINI_DAILY_LIMIT", "12"))))
+    except ValueError:
+        raise AnalysisUnavailable("Gemini retry and daily limits must be integers in the local configuration.",code="configuration_error") from None
     body = {
         "systemInstruction": {"parts": [{"text": SYSTEM}]},
         "contents": [{"role": "user", "parts": [{"text": json.dumps({
@@ -132,7 +142,7 @@ def request_analysis(document, client=None):
                              "responseJsonSchema": RBIAnalysis.model_json_schema(),
                              "maxOutputTokens": 5000}
     }
-    def call(session):
+    def call_once(session):
         try:
             response = session.post(
                 f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent",
@@ -141,28 +151,59 @@ def request_analysis(document, client=None):
                 reason = {400: "invalid key, model or request", 401: "authentication failed",
                           403: "key permissions or region restriction", 404: "model unavailable",
                           429: "quota or rate limit reached"}.get(response.status_code, "provider failure")
-                raise AnalysisUnavailable(f"Gemini unavailable (HTTP {response.status_code}: {reason}). No analysis was generated.")
+                transient = response.status_code in {408,429,500,502,503,504}
+                error = AnalysisUnavailable(f"Gemini unavailable (HTTP {response.status_code}: {reason}). Source text remains available.",
+                                            code="rate_limited" if response.status_code == 429 else "provider_error",
+                                            retryable=transient, http_status=response.status_code)
+                retry_after = response.headers.get("Retry-After")
+                error.retry_after = None
+                if retry_after:
+                    try:
+                        error.retry_after = max(0,float(retry_after))
+                        if not math.isfinite(float(retry_after)):
+                            error.retry_after = 60
+                    except ValueError:
+                        try:
+                            error.retry_after = max(0,(parsedate_to_datetime(retry_after)-datetime.now(timezone.utc)).total_seconds())
+                        except (ValueError,TypeError,OverflowError):
+                            error.retry_after = 60  # Unknown provider delay: do not retry early.
+                raise error
             result = response.json()
             candidates = result.get("candidates", [])
             if not candidates or candidates[0].get("finishReason") != "STOP":
-                raise AnalysisUnavailable("Gemini did not return a complete answer; analysis withheld.")
+                raise AnalysisUnavailable("Gemini did not return a complete answer; analysis withheld.", code="incomplete")
             text = "".join(p.get("text", "") for p in candidates[0].get("content", {}).get("parts", []) if not p.get("thought"))
             try:
                 analysis = RBIAnalysis.model_validate_json(text)
             except ValidationError:
-                raise AnalysisUnavailable("Gemini returned an invalid analysis schema; analysis withheld.") from None
+                raise AnalysisUnavailable("Gemini returned an invalid analysis schema; analysis withheld.", code="schema_rejected") from None
             try:
                 analysis = source_facts_only(document, analysis)
                 validate_analysis(document, analysis)
             except ValueError as exc:
-                raise AnalysisUnavailable(f"Gemini evidence check rejected the output: {exc}") from None
+                raise AnalysisUnavailable(f"Gemini evidence check rejected the output: {exc}", code="evidence_rejected") from None
             return AnalysisRecord(document_id=document.id, text_sha256=document.text_sha256,
                                   requested_model=model, resolved_model=result.get("modelVersion", model),
                                   prompt_version=PROMPT_VERSION, generated_at=utc_now(), analysis=analysis)
         except httpx.HTTPError as exc:
-            raise AnalysisUnavailable(f"Gemini connection failed ({type(exc).__name__}); analysis withheld.") from None
-        except (ValueError, KeyError, TypeError):
-            raise AnalysisUnavailable("Gemini response was malformed; analysis withheld.") from None
+            raise AnalysisUnavailable(f"Gemini connection failed ({type(exc).__name__}); source text remains available.", code="connection_failed", retryable=True) from None
+        except (ValueError, KeyError, TypeError, AttributeError, IndexError):
+            raise AnalysisUnavailable("Gemini response was malformed; analysis withheld.", code="malformed") from None
+    def call(session):
+        for attempt in range(retries+1):
+            attempt_id = research_state.reserve_attempt(document,model,PROMPT_VERSION,limit)
+            try:
+                record = call_once(session)
+            except AnalysisUnavailable as exc:
+                research_state.finish_attempt(attempt_id,"rejected" if exc.code in {"schema_rejected","evidence_rejected","incomplete","malformed"} else "failed",exc.code,exc.http_status)
+                delay = getattr(exc,"retry_after",None)
+                delay = 2**attempt if delay is None else delay
+                if not exc.retryable or attempt == retries or delay > 3:
+                    raise
+                sleeper(delay)
+            else:
+                research_state.finish_attempt(attempt_id,"abstained" if record.analysis.abstain else "accepted")
+                return record
     if client:
         return call(client)
     with httpx.Client(timeout=60, follow_redirects=False, trust_env=False) as session:
@@ -181,17 +222,9 @@ def analyze_and_cache(document):
         if not os.getenv("GEMINI_API_KEY", "").strip():
             raise AnalysisUnavailable("Set GEMINI_API_KEY in the local .env file to enable Gemini analysis.")
         CACHE.mkdir(parents=True, exist_ok=True)
-        budget_file = CACHE / "budget.json"
-        today = datetime.now(timezone.utc).date().isoformat()
-        budget = json.loads(budget_file.read_text()) if budget_file.exists() else {}
-        attempts = budget.get("attempts", 0) if budget.get("date") == today else 0
-        limit = max(1, min(50, int(os.getenv("GEMINI_DAILY_LIMIT", "12"))))
-        if attempts >= limit:
-            raise AnalysisUnavailable("Daily Gemini attempt budget reached. Cached briefs remain available.")
-        budget_file.write_text(json.dumps({"date": today, "attempts": attempts+1}), encoding="utf-8")
         record = request_analysis(document)
-        path = cache_path(document, model_name())
-        temp = path.with_suffix(".tmp")
+        path = cache_path(document, record.requested_model)
+        temp = path.with_suffix(f".{uuid.uuid4().hex}.tmp")
         temp.write_text(record.model_dump_json(indent=2), encoding="utf-8")
         temp.replace(path)
         return record

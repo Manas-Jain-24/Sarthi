@@ -1,0 +1,69 @@
+{
+  "document_id": "RBI_62863",
+  "text_sha256": "9583796aca4dbc9546d357f38690799d73bb11865b669011d631f8571168d4bb",
+  "requested_model": "gemini-3.5-flash-lite",
+  "resolved_model": "gemini-3.5-flash-lite",
+  "prompt_version": "rbi-evidence-v2",
+  "generated_at": "2026-11-16T20:05:13.813741+00:00",
+  "analysis": {
+    "abstain": false,
+    "abstention_reason": "",
+    "claims": [
+      {
+        "kind": "fact",
+        "text": "After a detailed assessment of the evolving macroeconomic and financial developments and the outlook, the MPC voted unanimously to keep the policy repo rate under the liquidity adjustment facility (LAF) unchanged at 5.25 per cent.",
+        "citations": [
+          {
+            "paragraph_id": "p3",
+            "quote": "After a detailed assessment of the evolving macroeconomic and financial developments and the outlook, the MPC voted unanimously to keep the policy repo rate under the liquidity adjustment facility (LAF) unchanged at 5.25 per cent."
+          }
+        ]
+      },
+      {
+        "kind": "fact",
+        "text": "Consequently, the standing deposit facility (SDF) rate remains at 5.00 per cent and the marginal standing facility (MSF) rate and the Bank Rate remain at 5.50 per cent.",
+        "citations": [
+          {
+            "paragraph_id": "p3",
+            "quote": "Consequently, the standing deposit facility (SDF) rate remains at 5.00 per cent and the marginal standing facility (MSF) rate and the Bank Rate remain at 5.50 per cent."
+          }
+        ]
+      },
+      {
+        "kind": "interpretation",
+        "text": "If retail fuel prices and input costs pass through fully to general consumer prices, monetary authorities could face conditions that might influence future policy stances.",
+        "citations": [
+          {
+            "paragraph_id": "p13",
+            "quote": "The second-round impact of higher input costs could exert upside pressure on CPI inflation going forward."
+          }
+        ]
+      },
+      {
+        "kind": "interpretation",
+        "text": "When credit flows from institutional sources remain steady, investment activity in certain sectors can potentially maintain its momentum despite external cost pressures.",
+        "citations": [
+          {
+            "paragraph_id": "p9",
+            "quote": "Strong capacity utilisation, sustained credit flows from bank and non-bank sources, and the government’s capex are expected to support investment activity."
+          }
+        ]
+      }
+    ],
+    "affected_sectors": [
+      "Banking",
+      "NBFCs",
+      "Real Estate",
+      "Automotive"
+    ],
+    "uncertainties": [
+      "The ultimate duration and intensity of the West Asia conflict remain uncertain.",
+      "The spatial and temporal distribution of the south-west monsoon introduces forecast variability."
+    ],
+    "counterarguments": [
+      "Adequate stocks of foodgrains and satisfactory reservoir levels might temper potential agricultural shocks.",
+      "Import diversification in affected commodities could help offset external supply disruptions."
+    ],
+    "repo_rate_pct": 5.25
+  }
+}

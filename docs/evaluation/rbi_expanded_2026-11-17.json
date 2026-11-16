@@ -1,0 +1,562 @@
+{
+  "evaluated_at": "2026-11-16T20:05:28.465521+00:00",
+  "split": "expanded",
+  "model": "gemini-3.5-flash-lite",
+  "prompt_version": "rbi-evidence-v2",
+  "document_count": 11,
+  "annotation_notice": "Initial author-reviewed factual labels, not independent gold-standard annotation. No labels are sent to Gemini.",
+  "baseline": {
+    "repo_rate_exact_matches": 11,
+    "total": 11
+  },
+  "ai": {
+    "generated": 5,
+    "abstained": 0,
+    "not_generated": 5,
+    "rejected": 0,
+    "unavailable": 1,
+    "accepted_coverage": 0.45454545454545453,
+    "repo_rate_exact_matches": 5,
+    "citation_occurrence_checks_passed": 5
+  },
+  "decision_coverage": {
+    "hike": {
+      "documents": 7,
+      "accepted": 2
+    },
+    "hold": {
+      "documents": 4,
+      "accepted": 3
+    },
+    "cut": {
+      "documents": 0,
+      "accepted": 0
+    }
+  },
+  "generation_limit": 6,
+  "generation_requests_started": 6,
+  "human_study": {
+    "participants": 0,
+    "status": "not_collected",
+    "finding": null
+  },
+  "limitations": "Quote occurrence and rate extraction are mechanical checks, not factual entailment, relevance, comprehension or investment-performance evidence. Rejected generations are not included as accepted answers.",
+  "cases": [
+    {
+      "document_id": "RBI_63742",
+      "source_url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=63742",
+      "published_on": "2026-10-07",
+      "text_sha256": "0aad214836898e18eb6b7da4d1b503d3943607e783213c1bf183e844ad8351b2",
+      "split": "expanded",
+      "expected_repo_rate_pct": 5.5,
+      "decision": "hike",
+      "baseline_repo_rate_pct": 5.5,
+      "baseline_correct": true,
+      "ai_status": "generated",
+      "ai_repo_correct": true,
+      "citation_occurrence_valid": true,
+      "ai_claims": [
+        {
+          "kind": "fact",
+          "text": "After a detailed assessment of the evolving macroeconomic and financial developments and the outlook, the MPC voted unanimously to increase the policy repo rate under the liquidity adjustment facility (LAF) by 25 bps to 5.50 per cent. Consequently, the standing deposit facility (SDF) rate stands adjusted at 5.25 per cent and the marginal standing facility (MSF) rate and the Bank Rate at 5.75 per cent. The MPC also decided to change the stance to calibrated tightening.",
+          "citations": [
+            {
+              "paragraph_id": "p3",
+              "quote": "After a detailed assessment of the evolving macroeconomic and financial developments and the outlook, the MPC voted unanimously to increase the policy repo rate under the liquidity adjustment facility (LAF) by 25 bps to 5.50 per cent. Consequently, the standing deposit facility (SDF) rate stands adjusted at 5.25 per cent and the marginal standing facility (MSF) rate and the Bank Rate at 5.75 per cent. The MPC also decided to change the stance to calibrated tightening."
+            }
+          ]
+        },
+        {
+          "kind": "interpretation",
+          "text": "An increase in the policy repo rate could potentially raise borrowing costs for banks, which might subsequently influence lending rates across various financial products.",
+          "citations": [
+            {
+              "paragraph_id": "p3",
+              "quote": "After a detailed assessment of the evolving macroeconomic and financial developments and the outlook, the MPC voted unanimously to increase the policy repo rate under the liquidity adjustment facility (LAF) by 25 bps to 5.50 per cent."
+            }
+          ]
+        }
+      ],
+      "resolved_model": "gemini-3.5-flash-lite",
+      "generated_at": "2026-11-16T20:04:49.724546+00:00",
+      "error": null,
+      "error_code": null,
+      "human_factual_error_count": null,
+      "human_citation_entailment_score": null,
+      "human_relevance_score": null,
+      "human_comprehension_score": null
+    },
+    {
+      "document_id": "RBI_63287",
+      "source_url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=63287",
+      "published_on": "2026-08-05",
+      "text_sha256": "8dd2513021021a8298ea0a4cdf7d9900dd83793fd915f3d75a30bbcbca5bf263",
+      "split": "expanded",
+      "expected_repo_rate_pct": 5.25,
+      "decision": "hold",
+      "baseline_repo_rate_pct": 5.25,
+      "baseline_correct": true,
+      "ai_status": "generated",
+      "ai_repo_correct": true,
+      "citation_occurrence_valid": true,
+      "ai_claims": [
+        {
+          "kind": "fact",
+          "text": "The Monetary Policy Committee (MPC) held its 62nd meeting from August 3 to 5, 2026, under the chairmanship of Shri Sanjay Malhotra, Governor, Reserve Bank of India.",
+          "citations": [
+            {
+              "paragraph_id": "p2",
+              "quote": "The Monetary Policy Committee (MPC) held its 62nd meeting from August 3 to 5, 2026, under the chairmanship of Shri Sanjay Malhotra, Governor, Reserve Bank of India."
+            },
+            {
+              "paragraph_id": "p3",
+              "quote": "After a detailed assessment of the evolving macroeconomic and financial developments and the outlook, the MPC voted unanimously to keep the policy repo rate under the liquidity adjustment facility (LAF) unchanged at 5.25 per cent."
+            }
+          ]
+        },
+        {
+          "kind": "fact",
+          "text": "Consequently, the standing deposit facility (SDF) rate remains at 5.00 per cent and the marginal standing facility (MSF) rate and the Bank Rate remain at 5.50 per cent.",
+          "citations": [
+            {
+              "paragraph_id": "p3",
+              "quote": "Consequently, the standing deposit facility (SDF) rate remains at 5.00 per cent and the marginal standing facility (MSF) rate and the Bank Rate remain at 5.50 per cent."
+            }
+          ]
+        },
+        {
+          "kind": "fact",
+          "text": "While CPI inflation increased to 4.4 per cent in June 2026 after remaining below the target for 16 consecutive months, it turned out to be lower by 30 basis points (bps) than what was earlier projected for Q1:2026-27. The increase in June was primarily due to higher food and fuel inflation.",
+          "citations": [
+            {
+              "paragraph_id": "p11",
+              "quote": "While CPI inflation increased to 4.4 per cent in June 2026 after remaining below the target for 16 consecutive months, it turned out to be lower by 30 basis points (bps) than what was earlier projected for Q1:2026-27. The increase in June was primarily due to higher food and fuel inflation."
+            }
+          ]
+        },
+        {
+          "kind": "interpretation",
+          "text": "A steady policy repo rate combined with robust bank credit growth indicators might support continued financing availability, which could influence activity in sectors such as Banking and Real Estate if borrowing costs remain stable.",
+          "citations": [
+            {
+              "paragraph_id": "p3",
+              "quote": "After a detailed assessment of the evolving macroeconomic and financial developments and the outlook, the MPC voted unanimously to keep the policy repo rate under the liquidity adjustment facility (LAF) unchanged at 5.25 per cent."
+            },
+            {
+              "paragraph_id": "p8",
+              "quote": "Investment continues to be resilient, as suggested by various indicators related to construction, capital goods and bank credit."
+            }
+          ]
+        }
+      ],
+      "resolved_model": "gemini-3.5-flash-lite",
+      "generated_at": "2026-11-16T20:05:01.815808+00:00",
+      "error": null,
+      "error_code": null,
+      "human_factual_error_count": null,
+      "human_citation_entailment_score": null,
+      "human_relevance_score": null,
+      "human_comprehension_score": null
+    },
+    {
+      "document_id": "RBI_62863",
+      "source_url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=62863",
+      "published_on": "2026-06-05",
+      "text_sha256": "9583796aca4dbc9546d357f38690799d73bb11865b669011d631f8571168d4bb",
+      "split": "expanded",
+      "expected_repo_rate_pct": 5.25,
+      "decision": "hold",
+      "baseline_repo_rate_pct": 5.25,
+      "baseline_correct": true,
+      "ai_status": "generated",
+      "ai_repo_correct": true,
+      "citation_occurrence_valid": true,
+      "ai_claims": [
+        {
+          "kind": "fact",
+          "text": "After a detailed assessment of the evolving macroeconomic and financial developments and the outlook, the MPC voted unanimously to keep the policy repo rate under the liquidity adjustment facility (LAF) unchanged at 5.25 per cent.",
+          "citations": [
+            {
+              "paragraph_id": "p3",
+              "quote": "After a detailed assessment of the evolving macroeconomic and financial developments and the outlook, the MPC voted unanimously to keep the policy repo rate under the liquidity adjustment facility (LAF) unchanged at 5.25 per cent."
+            }
+          ]
+        },
+        {
+          "kind": "fact",
+          "text": "Consequently, the standing deposit facility (SDF) rate remains at 5.00 per cent and the marginal standing facility (MSF) rate and the Bank Rate remain at 5.50 per cent.",
+          "citations": [
+            {
+              "paragraph_id": "p3",
+              "quote": "Consequently, the standing deposit facility (SDF) rate remains at 5.00 per cent and the marginal standing facility (MSF) rate and the Bank Rate remain at 5.50 per cent."
+            }
+          ]
+        },
+        {
+          "kind": "interpretation",
+          "text": "If retail fuel prices and input costs pass through fully to general consumer prices, monetary authorities could face conditions that might influence future policy stances.",
+          "citations": [
+            {
+              "paragraph_id": "p13",
+              "quote": "The second-round impact of higher input costs could exert upside pressure on CPI inflation going forward."
+            }
+          ]
+        },
+        {
+          "kind": "interpretation",
+          "text": "When credit flows from institutional sources remain steady, investment activity in certain sectors can potentially maintain its momentum despite external cost pressures.",
+          "citations": [
+            {
+              "paragraph_id": "p9",
+              "quote": "Strong capacity utilisation, sustained credit flows from bank and non-bank sources, and the government\u2019s capex are expected to support investment activity."
+            }
+          ]
+        }
+      ],
+      "resolved_model": "gemini-3.5-flash-lite",
+      "generated_at": "2026-11-16T20:05:13.813741+00:00",
+      "error": null,
+      "error_code": null,
+      "human_factual_error_count": null,
+      "human_citation_entailment_score": null,
+      "human_relevance_score": null,
+      "human_comprehension_score": null
+    },
+    {
+      "document_id": "RBI_62514",
+      "source_url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=62514",
+      "published_on": "2026-04-08",
+      "text_sha256": "cc16c637825a4e617e011d75cb7a8935bae1b23cb58b0bef82c122718ea72401",
+      "split": "expanded",
+      "expected_repo_rate_pct": 5.25,
+      "decision": "hold",
+      "baseline_repo_rate_pct": 5.25,
+      "baseline_correct": true,
+      "ai_status": "generated",
+      "ai_repo_correct": true,
+      "citation_occurrence_valid": true,
+      "ai_claims": [
+        {
+          "kind": "fact",
+          "text": "After a detailed assessment of the evolving macroeconomic and financial developments and the outlook, the MPC voted unanimously to keep the policy repo rate under the liquidity adjustment facility (LAF) unchanged at 5.25 per cent.",
+          "citations": [
+            {
+              "paragraph_id": "p3",
+              "quote": "After a detailed assessment of the evolving macroeconomic and financial developments and the outlook, the MPC voted unanimously to keep the policy repo rate under the liquidity adjustment facility (LAF) unchanged at 5.25 per cent."
+            }
+          ]
+        },
+        {
+          "kind": "interpretation",
+          "text": "When policy rates remain unchanged while energy prices face upward pressure from geopolitical conflicts, borrowing costs for purchasing properties or vehicles might stay steady, though higher input costs could indirectly influence project budgets or consumer purchasing power.",
+          "citations": [
+            {
+              "paragraph_id": "p3",
+              "quote": "the MPC voted unanimously to keep the policy repo rate under the liquidity adjustment facility (LAF) unchanged at 5.25 per cent."
+            },
+            {
+              "paragraph_id": "p14",
+              "quote": "Higher input costs associated with increase in energy prices and international freight and insurance costs along with supply-chain disruptions could constrain availability of key inputs for downstream sectors, thus impairing growth."
+            }
+          ]
+        }
+      ],
+      "resolved_model": "gemini-3.5-flash-lite",
+      "generated_at": "2026-11-16T20:05:17.021508+00:00",
+      "error": null,
+      "error_code": null,
+      "human_factual_error_count": null,
+      "human_citation_entailment_score": null,
+      "human_relevance_score": null,
+      "human_comprehension_score": null
+    },
+    {
+      "document_id": "RBI_55178",
+      "source_url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=55178",
+      "published_on": "2023-02-08",
+      "text_sha256": "4b868bc3bf48738477d9de8fa6f8609df0721671eed8bdd68b61f248589ff11e",
+      "split": "expanded",
+      "expected_repo_rate_pct": 6.5,
+      "decision": "hike",
+      "baseline_repo_rate_pct": 6.5,
+      "baseline_correct": true,
+      "ai_status": "unavailable",
+      "ai_repo_correct": null,
+      "citation_occurrence_valid": null,
+      "ai_claims": [],
+      "resolved_model": null,
+      "generated_at": null,
+      "error": "Gemini unavailable (HTTP 503: provider failure). Source text remains available.",
+      "error_code": "provider_error",
+      "human_factual_error_count": null,
+      "human_citation_entailment_score": null,
+      "human_relevance_score": null,
+      "human_comprehension_score": null
+    },
+    {
+      "document_id": "RBI_54818",
+      "source_url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=54818",
+      "published_on": "2022-12-07",
+      "text_sha256": "895cf323652e63b3cde8d142d67b0a8aa9ec8e032cda605e81d5b11abe0649d6",
+      "split": "expanded",
+      "expected_repo_rate_pct": 6.25,
+      "decision": "hike",
+      "baseline_repo_rate_pct": 6.25,
+      "baseline_correct": true,
+      "ai_status": "generated",
+      "ai_repo_correct": true,
+      "citation_occurrence_valid": true,
+      "ai_claims": [
+        {
+          "kind": "fact",
+          "text": "Increase the policy repo rate under the liquidity adjustment facility (LAF) by 35 basis points to 6.25 per cent with immediate effect.",
+          "citations": [
+            {
+              "paragraph_id": "p2",
+              "quote": "Increase the policy repo rate under the liquidity adjustment facility (LAF) by 35 basis points to 6.25 per cent with immediate effect."
+            }
+          ]
+        },
+        {
+          "kind": "fact",
+          "text": "Consequently, the standing deposit facility (SDF) rate stands adjusted to 6.00 per cent and the marginal standing facility (MSF) rate and the Bank Rate to 6.50 per cent.",
+          "citations": [
+            {
+              "paragraph_id": "p3",
+              "quote": "Consequently, the standing deposit facility (SDF) rate stands adjusted to 6.00 per cent and the marginal standing facility (MSF) rate and the Bank Rate to 6.50 per cent."
+            }
+          ]
+        },
+        {
+          "kind": "interpretation",
+          "text": "Based on the stated objective to remain focused on withdrawal of accommodation and break core inflation persistence, higher policy rates could potentially influence borrowing costs across various financial segments, which may affect sectors such as Banking and NBFCs.",
+          "citations": [
+            {
+              "paragraph_id": "p4",
+              "quote": "The MPC also decided to remain focused on withdrawal of accommodation to ensure that inflation remains within the target going forward, while supporting growth."
+            },
+            {
+              "paragraph_id": "p19",
+              "quote": "On balance, the MPC is of the view that, further calibrated monetary policy action is warranted to keep inflation expectations anchored, break the core inflation persistence and contain second round effects"
+            }
+          ]
+        }
+      ],
+      "resolved_model": "gemini-3.5-flash-lite",
+      "generated_at": "2026-11-16T20:05:28.452944+00:00",
+      "error": null,
+      "error_code": null,
+      "human_factual_error_count": null,
+      "human_citation_entailment_score": null,
+      "human_relevance_score": null,
+      "human_comprehension_score": null
+    },
+    {
+      "document_id": "RBI_54465",
+      "source_url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=54465",
+      "published_on": "2022-09-30",
+      "text_sha256": "d2801ab3c4ee218b6a3ffdfef725e551b9e1c6284dd270e84c365badbbcd93c3",
+      "split": "expanded",
+      "expected_repo_rate_pct": 5.9,
+      "decision": "hike",
+      "baseline_repo_rate_pct": 5.9,
+      "baseline_correct": true,
+      "ai_status": "not_generated",
+      "ai_repo_correct": null,
+      "citation_occurrence_valid": null,
+      "ai_claims": [],
+      "resolved_model": null,
+      "generated_at": null,
+      "error": null,
+      "error_code": null,
+      "human_factual_error_count": null,
+      "human_citation_entailment_score": null,
+      "human_relevance_score": null,
+      "human_comprehension_score": null
+    },
+    {
+      "document_id": "RBI_54148",
+      "source_url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=54148",
+      "published_on": "2022-08-05",
+      "text_sha256": "cb35cdc901b6cceb22937ee7c7d765dc231799156290ddd04d42aa5aa2b2c7ac",
+      "split": "expanded",
+      "expected_repo_rate_pct": 5.4,
+      "decision": "hike",
+      "baseline_repo_rate_pct": 5.4,
+      "baseline_correct": true,
+      "ai_status": "not_generated",
+      "ai_repo_correct": null,
+      "citation_occurrence_valid": null,
+      "ai_claims": [],
+      "resolved_model": null,
+      "generated_at": null,
+      "error": null,
+      "error_code": null,
+      "human_factual_error_count": null,
+      "human_citation_entailment_score": null,
+      "human_relevance_score": null,
+      "human_comprehension_score": null
+    },
+    {
+      "document_id": "RBI_53832",
+      "source_url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=53832",
+      "published_on": "2022-06-08",
+      "text_sha256": "b70ba58df143908ebf8f22479fd59694e187d804c1461db9f52883156024ab1c",
+      "split": "expanded",
+      "expected_repo_rate_pct": 4.9,
+      "decision": "hike",
+      "baseline_repo_rate_pct": 4.9,
+      "baseline_correct": true,
+      "ai_status": "not_generated",
+      "ai_repo_correct": null,
+      "citation_occurrence_valid": null,
+      "ai_claims": [],
+      "resolved_model": null,
+      "generated_at": null,
+      "error": null,
+      "error_code": null,
+      "human_factual_error_count": null,
+      "human_citation_entailment_score": null,
+      "human_relevance_score": null,
+      "human_comprehension_score": null
+    },
+    {
+      "document_id": "RBI_53652",
+      "source_url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=53652",
+      "published_on": "2022-05-04",
+      "text_sha256": "20a44a47b7c75f18296b2a95945d582dc420bfea0ad5620cf2a4900741886f7b",
+      "split": "expanded",
+      "expected_repo_rate_pct": 4.4,
+      "decision": "hike",
+      "baseline_repo_rate_pct": 4.4,
+      "baseline_correct": true,
+      "ai_status": "not_generated",
+      "ai_repo_correct": null,
+      "citation_occurrence_valid": null,
+      "ai_claims": [],
+      "resolved_model": null,
+      "generated_at": null,
+      "error": null,
+      "error_code": null,
+      "human_factual_error_count": null,
+      "human_citation_entailment_score": null,
+      "human_relevance_score": null,
+      "human_comprehension_score": null
+    },
+    {
+      "document_id": "RBI_53537",
+      "source_url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=53537",
+      "published_on": "2022-04-08",
+      "text_sha256": "ce5bea9bc450fc6c34d8274991d6a83f64752b8c90a247c2f167e1ccade59d31",
+      "split": "expanded",
+      "expected_repo_rate_pct": 4.0,
+      "decision": "hold",
+      "baseline_repo_rate_pct": 4.0,
+      "baseline_correct": true,
+      "ai_status": "not_generated",
+      "ai_repo_correct": null,
+      "citation_occurrence_valid": null,
+      "ai_claims": [],
+      "resolved_model": null,
+      "generated_at": null,
+      "error": null,
+      "error_code": null,
+      "human_factual_error_count": null,
+      "human_citation_entailment_score": null,
+      "human_relevance_score": null,
+      "human_comprehension_score": null
+    }
+  ],
+  "evaluation_mode": "generate_missing",
+  "http_request_count": 8,
+  "provider_attempts": [
+    {
+      "document_id": "RBI_63742",
+      "text_sha256": "0aad214836898e18eb6b7da4d1b503d3943607e783213c1bf183e844ad8351b2",
+      "model": "gemini-3.5-flash-lite",
+      "prompt_version": "rbi-evidence-v2",
+      "started_at": "2026-11-16T20:04:37.795954+00:00",
+      "finished_at": "2026-11-16T20:04:49.725700+00:00",
+      "status": "accepted",
+      "error_code": null,
+      "http_status": null
+    },
+    {
+      "document_id": "RBI_63287",
+      "text_sha256": "8dd2513021021a8298ea0a4cdf7d9900dd83793fd915f3d75a30bbcbca5bf263",
+      "model": "gemini-3.5-flash-lite",
+      "prompt_version": "rbi-evidence-v2",
+      "started_at": "2026-11-16T20:04:50.032349+00:00",
+      "finished_at": "2026-11-16T20:05:01.816891+00:00",
+      "status": "accepted",
+      "error_code": null,
+      "http_status": null
+    },
+    {
+      "document_id": "RBI_62863",
+      "text_sha256": "9583796aca4dbc9546d357f38690799d73bb11865b669011d631f8571168d4bb",
+      "model": "gemini-3.5-flash-lite",
+      "prompt_version": "rbi-evidence-v2",
+      "started_at": "2026-11-16T20:05:02.124311+00:00",
+      "finished_at": "2026-11-16T20:05:04.376582+00:00",
+      "status": "failed",
+      "error_code": "provider_error",
+      "http_status": 503
+    },
+    {
+      "document_id": "RBI_62863",
+      "text_sha256": "9583796aca4dbc9546d357f38690799d73bb11865b669011d631f8571168d4bb",
+      "model": "gemini-3.5-flash-lite",
+      "prompt_version": "rbi-evidence-v2",
+      "started_at": "2026-11-16T20:05:05.382854+00:00",
+      "finished_at": "2026-11-16T20:05:13.814999+00:00",
+      "status": "accepted",
+      "error_code": null,
+      "http_status": null
+    },
+    {
+      "document_id": "RBI_62514",
+      "text_sha256": "cc16c637825a4e617e011d75cb7a8935bae1b23cb58b0bef82c122718ea72401",
+      "model": "gemini-3.5-flash-lite",
+      "prompt_version": "rbi-evidence-v2",
+      "started_at": "2026-11-16T20:05:14.111452+00:00",
+      "finished_at": "2026-11-16T20:05:17.022704+00:00",
+      "status": "accepted",
+      "error_code": null,
+      "http_status": null
+    },
+    {
+      "document_id": "RBI_55178",
+      "text_sha256": "4b868bc3bf48738477d9de8fa6f8609df0721671eed8bdd68b61f248589ff11e",
+      "model": "gemini-3.5-flash-lite",
+      "prompt_version": "rbi-evidence-v2",
+      "started_at": "2026-11-16T20:05:17.373293+00:00",
+      "finished_at": "2026-11-16T20:05:21.710422+00:00",
+      "status": "failed",
+      "error_code": "provider_error",
+      "http_status": 503
+    },
+    {
+      "document_id": "RBI_55178",
+      "text_sha256": "4b868bc3bf48738477d9de8fa6f8609df0721671eed8bdd68b61f248589ff11e",
+      "model": "gemini-3.5-flash-lite",
+      "prompt_version": "rbi-evidence-v2",
+      "started_at": "2026-11-16T20:05:22.720762+00:00",
+      "finished_at": "2026-11-16T20:05:25.029620+00:00",
+      "status": "failed",
+      "error_code": "provider_error",
+      "http_status": 503
+    },
+    {
+      "document_id": "RBI_54818",
+      "text_sha256": "895cf323652e63b3cde8d142d67b0a8aa9ec8e032cda605e81d5b11abe0649d6",
+      "model": "gemini-3.5-flash-lite",
+      "prompt_version": "rbi-evidence-v2",
+      "started_at": "2026-11-16T20:05:25.357079+00:00",
+      "finished_at": "2026-11-16T20:05:28.454127+00:00",
+      "status": "accepted",
+      "error_code": null,
+      "http_status": null
+    }
+  ]
+}

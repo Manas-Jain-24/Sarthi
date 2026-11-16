@@ -1,0 +1,75 @@
+{
+  "document_id": "RBI_63287",
+  "text_sha256": "8dd2513021021a8298ea0a4cdf7d9900dd83793fd915f3d75a30bbcbca5bf263",
+  "requested_model": "gemini-3.5-flash-lite",
+  "resolved_model": "gemini-3.5-flash-lite",
+  "prompt_version": "rbi-evidence-v2",
+  "generated_at": "2026-11-16T20:05:01.815808+00:00",
+  "analysis": {
+    "abstain": false,
+    "abstention_reason": "",
+    "claims": [
+      {
+        "kind": "fact",
+        "text": "The Monetary Policy Committee (MPC) held its 62nd meeting from August 3 to 5, 2026, under the chairmanship of Shri Sanjay Malhotra, Governor, Reserve Bank of India.",
+        "citations": [
+          {
+            "paragraph_id": "p2",
+            "quote": "The Monetary Policy Committee (MPC) held its 62nd meeting from August 3 to 5, 2026, under the chairmanship of Shri Sanjay Malhotra, Governor, Reserve Bank of India."
+          },
+          {
+            "paragraph_id": "p3",
+            "quote": "After a detailed assessment of the evolving macroeconomic and financial developments and the outlook, the MPC voted unanimously to keep the policy repo rate under the liquidity adjustment facility (LAF) unchanged at 5.25 per cent."
+          }
+        ]
+      },
+      {
+        "kind": "fact",
+        "text": "Consequently, the standing deposit facility (SDF) rate remains at 5.00 per cent and the marginal standing facility (MSF) rate and the Bank Rate remain at 5.50 per cent.",
+        "citations": [
+          {
+            "paragraph_id": "p3",
+            "quote": "Consequently, the standing deposit facility (SDF) rate remains at 5.00 per cent and the marginal standing facility (MSF) rate and the Bank Rate remain at 5.50 per cent."
+          }
+        ]
+      },
+      {
+        "kind": "fact",
+        "text": "While CPI inflation increased to 4.4 per cent in June 2026 after remaining below the target for 16 consecutive months, it turned out to be lower by 30 basis points (bps) than what was earlier projected for Q1:2026-27. The increase in June was primarily due to higher food and fuel inflation.",
+        "citations": [
+          {
+            "paragraph_id": "p11",
+            "quote": "While CPI inflation increased to 4.4 per cent in June 2026 after remaining below the target for 16 consecutive months, it turned out to be lower by 30 basis points (bps) than what was earlier projected for Q1:2026-27. The increase in June was primarily due to higher food and fuel inflation."
+          }
+        ]
+      },
+      {
+        "kind": "interpretation",
+        "text": "A steady policy repo rate combined with robust bank credit growth indicators might support continued financing availability, which could influence activity in sectors such as Banking and Real Estate if borrowing costs remain stable.",
+        "citations": [
+          {
+            "paragraph_id": "p3",
+            "quote": "After a detailed assessment of the evolving macroeconomic and financial developments and the outlook, the MPC voted unanimously to keep the policy repo rate under the liquidity adjustment facility (LAF) unchanged at 5.25 per cent."
+          },
+          {
+            "paragraph_id": "p8",
+            "quote": "Investment continues to be resilient, as suggested by various indicators related to construction, capital goods and bank credit."
+          }
+        ]
+      }
+    ],
+    "affected_sectors": [
+      "Banking",
+      "Real Estate"
+    ],
+    "uncertainties": [
+      "Uncertain spatial and temporal rainfall distribution influenced by El Nino conditions could alter agricultural outcomes and rural demand.",
+      "Global oil price volatility driven by geopolitical developments may create unpredictable shifts in inflation paths."
+    ],
+    "counterarguments": [
+      "Supply side pressures and food and fuel price increases might become more broad-based than currently anticipated, potentially altering policy effectiveness.",
+      "Global economic headwinds and shifting policy expectations could dampen domestic demand irrespective of repo rate continuity."
+    ],
+    "repo_rate_pct": 5.25
+  }
+}

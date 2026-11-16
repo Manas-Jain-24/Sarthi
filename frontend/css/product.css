@@ -178,6 +178,8 @@ summary::-webkit-details-marker {display:none;}
 .settings-dialog .telemetry-stats {display:grid;gap:10px;margin-top:18px;font-size:11px;}
 .verification-details {border-top:1px solid #e8ede5;padding-top:16px;margin-top:24px;font-size:12px;}
 .verification-details summary {cursor:pointer;}
+.research-history {font-size:11px;line-height:1.7;color:#6a746d;margin-top:14px;}
+.research-history p {margin:10px 0;}
 .settings-dialog .settings-note {font-size:11px;margin-bottom:0;}
 .app-shell .panel-footnote,.app-shell .quiet,.app-shell .research-meta,.app-shell .research-date,.app-shell .review-metric span,.app-shell .source-toggle,.app-shell .app-footer,.app-shell .settings-note {color:#6a746d;}
 .aux-back {margin-left:auto;font-size:12px;text-decoration:none;color:#6d7e71!important;}

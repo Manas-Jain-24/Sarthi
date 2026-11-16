@@ -7,12 +7,13 @@ import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 from html.parser import HTMLParser
 from pathlib import Path
-from urllib.parse import urlsplit, parse_qs
+from urllib.parse import urlsplit, parse_qs, urljoin
 import httpx
 from ..models.rbi import RBIDocument, Paragraph
 
 DATA = Path(__file__).resolve().parent.parent / "data" / "rbi"
 FEED_URL = "https://www.rbi.org.in/pressreleases_rss.xml"
+LISTING_URL = "https://www.rbi.org.in/Scripts/Annualpolicy.aspx"
 PARSER_VERSION = "rbi-table-v1"
 MAX_BYTES = 2_000_000
 WRITE_LOCK = threading.RLock()
@@ -105,7 +106,7 @@ def parse_document(raw: bytes, url: str, retrieved_at=None) -> RBIDocument:
 
 
 def download(url: str, client=None, feed=False) -> bytes:
-    target = FEED_URL if feed and url == FEED_URL else document_url(url)
+    target = url if url in {FEED_URL, LISTING_URL} else document_url(url)
     def fetch(session):
         with session.stream("GET", target) as response:
             response.raise_for_status()
@@ -176,3 +177,52 @@ def discover_resolutions(feed: bytes):
             except ValueError:
                 continue
     return found
+
+
+class PolicyListing(HTMLParser):
+    """Resolution links are sometimes labelled only 'Full Document'. Use row context."""
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.rows = []
+        self.text = []
+        self.links = []
+        self.recognized = False
+
+    def flush(self):
+        text = " ".join(" ".join(self.text).split()).lower()
+        if "resolution of the monetary policy committee" in text and "minutes of" not in text:
+            for href in self.links:
+                try:
+                    url = document_url(urljoin(LISTING_URL, href))
+                    if url not in self.rows:
+                        self.rows.append(url)
+                except ValueError:
+                    continue
+        self.text, self.links = [], []
+
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        if attrs.get("id") == "annualPolicy":
+            self.recognized = True
+        if tag == "tr":
+            self.flush()
+        if tag == "a" and attrs.get("href"):
+            self.links.append(attrs["href"])
+
+    def handle_endtag(self, tag):
+        if tag == "tr":
+            self.flush()
+
+    def handle_data(self, value):
+        self.text.append(value)
+
+
+def discover_listing(raw):
+    if len(raw) > MAX_BYTES:
+        raise ValueError("Policy listing is too large.")
+    parser = PolicyListing()
+    parser.feed(raw.decode("utf-8-sig", errors="replace"))
+    parser.flush()
+    if not parser.recognized:
+        raise ValueError("Official policy listing not recognized; challenge or changed markup rejected.")
+    return parser.rows

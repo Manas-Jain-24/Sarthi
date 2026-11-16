@@ -4,76 +4,175 @@
     "repo_rate_pct": 5.25,
     "evidence_paragraph_id": "p3",
     "annotation_status": "author-reviewed source fact; independent second review pending",
-    "text_sha256": "01c6e69d421898adb1fba224f0093dc90f93e7b943e3c9a6012130c1e267aedf"
+    "text_sha256": "01c6e69d421898adb1fba224f0093dc90f93e7b943e3c9a6012130c1e267aedf",
+    "decision": "hold"
   },
   "RBI_61749": {
     "split": "holdout",
     "repo_rate_pct": 5.25,
     "evidence_paragraph_id": "p3",
     "annotation_status": "author-reviewed source fact; independent second review pending",
-    "text_sha256": "8afaf7a070a71cfe8e7aae4742e60048551f88dff73f095fb85f7930176ad6a7"
+    "text_sha256": "8afaf7a070a71cfe8e7aae4742e60048551f88dff73f095fb85f7930176ad6a7",
+    "decision": "cut"
   },
   "RBI_61332": {
     "split": "holdout",
     "repo_rate_pct": 5.5,
     "evidence_paragraph_id": "p3",
     "annotation_status": "author-reviewed source fact; independent second review pending",
-    "text_sha256": "3b64d71c8698a14619dc1bc7fcb657ad4048a0403a2633952d09a15bf60f973e"
+    "text_sha256": "3b64d71c8698a14619dc1bc7fcb657ad4048a0403a2633952d09a15bf60f973e",
+    "decision": "hold"
   },
   "RBI_60957": {
     "split": "holdout",
     "repo_rate_pct": 5.5,
     "evidence_paragraph_id": "p3",
     "annotation_status": "author-reviewed source fact; independent second review pending",
-    "text_sha256": "46a1aa8f0222dc9ace6f6c284efca13dc60248e1185e85cd8a469ccbe54b848b"
+    "text_sha256": "46a1aa8f0222dc9ace6f6c284efca13dc60248e1185e85cd8a469ccbe54b848b",
+    "decision": "hold"
   },
   "RBI_60604": {
     "split": "development",
     "repo_rate_pct": 5.5,
     "evidence_paragraph_id": "p3",
     "annotation_status": "author-reviewed source fact; independent second review pending",
-    "text_sha256": "d16c49e81bd42512f8d7448a7086e5273cb29be03ac08954597dda36e1502591"
+    "text_sha256": "d16c49e81bd42512f8d7448a7086e5273cb29be03ac08954597dda36e1502591",
+    "decision": "cut"
   },
   "RBI_59692": {
     "split": "development",
     "repo_rate_pct": 6.25,
     "evidence_paragraph_id": "p3",
     "annotation_status": "author-reviewed source fact; independent second review pending",
-    "text_sha256": "ee7af3112eca2ec249503542c8dba0ec12c8ca6556969a7a08b9b38d614a0243"
+    "text_sha256": "ee7af3112eca2ec249503542c8dba0ec12c8ca6556969a7a08b9b38d614a0243",
+    "decision": "cut"
   },
   "RBI_59244": {
     "split": "development",
     "repo_rate_pct": 6.5,
     "evidence_paragraph_id": "p3",
     "annotation_status": "author-reviewed source fact; independent second review pending",
-    "text_sha256": "57895cf1e645fb3fbcb82f3bd4100cfa0f6d000d24f3eaf99e3a8f2d65c273df"
+    "text_sha256": "57895cf1e645fb3fbcb82f3bd4100cfa0f6d000d24f3eaf99e3a8f2d65c273df",
+    "decision": "hold"
   },
   "RBI_58447": {
     "split": "development",
     "repo_rate_pct": 6.5,
     "evidence_paragraph_id": "p2",
     "annotation_status": "author-reviewed source fact; independent second review pending",
-    "text_sha256": "20835e7219801ed48c234234ec1d70c531d1a5d4fd3689c171e9dcf9f4712104"
+    "text_sha256": "20835e7219801ed48c234234ec1d70c531d1a5d4fd3689c171e9dcf9f4712104",
+    "decision": "hold"
   },
   "RBI_58050": {
     "split": "development",
     "repo_rate_pct": 6.5,
     "evidence_paragraph_id": "p2",
     "annotation_status": "author-reviewed source fact; independent second review pending",
-    "text_sha256": "1ddd1cf5f863ec56cd4a69295d7fd469119591c43bfe2439b1161b9518fe6aff"
+    "text_sha256": "1ddd1cf5f863ec56cd4a69295d7fd469119591c43bfe2439b1161b9518fe6aff",
+    "decision": "hold"
   },
   "RBI_57275": {
     "split": "development",
     "repo_rate_pct": 6.5,
     "evidence_paragraph_id": "p2",
     "annotation_status": "author-reviewed source fact; independent second review pending",
-    "text_sha256": "f3e811b935c2b3270a55690d2bcda28274e95f47f3a0f34b8ec5ae9339d4b741"
+    "text_sha256": "f3e811b935c2b3270a55690d2bcda28274e95f47f3a0f34b8ec5ae9339d4b741",
+    "decision": "hold"
   },
   "RBI_56888": {
     "split": "development",
     "repo_rate_pct": 6.5,
     "evidence_paragraph_id": "p2",
     "annotation_status": "author-reviewed source fact; independent second review pending",
-    "text_sha256": "312a014259c4cf5eba03ea2d68ccedbe80ee84c5a5eb4d1f1d04adbdb69cee7a"
+    "text_sha256": "312a014259c4cf5eba03ea2d68ccedbe80ee84c5a5eb4d1f1d04adbdb69cee7a",
+    "decision": "hold"
+  },
+  "RBI_63742": {
+    "split": "expanded",
+    "repo_rate_pct": 5.5,
+    "decision": "hike",
+    "evidence_paragraph_id": "p3",
+    "annotation_status": "implementation-reviewed source fact; independent second review pending",
+    "text_sha256": "0aad214836898e18eb6b7da4d1b503d3943607e783213c1bf183e844ad8351b2"
+  },
+  "RBI_63287": {
+    "split": "expanded",
+    "repo_rate_pct": 5.25,
+    "decision": "hold",
+    "evidence_paragraph_id": "p3",
+    "annotation_status": "implementation-reviewed source fact; independent second review pending",
+    "text_sha256": "8dd2513021021a8298ea0a4cdf7d9900dd83793fd915f3d75a30bbcbca5bf263"
+  },
+  "RBI_62863": {
+    "split": "expanded",
+    "repo_rate_pct": 5.25,
+    "decision": "hold",
+    "evidence_paragraph_id": "p3",
+    "annotation_status": "implementation-reviewed source fact; independent second review pending",
+    "text_sha256": "9583796aca4dbc9546d357f38690799d73bb11865b669011d631f8571168d4bb"
+  },
+  "RBI_62514": {
+    "split": "expanded",
+    "repo_rate_pct": 5.25,
+    "decision": "hold",
+    "evidence_paragraph_id": "p3",
+    "annotation_status": "implementation-reviewed source fact; independent second review pending",
+    "text_sha256": "cc16c637825a4e617e011d75cb7a8935bae1b23cb58b0bef82c122718ea72401"
+  },
+  "RBI_55178": {
+    "split": "expanded",
+    "repo_rate_pct": 6.5,
+    "decision": "hike",
+    "evidence_paragraph_id": "p2",
+    "annotation_status": "implementation-reviewed source fact; independent second review pending",
+    "text_sha256": "4b868bc3bf48738477d9de8fa6f8609df0721671eed8bdd68b61f248589ff11e"
+  },
+  "RBI_54818": {
+    "split": "expanded",
+    "repo_rate_pct": 6.25,
+    "decision": "hike",
+    "evidence_paragraph_id": "p2",
+    "annotation_status": "implementation-reviewed source fact; independent second review pending",
+    "text_sha256": "895cf323652e63b3cde8d142d67b0a8aa9ec8e032cda605e81d5b11abe0649d6"
+  },
+  "RBI_54465": {
+    "split": "expanded",
+    "repo_rate_pct": 5.9,
+    "decision": "hike",
+    "evidence_paragraph_id": "p2",
+    "annotation_status": "implementation-reviewed source fact; independent second review pending",
+    "text_sha256": "d2801ab3c4ee218b6a3ffdfef725e551b9e1c6284dd270e84c365badbbcd93c3"
+  },
+  "RBI_54148": {
+    "split": "expanded",
+    "repo_rate_pct": 5.4,
+    "decision": "hike",
+    "evidence_paragraph_id": "p2",
+    "annotation_status": "implementation-reviewed source fact; independent second review pending",
+    "text_sha256": "cb35cdc901b6cceb22937ee7c7d765dc231799156290ddd04d42aa5aa2b2c7ac"
+  },
+  "RBI_53832": {
+    "split": "expanded",
+    "repo_rate_pct": 4.9,
+    "decision": "hike",
+    "evidence_paragraph_id": "p2",
+    "annotation_status": "implementation-reviewed source fact; independent second review pending",
+    "text_sha256": "b70ba58df143908ebf8f22479fd59694e187d804c1461db9f52883156024ab1c"
+  },
+  "RBI_53652": {
+    "split": "expanded",
+    "repo_rate_pct": 4.4,
+    "decision": "hike",
+    "evidence_paragraph_id": "p2",
+    "annotation_status": "implementation-reviewed source fact; independent second review pending",
+    "text_sha256": "20a44a47b7c75f18296b2a95945d582dc420bfea0ad5620cf2a4900741886f7b"
+  },
+  "RBI_53537": {
+    "split": "expanded",
+    "repo_rate_pct": 4.0,
+    "decision": "hold",
+    "evidence_paragraph_id": "p2",
+    "annotation_status": "implementation-reviewed source fact; independent second review pending",
+    "text_sha256": "ce5bea9bc450fc6c34d8274991d6a83f64752b8c90a247c2f167e1ccade59d31"
   }
 }

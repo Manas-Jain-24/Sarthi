@@ -1,4 +1,4 @@
-"""Fetch at most three MPC resolutions from RBI's current rolling RSS feed."""
+"""Check the RBI policy listing and RSS; archive at most six supported resolutions."""
 import json
 import sys
 from pathlib import Path

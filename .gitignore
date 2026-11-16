@@ -46,6 +46,7 @@ Thumbs.db
 # Database / SQLite
 *.db
 *.sqlite3
+sarthi-study-*.json
 
 # Logs
 *.log

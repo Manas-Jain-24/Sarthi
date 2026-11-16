@@ -1,0 +1,61 @@
+{
+  "document_id": "RBI_54818",
+  "text_sha256": "895cf323652e63b3cde8d142d67b0a8aa9ec8e032cda605e81d5b11abe0649d6",
+  "requested_model": "gemini-3.5-flash-lite",
+  "resolved_model": "gemini-3.5-flash-lite",
+  "prompt_version": "rbi-evidence-v2",
+  "generated_at": "2026-11-16T20:05:28.452944+00:00",
+  "analysis": {
+    "abstain": false,
+    "abstention_reason": "",
+    "claims": [
+      {
+        "kind": "fact",
+        "text": "Increase the policy repo rate under the liquidity adjustment facility (LAF) by 35 basis points to 6.25 per cent with immediate effect.",
+        "citations": [
+          {
+            "paragraph_id": "p2",
+            "quote": "Increase the policy repo rate under the liquidity adjustment facility (LAF) by 35 basis points to 6.25 per cent with immediate effect."
+          }
+        ]
+      },
+      {
+        "kind": "fact",
+        "text": "Consequently, the standing deposit facility (SDF) rate stands adjusted to 6.00 per cent and the marginal standing facility (MSF) rate and the Bank Rate to 6.50 per cent.",
+        "citations": [
+          {
+            "paragraph_id": "p3",
+            "quote": "Consequently, the standing deposit facility (SDF) rate stands adjusted to 6.00 per cent and the marginal standing facility (MSF) rate and the Bank Rate to 6.50 per cent."
+          }
+        ]
+      },
+      {
+        "kind": "interpretation",
+        "text": "Based on the stated objective to remain focused on withdrawal of accommodation and break core inflation persistence, higher policy rates could potentially influence borrowing costs across various financial segments, which may affect sectors such as Banking and NBFCs.",
+        "citations": [
+          {
+            "paragraph_id": "p4",
+            "quote": "The MPC also decided to remain focused on withdrawal of accommodation to ensure that inflation remains within the target going forward, while supporting growth."
+          },
+          {
+            "paragraph_id": "p19",
+            "quote": "On balance, the MPC is of the view that, further calibrated monetary policy action is warranted to keep inflation expectations anchored, break the core inflation persistence and contain second round effects"
+          }
+        ]
+      }
+    ],
+    "affected_sectors": [
+      "Banking",
+      "NBFCs"
+    ],
+    "uncertainties": [
+      "Global economic outlook is skewed to the downside and capital flows to emerging market economies remain volatile.",
+      "Adverse climate events are increasingly becoming a significant source of upside risk to food prices."
+    ],
+    "counterarguments": [
+      "Economic activity exhibits resilience and aggregate demand conditions have been supported by pent-up spending.",
+      "Some members voted against the repo rate hike or against the withdrawal of accommodation stance."
+    ],
+    "repo_rate_pct": 6.25
+  }
+}

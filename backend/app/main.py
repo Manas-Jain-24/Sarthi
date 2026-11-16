@@ -160,9 +160,12 @@ def local_action(request: Request):
 
 @app.get("/api/v1/rbi/status")
 def rbi_status():
+    from .services.research_refresh import status
+    from .services.research_state import analysis_history
     return {"provider": "gemini", "model": model_name(),
             "configured": bool(os.getenv("GEMINI_API_KEY", "").strip()),
-            "document_count": len(all_documents()), "analysis_trigger": "explicit request only"}
+            "document_count": len(all_documents()), "analysis_trigger": "explicit request only",
+            "freshness":status(),"analysis_history":analysis_history(12)}
 
 
 @app.get("/api/v1/rbi/brief")
@@ -186,22 +189,11 @@ def rbi_document(document_id: str):
 
 @app.get("/api/v1/rbi/study-material")
 def study_material():
-    from .services.gemini_analysis import cached_analysis
-    from .services.rbi_brief import baseline_paragraph
-    materials = []
-    for document in all_documents():
-        record = cached_analysis(document)
-        if not record or record.analysis.abstain:
-            continue
-        analysis = record.analysis
-        materials.append({"document_id": document.id, "title": document.title,
-                          "source_url": document.source_url, "source_text_sha256": document.text_sha256,
-                          "model": record.resolved_model, "prompt_version": record.prompt_version,
-                          "baseline": baseline_paragraph(document).text,
-                          "briefing": "\n\n".join([f"{claim.kind.title()}: {claim.text}" for claim in analysis.claims] +
-                                                     ["Uncertainty: " + s for s in analysis.uncertainties] +
-                                                     ["Counterargument: " + s for s in analysis.counterarguments])})
-    return {"cases": materials[:4], "minimum_cases": 2, "notice": "Real accepted AI outputs only; no substitute demo text."}
+    from .services.study_protocol import public_material
+    try:
+        return public_material()
+    except (ValueError,OSError,KeyError):
+        raise HTTPException(503,"Frozen study materials failed verification. Contact the project researcher.") from None
 
 
 @app.post("/api/v1/rbi/analyze/{document_id}", dependencies=[Depends(local_action)])
@@ -210,7 +202,7 @@ def rbi_analyze(document_id: str):
     try:
         return analyze_and_cache(document)
     except AnalysisUnavailable as exc:
-        raise HTTPException(503, str(exc)) from None
+        raise HTTPException(503, str(exc),headers={"X-Analysis-Status":exc.code}) from None
 
 
 @app.post("/api/v1/rbi/refresh", dependencies=[Depends(local_action)])

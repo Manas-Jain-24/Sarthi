@@ -1,21 +1,19 @@
 """Read-only brief construction and explicit, bounded live refresh."""
-import json
-import threading
-import time
-import httpx
 from pathlib import Path
 from ..models.schemas import AuditableReasoningChain, MorningBriefCard, EventCategory, ImpactVector, SourceTier
-from .rbi_source import DATA, FEED_URL, load_documents, download, discover_resolutions, retrieve_document, save_documents, utc_now
+from .rbi_source import load_documents
 from .gemini_analysis import cached_analysis, model_name
 
 LIVE = Path(__file__).resolve().parents[3] / ".cache" / "rbi_live"
-REFRESH_LOCK = threading.Lock()
-last_attempt = 0.0
 
 
 def all_documents():
     docs = {d.id: d for d in load_documents()}
-    docs.update({d.id: d for d in load_documents(LIVE)})
+    try:
+        docs.update({d.id: d for d in load_documents(LIVE)})
+    except (ValueError,OSError):
+        # The status endpoint exposes this integrity failure; never serve bad live data.
+        pass
     return sorted(docs.values(), key=lambda d: d.published_on, reverse=True)
 
 
@@ -23,7 +21,7 @@ def baseline_paragraph(document):
     return next((p for p in document.paragraphs[:6] if "policy repo rate" in p.text.lower()), document.paragraphs[0])
 
 
-def make_card(document, record=None):
+def make_card(document, record=None, attempt=None):
     baseline = baseline_paragraph(document)
     analysis = record.analysis if record else None
     generated = bool(analysis and not analysis.abstain)
@@ -32,6 +30,8 @@ def make_card(document, record=None):
     why = " ".join(interpretations) if generated else "Source-only baseline. AI interpretation has not been generated."
     if analysis and analysis.abstain:
         why = "Gemini abstained: " + analysis.abstention_reason
+    elif not analysis and attempt:
+        why = "Source-only. Latest Gemini request: " + (attempt.get("error_code") or attempt["status"]).replace("_"," ") + ". No interpretation was accepted."
     impact = "AI hypothesis; requires human review" if generated else "No AI conclusion; source-only baseline"
     chain = AuditableReasoningChain(
         event_detected=document.title, source_verification=evidence,
@@ -59,7 +59,7 @@ def make_card(document, record=None):
         cited_claims=[c.model_dump() for c in analysis.claims] if generated else [],
         analysis_model=record.resolved_model if record else "",
         analysis_generated_at=record.generated_at if record else "",
-        analysis_status="generated" if generated else ("abstained" if analysis else "not_generated"),
+        analysis_status="generated" if generated else ("abstained" if analysis else attempt["status"] if attempt else "not_generated"),
         baseline_text=baseline.text,
         source_text_sha256=document.text_sha256
     )
@@ -67,36 +67,24 @@ def make_card(document, record=None):
 
 def build_rbi_brief():
     documents = all_documents()
-    cards = [make_card(d, cached_analysis(d)) for d in documents]
-    metadata = LIVE / "refresh.json"
-    refresh = json.loads(metadata.read_text(encoding="utf-8")) if metadata.exists() else None
+    from .research_state import analysis_history
+    from .gemini_analysis import PROMPT_VERSION
+    attempts={}
+    for attempt in analysis_history(200):
+        if attempt["model"] == model_name() and attempt["prompt_version"] == PROMPT_VERSION:
+            attempts.setdefault((attempt["document_id"],attempt["text_sha256"]),attempt)
+    cards = [make_card(d, cached_analysis(d),attempts.get((d.id,d.text_sha256))) for d in documents]
+    from .research_refresh import status
+    freshness = status(documents)
+    refresh = freshness["history"][0]["details"] if freshness["history"] else None
     return {"mode": "rbi", "data_notice": "Real archived RBI resolutions. Dates are publication dates, not today's news. Gemini runs only when you request analysis.",
             "stats": {"scanned": len(cards), "confirmed": len(cards), "dropped_at_confirm": 0,
                       "passed_constraint": sum(c.analysis_status == "generated" for c in cards)},
             "morning_brief": cards, "explore_feed": [], "dropped_events_audit": [],
-            "model": model_name(), "last_refresh": refresh}
+            "model": model_name(), "last_refresh": refresh,
+            "freshness": freshness}
 
 
-def refresh_live(limit=3):
-    global last_attempt
-    with REFRESH_LOCK:
-        if time.monotonic() - last_attempt < 30:
-            raise ValueError("Please wait thirty seconds between live refresh attempts.")
-        last_attempt = time.monotonic()
-        urls = discover_resolutions(download(FEED_URL, feed=True))
-        current = {d.id: d for d in load_documents(LIVE)}
-        failures, retrieved = [], []
-        for url in urls[:max(1, min(limit, 3))]:
-            try:
-                document = retrieve_document(url, root=LIVE)
-                current[document.id] = document
-                retrieved.append(document.id)
-            except (ValueError, OSError, httpx.HTTPError) as exc:
-                # No response bodies or credentials in logs/API errors.
-                failures.append({"url": url, "error": type(exc).__name__})
-        save_documents(list(current.values()), LIVE)
-        metadata = {"checked_at": utc_now(), "feed_url": FEED_URL, "matching_items": len(urls),
-                    "retrieved": retrieved, "failures": failures,
-                    "note": "A rolling RSS feed may contain no MPC resolutions. Archived documents remain available."}
-        (LIVE / "refresh.json").write_text(json.dumps(metadata, indent=2), encoding="utf-8")
-        return metadata
+def refresh_live(limit=6):
+    from .research_refresh import refresh
+    return refresh(limit=limit)

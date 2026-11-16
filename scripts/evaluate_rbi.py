@@ -10,10 +10,11 @@ from backend.app.services.rbi_evaluation import evaluate
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--split", choices=["all", "development", "holdout"], default="all")
+    parser.add_argument("--split", choices=["all", "development", "holdout", "expanded"], default="all")
+    parser.add_argument("--limit",type=int,default=6,help="Maximum missing documents to request; retries also consume the daily HTTP budget.")
     parser.add_argument("--generate", action="store_true", help="Explicitly make Gemini requests for missing analyses (uses quota).")
     args = parser.parse_args()
-    result = evaluate(args.split, args.generate)
+    result = evaluate(args.split, args.generate,args.limit)
     out = Path("output/rbi_evaluation")
     out.mkdir(parents=True, exist_ok=True)
     (out / "report.json").write_text(json.dumps(result, indent=2), encoding="utf-8")

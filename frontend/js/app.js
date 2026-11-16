@@ -54,7 +54,12 @@ async function loadPipelineData() {
       const status = await fetch("/api/v1/rbi/status").then(r => r.json());
       if (sequence !== loadSequence) return;
       document.getElementById("provider-status").textContent = status.configured ? `Gemini: ${status.model}. Analysis runs on request.` : "Gemini key is not configured. Source documents are available.";
-    } else document.getElementById("provider-status").textContent = "Fixed synthetic scenarios; no model requests.";
+      renderResearchStatus(status);
+    } else {
+      document.getElementById("provider-status").textContent = "Fixed synthetic scenarios; no model requests.";
+      document.getElementById("source-freshness").textContent = "";
+      document.getElementById("research-history").replaceChildren();
+    }
     window.workspaceUI?.setEvents(rawDailyCards);
     updateTelemetryBanner(data.stats);
     renderCards();
@@ -71,6 +76,31 @@ async function loadPipelineData() {
       </div>
     `;
   }
+}
+
+function renderResearchStatus(status) {
+  const freshness = status.freshness;
+  const labels = {checked:"Official listing checked",never_checked:"Live sources have not been checked",checking:"Checking live sources",
+    interrupted:"Previous check was interrupted",check_failed:"Latest check failed",partial:"Latest check was incomplete",
+    unverified:"No resolution links found; freshness unverified",outdated:"Source check is over a day old",archive_error:"Live archive needs attention"};
+  const label = labels[freshness.state] || "Source status unavailable";
+  document.getElementById("source-freshness").textContent = `${label}${freshness.checked_at ? " · " + new Date(freshness.checked_at).toLocaleString() : ""}. Latest publication: ${freshness.latest_publication ? displayDate(freshness.latest_publication) : "unavailable"}.`;
+  document.getElementById("research-context").textContent = `RBI announcements through ${displayDate(freshness.latest_publication)} · ${label.toLowerCase()}.`;
+  const history = document.getElementById("research-history");
+  history.replaceChildren();
+  for (const run of freshness.history.slice(0,5)) {
+    const item = document.createElement("p");
+    const details = run.details;
+    item.textContent = `${new Date(run.started_at).toLocaleString()} · ${run.status}. ${details.retrieved?.length || 0} retrieved; ${details.failures?.length || 0} failed${details.pending ? "; " + details.pending + " pending" : ""}.`;
+    history.appendChild(item);
+  }
+  for (const attempt of status.analysis_history.slice(0,5)) {
+    const item = document.createElement("p");
+    item.textContent = `${attempt.document_id.replace("RBI_","RBI ")} · Gemini ${attempt.status}${attempt.error_code ? " (" + attempt.error_code.replaceAll("_"," ") + ")" : ""} · ${new Date(attempt.started_at).toLocaleString()}`;
+    history.appendChild(item);
+  }
+  if (!history.childElementCount) history.textContent = "No live checks recorded on this device.";
+  const note = document.createElement("p"); note.textContent = freshness.archive_error || freshness.notice; history.appendChild(note);
 }
 
 function updateTelemetryBanner(stats) {
@@ -101,7 +131,7 @@ function renderCards() {
     const title = card.is_sample ? card.canonical_title : match ? `Policy repo rate: ${match[1]}%` : "Monetary policy decision";
     const text = (baseline && !card.is_sample ? card.baseline_text : card.summary_insight).replace(/\s+/g," ").trim();
     const preview = text.length > 190 ? text.slice(0,187) + "…" : text;
-    const label = card.is_sample ? "Synthetic example" : card.analysis_status === "generated" ? "Analysis available" : "Source document";
+    const label = card.is_sample ? "Synthetic example" : card.analysis_status === "generated" ? "Analysis available" : card.analysis_status === "rejected" ? "Source · AI output rejected" : card.analysis_status === "failed" ? "Source · AI unavailable" : "Source document";
     return `<article class="research-row"><time class="research-date">${escapeHTML(displayDate(card.published_at))}</time><div><h2>${escapeHTML(title)}</h2><p>${escapeHTML(preview)}</p><p class="research-meta">${escapeHTML(label)}${card.matched_ticker ? " · " + escapeHTML(card.matched_ticker) : ""}</p></div><button class="btn-open-chain" data-event-id="${escapeHTML(card.id)}">Read ${card.analysis_status === "generated" && !baseline ? "analysis" : "source"} →</button></article>`;
   }).join("");
   container.querySelectorAll("[data-event-id]").forEach(button => button.addEventListener("click", () => openReasoningDrawer(button.dataset.eventId)));
@@ -374,13 +404,13 @@ async function refreshRBI() {
   const button = document.getElementById("btn-refresh-rbi");
   button.disabled = true;
   const status = document.getElementById("provider-status");
-  status.textContent = "Checking RBI feed…";
+  status.textContent = "Checking RBI sources…";
   try {
     const response = await fetch("/api/v1/rbi/refresh", {method:"POST"});
     const result = await response.json();
     if (!response.ok) throw new Error(result.detail || "Live refresh unavailable.");
     await loadPipelineData();
-    status.textContent = `Feed checked: ${result.matching_items} matching resolutions; ${result.retrieved.length} retrieved; ${result.failures.length} failed. Older resolutions may be absent from the rolling feed.`;
+    status.textContent = `${result.status === "completed" ? "Check complete" : "Check incomplete"}: ${result.matching_items} matching resolutions; ${result.retrieved.length} retrieved; ${result.failures.length} failed; ${result.pending} pending.`;
   } catch (error) { status.textContent = error.message; }
   finally { document.getElementById("workspace-status").textContent = status.textContent; button.disabled = false; }
 }

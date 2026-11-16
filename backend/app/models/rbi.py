@@ -58,3 +58,8 @@ class AnalysisRecord(StrictModel):
 
 class AnalysisUnavailable(Exception):
     """An actionable, non-secret error suitable for display to the user."""
+    def __init__(self, message, *, code="unavailable", retryable=False, http_status=None):
+        super().__init__(message)
+        self.code = code
+        self.retryable = retryable
+        self.http_status = http_status
